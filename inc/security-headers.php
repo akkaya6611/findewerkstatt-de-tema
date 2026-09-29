@@ -32,6 +32,13 @@ class OtoTamir_Security_And_Cache_Manager {
             return;
         }
 
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+
+        // Yerel geliştirme ortamlarında (localhost, 127.0.0.1, .local, .test) HTTPS zorlamasını devre dışı bırak
+        if ( empty( $host ) || strpos( $host, 'localhost' ) !== false || strpos( $host, '127.0.0.1' ) !== false || strpos( $host, '.local' ) !== false || strpos( $host, '.test' ) !== false ) {
+            return;
+        }
+
         if (
             ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) ||
             ( isset( $_SERVER['HTTP_X_FORWARDED_SSL'] ) && 'on' === $_SERVER['HTTP_X_FORWARDED_SSL'] ) ||
@@ -41,9 +48,8 @@ class OtoTamir_Security_And_Cache_Manager {
         }
 
         if ( ! is_admin() && ! wp_doing_cron() ) {
-            $host = $_SERVER['HTTP_HOST'] ?? 'ototamircibul.com.tr';
             $uri  = $_SERVER['REQUEST_URI'] ?? '/';
-            $redirect_url = 'https://' . $host . $uri;
+            $redirect_url = 'https://' . ( $host ?: 'findewerkstatt.de' ) . $uri;
             wp_safe_redirect( $redirect_url, 301 );
             exit;
         }
@@ -54,7 +60,10 @@ class OtoTamir_Security_And_Cache_Manager {
             return;
         }
 
-        if ( is_ssl() || ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) ) {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $is_local = ( empty( $host ) || strpos( $host, 'localhost' ) !== false || strpos( $host, '127.0.0.1' ) !== false || strpos( $host, '.local' ) !== false || strpos( $host, '.test' ) !== false );
+
+        if ( ! $is_local && ( is_ssl() || ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) ) ) {
             header( 'Strict-Transport-Security: max-age=31536000; includeSubDomains', false );
         }
 
