@@ -127,36 +127,36 @@ function findewerkstatt_rewrite_rules() {
 }
 add_action( 'init', 'findewerkstatt_rewrite_rules' );
 
-// Model 1: Dinamik Kalıcı Bağlantı Filtresi (Şarj İstasyonu -> /sarj-istasyonu/, Yol Yardım -> /yol-yardim/, Diğerleri -> /oto-tamirci/)
+// Model 1: Dinamik Kalıcı Bağlantı Filtresi (Ladestation -> /ladestation/, Pannenhilfe -> /pannenhilfe/, Werkstatt -> /werkstatt/)
 function ototamir_mechanic_custom_permalink( $post_link, $post ) {
     if ( is_object( $post ) && $post->post_type === 'mechanic' ) {
-        // 1. Şarj İstasyonu kontrolü
+        // 1. Ladestation (E-Mobilität)
         $charging_net = get_post_meta( $post->ID, '_mechanic_charging_network', true );
         $is_charging = ! empty( $charging_net );
         
         $terms = wp_get_post_terms( $post->ID, 'service_type', array( 'fields' => 'slugs' ) );
         if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-            if ( in_array( 'elektrikli-sarj-istasyonu', $terms, true ) || in_array( 'sarj-istasyonu', $terms, true ) ) {
+            if ( in_array( 'e-mobilitaet-ladestationen', $terms, true ) || in_array( 'ladestation', $terms, true ) || in_array( 'elektrikli-sarj-istasyonu', $terms, true ) ) {
                 $is_charging = true;
             }
         }
         
         if ( $is_charging ) {
-            return home_url( user_trailingslashit( 'sarj-istasyonu/' . $post->post_name ) );
+            return home_url( user_trailingslashit( 'ladestation/' . $post->post_name ) );
         }
 
         $road_assist = get_post_meta( $post->ID, '_mechanic_road_assist', true );
-        $is_road_assist = ( $road_assist === 'Evet' || $road_assist === '1' || $road_assist === 'yes' );
+        $is_road_assist = ( $road_assist === 'Evet' || $road_assist === '1' || $road_assist === 'yes' || $road_assist === 'Ja' || $road_assist === 'ja' );
         
         if ( ! $is_road_assist ) {
             if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-                if ( in_array( 'oto-cekici-yol-yardim', $terms, true ) || in_array( 'oto-kurtarma', $terms, true ) || in_array( 'yol-yardim', $terms, true ) ) {
+                if ( in_array( '24h-abschleppdienst-pannenhilfe', $terms, true ) || in_array( 'pannenhilfe', $terms, true ) || in_array( 'abschleppdienst', $terms, true ) || in_array( 'oto-cekici-yol-yardim', $terms, true ) ) {
                     $is_road_assist = true;
                 }
             }
         }
         
-        $prefix = $is_road_assist ? 'yol-yardim' : 'oto-tamirci';
+        $prefix = $is_road_assist ? 'pannenhilfe' : 'werkstatt';
         return home_url( user_trailingslashit( $prefix . '/' . $post->post_name ) );
     }
     return $post_link;
@@ -195,7 +195,7 @@ function ototamir_redirect_old_mechanic_slugs() {
         }
     }
 
-    // 2. Kanonik URL doğrulaması (Örn: /tamirci/ veya /yol-yardim-firmasi/ ile gelinmişse resmi kanoniğe 301 yönlendir)
+    // 2. Kanonik URL doğrulaması
     if ( is_singular( 'mechanic' ) ) {
         $queried_id = get_queried_object_id();
         if ( $queried_id ) {
@@ -212,46 +212,17 @@ add_action( 'template_redirect', 'ototamir_redirect_old_mechanic_slugs', 1 );
 
 // Sürüm güncellemesinde rewrite kurallarını otomatik bir defaya mahsus yenile
 function ototamir_flush_rewrite_rules_on_version() {
-    $flushed_ver = get_option( 'ototamir_rewrite_version', '' );
-    if ( $flushed_ver !== '1.4.67' ) {
-        ototamir_ustalar_rewrite_rules();
+    $flushed_ver = get_option( 'findewerkstatt_rewrite_version', '' );
+    if ( $flushed_ver !== '1.0.0' ) {
+        findewerkstatt_rewrite_rules();
         flush_rewrite_rules( false );
-        update_option( 'ototamir_rewrite_version', '1.4.67' );
+        update_option( 'findewerkstatt_rewrite_version', '1.0.0' );
     }
 }
 add_action( 'init', 'ototamir_flush_rewrite_rules_on_version', 99 );
 
-// 4. Custom Taxonomies (Hizmet Türü ve Araç Markası)
-function ototamir_register_taxonomies() {
-    register_taxonomy( 'service_type', 'mechanic', array(
-        'label' => __( 'Hizmet Türleri', 'ototamir' ),
-        'rewrite' => array( 'slug' => 'hizmet' ),
-        'hierarchical' => true,
-        'show_admin_column' => true,
-    ));
-
-    register_taxonomy( 'car_brand', 'mechanic', array(
-        'label' => __( 'Araç Markaları', 'ototamir' ),
-        'rewrite' => array( 'slug' => 'marka', 'hierarchical' => true ),
-        'hierarchical' => true,
-        'show_admin_column' => true,
-    ));
-    
-    register_taxonomy( 'mechanic_city', 'mechanic', array(
-        'label' => __( 'İller', 'ototamir' ),
-        'rewrite' => array( 'slug' => 'il' ),
-        'hierarchical' => true,
-        'show_admin_column' => true,
-    ));
-
-    register_taxonomy( 'mechanic_district', 'mechanic', array(
-        'label' => __( 'İlçeler', 'ototamir' ),
-        'rewrite' => array( 'slug' => 'ilce' ),
-        'hierarchical' => true,
-        'show_admin_column' => true,
-    ));
-}
-add_action( 'init', 'ototamir_register_taxonomies' );
+// Not: CPT (mechanic) ve Taxonomien (mechanic_city, mechanic_district, service_type, car_brand)
+// deutsche Slugs (stadt, stadtteil, service, marke) werden zentral in inc/german-seeder-and-taxonomies.php registriert.
 
 // 5. Meta Box: İletişim Bilgileri
 function ototamir_add_mechanic_meta_box() {
@@ -658,36 +629,8 @@ function ototamir_auto_link_orphaned_mechanics() {
 }
 add_action( 'admin_init', 'ototamir_auto_link_orphaned_mechanics' );
 
-// 6. Varsayılan Kategorileri Ekle (12 Kategori)
-function ototamir_insert_default_categories() {
-    $default_services = array(
-        'Mekanik Ustası', 'Kaporta Ustaları', 'Oto Elektrik Ustaları', 
-        'Oto Cam Ustaları', 'Oto Klima Ustaları', 'Egzoz ve Emisyon Sistemleri Ustası',
-        'Motor Ustaları', 'Oto Enjeksiyon Ustaları', 'Oto Döşeme Ustaları',
-        'LPG Montaj Ustaları', 'Cam ve Aksesuarlar Firmaları', 'Oto Ekspertiz'
-    );
-    foreach ( $default_services as $service ) {
-        if ( ! term_exists( $service, 'service_type' ) ) {
-            wp_insert_term( $service, 'service_type' );
-        }
-    }
-}
-add_action( 'init', 'ototamir_insert_default_categories' );
-
-// 7. 81 İli Otomatik Ekle
-function ototamir_insert_81_cities() {
-    if ( get_option('ototamir_cities_inserted_v2') ) return;
-    
-    $cities = array('Adana','Adıyaman','Afyonkarahisar','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkari','Hatay','Isparta','Mersin','İstanbul','İzmir','Kars','Kastamonu','Kayseri','Kırklareli','Kırşehir','Kocaeli','Konya','Kütahya','Malatya','Manisa','Kahramanmaraş','Mardin','Muğla','Muş','Nevşehir','Niğde','Ordu','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Tekirdağ','Tokat','Trabzon','Tunceli','Şanlıurfa','Uşak','Van','Yozgat','Zonguldak','Aksaray','Bayburt','Karaman','Kırıkkale','Batman','Şırnak','Bartın','Ardahan','Iğdır','Yalova','Karabük','Kilis','Osmaniye','Düzce');
-    
-    foreach($cities as $city) {
-        if(!term_exists($city, 'mechanic_city')) {
-            wp_insert_term($city, 'mechanic_city');
-        }
-    }
-    update_option('ototamir_cities_inserted_v2', true);
-}
-add_action('init', 'ototamir_insert_81_cities');
+// Not: Deutschland 16 Bundesländer, Top 100 Städte & deutsche Kfz-Kategorien
+// werden sauber über inc/german-seeder-and-taxonomies.php verwaltet.
 
 // 8. Temel Sayfaları (Usta Ekle, Nöbetçi Tamirciler) Otomatik Oluştur
 function auto_create_essential_pages() {
@@ -2613,29 +2556,7 @@ if ( ! class_exists( 'Makaleler_Plugin' ) ) {
 }
 
 
-// ============================================================
-// 19. Bingöl İli Ustaları Otomatik Veritabanı Migrasyonu
-// ============================================================
-$bingol_migration_file = get_template_directory() . '/inc/bingol-migration.php';
-if ( file_exists( $bingol_migration_file ) ) {
-    require_once $bingol_migration_file;
-}
-
-// ============================================================
-// 20. 81 İl ve Tüm İlçeler Otomatik Veritabanı Senkronizasyonu
-// ============================================================
-$all_cities_migration_file = get_template_directory() . '/inc/all-cities-migration.php';
-if ( file_exists( $all_cities_migration_file ) ) {
-    require_once $all_cities_migration_file;
-}
-
-// ============================================================
-// 21. Araç Marka & Model Hiyerarşik Veritabanı Migrasyonu
-// ============================================================
-$brands_models_file = get_template_directory() . '/inc/brands-models-migration.php';
-if ( file_exists( $brands_models_file ) ) {
-    require_once $brands_models_file;
-}
+// Migrations bereinigt für FindeWerkstatt.de Deutschland
 
 // ============================================================
 // 22. Yeni Üye Karşılama Anketi & Yönetici Analitiği

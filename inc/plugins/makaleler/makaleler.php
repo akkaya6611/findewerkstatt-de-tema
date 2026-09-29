@@ -38,7 +38,9 @@ class Makaleler_Plugin {
 
     public static function init() {
         // Eklenti etkinlestirildiginde otomatik icerik uret
-        register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
+        if ( function_exists( 'register_activation_hook' ) ) {
+            register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
+        }
 
         // Admin menusu
         add_action( 'admin_menu', array( __CLASS__, 'register_admin_menu' ) );
