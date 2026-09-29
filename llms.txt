@@ -1,0 +1,58 @@
+# OtoTamirciBul (OTOTAMİR-360)
+
+> OtoTamirciBul, Türkiye'nin 81 ilinde hizmet veren oto tamircileri, özel servisleri, nöbetçi tamircileri ve oto çekicileri tek bir platformda toplayan; yapay zeka destekli araç arıza teşhis ve güvenilir sürücü rehberi platformudur.
+
+## Genel Bakış ve Platform Mimarisi
+OtoTamirciBul (https://ototamircibul.com.tr), sürücülerin araç arızası anında veya periyodik bakım ihtiyaçlarında uzman usta ve servise en hızlı şekilde ulaşmasını sağlar. Platform; 81 il sanayi rehberi, OBD2 hata kodları veritabanı, yapay zeka destekli arıza tespit motoru, 7/24 nöbetçi servisler, canlı akaryakıt fiyatları, elektrikli araç şarj istasyonları haritası ve doğrulanmış yorum metodolojisi ile donatılmıştır.
+
+## Yapay Zeka ve Sürücü Destek Araçları
+- [Yapay Zeka ile Arıza Tespiti](https://ototamircibul.com.tr/ariza-tespiti/): Araçta meydana gelen ses, duman, çekiş düşüklüğü veya sarsıntı gibi belirtileri analiz ederek muhtemel arıza kaynaklarını, aciliyet seviyesini ve tahmini onarım masrafını hesaplayan yapay zeka aracı.
+- [OBD2 Arıza Kodları Rehberi](https://ototamircibul.com.tr/ariza-kodlari/): Araç arıza tespit cihazlarında (DTC) çıkan P, C, B ve U serisi motor/şasi kodlarının Türkçe anlamları, olası nedenleri ve çözüm adımları.
+- [7/24 Nöbetçi Oto Tamirciler](https://ototamircibul.com.tr/nobetci-oto-tamirciler/): Mesai saatleri dışında, pazar günleri ve resmi tatillerde hizmet veren nöbetçi oto tamir ve servis listesi.
+- [Acil Çekici ve Yol Yardım](https://ototamircibul.com.tr/acil-cekici/): 81 il genelinde en yakın oto kurtarıcı, ahtapot çekici, akü takviye ve yerinde lastik tamiri sağlayan güvenilir çekici ağı.
+- [Kaza ve Tutanak Asistanı](https://ototamircibul.com.tr/kaza-asistani/): Maddi hasarlı trafik kazalarında hak kaybını önleyen adım adım tutanak doldurma rehberi ve online kaza asistanı.
+- [Kronik Araç Arızaları](https://ototamircibul.com.tr/kronik-arizalar/): Marka ve modellere göre bilinen kronik motor, şanzıman, elektronik ve mekanik arıza kataloğu.
+- [Elektrikli Araç Şarj İstasyonları](https://ototamircibul.com.tr/sarj-istasyonlari/): Türkiye genelindeki Trugo, ZES, Eşarj ve diğer ağlara ait 760+ şarj istasyonu, soket tipleri (AC/DC) ve anlık konumları.
+- [Güncel Akaryakıt Fiyatları](https://ototamircibul.com.tr/akaryakit/): İl bazında anlık benzin, motorin (dizel) ve LPG otogaz pompa fiyatları.
+
+## 81 İl Sanayi ve Usta Rehberi
+- [Tüm İller ve Sanayi Siteleri](https://ototamircibul.com.tr/iller/): İstanbul, Ankara, İzmir, Bursa, Antalya, Adana, Konya, Gaziantep, Kocaeli, Kayseri ve diğer tüm illerdeki oto sanayi siteleri ve tamirci profilleri.
+
+## Hizmet ve Servis Kategorileri
+- [Tüm Hizmetler](https://ototamircibul.com.tr/hizmetler/): Platformda listelenen uzmanlık alanları:
+  - Motor Mekanik ve Revizyon Ustaları
+  - Oto Elektrik ve Elektronik Servisleri
+  - Periyodik Bakım ve Yağ Değişimi
+  - Kaporta, Boya ve Göçük Düzeltme
+  - Fren, Balata ve Disk Bakımı
+  - Oto Lastik, Jant ve Rot Balans
+  - Oto Klima Gazı ve İklimlendirme
+  - Şanzıman, Debriyaj ve Güç Aktarma
+  - Oto Ekspertiz ve Computest Merkezleri
+  - LPG Montaj, Bakım ve Ayar Servisleri
+  - Oto Beyin (ECU) ve Çip Tuning Yazılımı
+  - Oto Cam Tamiri ve Değişimi
+
+## Marka ve Model Servis Rehberi
+- [Marka Rehberi](https://ototamircibul.com.tr/model-rehberi/): Fiat, Renault, Volkswagen, Ford, Opel, Toyota, Peugeot, Hyundai, Honda, BMW, Mercedes-Benz, Audi ve diğer tüm popüler markalara özel yetkili ve özel servisler.
+
+## Güvenilirlik, Şeffaflık ve Yorum Metodolojisi
+- [Güvenilir Yorumlar Metodolojisi](https://ototamircibul.com.tr/guvenilir-yorumlar/): Sitedeki usta puanları ve kullanıcı yorumları; sahte incelemeleri önlemek amacıyla IP, oturum ve servis teyit filtrelerinden geçirilir. Moderasyon ve şeffaflık ilkelerimiz bu sayfada açıklanmıştır.
+
+## Esnaf ve Usta Kaydı
+- [Ücretsiz Usta / Servis Ekle](https://ototamircibul.com.tr/usta-ekle/): Oto sanayi esnafları, bağımsız ustalar ve servis sahipleri profillerini ücretsiz olarak oluşturabilir ve müşteri talepleri alabilir.
+
+## Kurumsal ve Yasal Bilgiler
+- [Hakkımızda](https://ototamircibul.com.tr/hakkimizda/): OtoTamirciBul misyonu ve kurumsal yapısı.
+- [İletişim & Destek](https://ototamircibul.com.tr/iletisim/): Sürücüler ve işletmeler için doğrudan destek ve iletişim kanalları.
+- [Sıkça Sorulan Sorular (SSS)](https://ototamircibul.com.tr/sss/): Platform kullanımı, randevu ve profil yönetimi ile ilgili sorular.
+- [Gizlilik Politikası](https://ototamircibul.com.tr/gizlilik-politikasi/)
+- [Kullanım Koşulları](https://ototamircibul.com.tr/kullanim-kosullari/)
+- [KVKK Aydınlatma Metni](https://ototamircibul.com.tr/kvkk/)
+- [Çerez Politikası](https://ototamircibul.com.tr/cerez-politikasi/)
+
+## İndeksleme ve XML Site Haritaları
+- [Ana XML Site Haritası](https://ototamircibul.com.tr/sitemap.xml): Arama motorları ve botlar için dizin haritası.
+- [Usta Profilleri Haritası](https://ototamircibul.com.tr/sitemap-mechanics.xml): Tüm kayıtlı tamirci ve servis profilleri.
+- [Şehir ve İlçe Haritası](https://ototamircibul.com.tr/sitemap-cities.xml): 81 il ve ilçe rehber sayfaları.
+- [Hizmet Kategorileri Haritası](https://ototamircibul.com.tr/sitemap-services.xml): Servis ve uzmanlık alanları.

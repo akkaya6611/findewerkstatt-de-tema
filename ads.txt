@@ -1,0 +1,2 @@
+# Google AdSense ads.txt - Ototamircibul.com.tr
+google.com, pub-7207931778635058, DIRECT, f08c47fec0942fa0
