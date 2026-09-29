@@ -1,6 +1,6 @@
 <?php
 /**
- * FindeWerkstatt.de — Suchergebnisse (Search Template)
+ * FindeWerkstatt.de — Werkstatt-Verzeichnis Archiv (Archive Template)
  * 
  * @package FindeWerkstatt
  * @version 2.0.0
@@ -8,7 +8,13 @@
 
 get_header();
 
-$search_query = get_search_query();
+$bundeslaender = FindeWerkstatt_German_Data::get_bundeslaender();
+$categories    = FindeWerkstatt_German_Data::get_categories();
+$brands        = FindeWerkstatt_German_Data::get_car_brands();
+
+$current_city    = isset( $_GET['fw_city'] ) ? sanitize_text_field( $_GET['fw_city'] ) : '';
+$current_service = isset( $_GET['fw_service'] ) ? sanitize_text_field( $_GET['fw_service'] ) : '';
+$current_brand   = isset( $_GET['fw_brand'] ) ? sanitize_text_field( $_GET['fw_brand'] ) : '';
 ?>
 
 <div class="fw-container" style="padding-top:30px; padding-bottom:60px;">
@@ -16,21 +22,65 @@ $search_query = get_search_query();
     <nav class="fw-breadcrumbs" aria-label="Brotkrümelnavigation">
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
         <span>›</span>
-        <span>Suche</span>
+        <span>Werkstätten</span>
     </nav>
 
-    <!-- Header -->
+    <!-- Archiv Titel -->
     <div style="margin-bottom:24px;">
         <h1 style="font-size:32px; font-weight:900; color:var(--fw-primary); margin-bottom:8px;">
-            Suchergebnisse für „<?php echo esc_html( $search_query ); ?>“
+            Kfz-Werkstätten & Meisterbetriebe in Deutschland
         </h1>
         <p style="color:var(--fw-text-muted); font-size:16px;">
-            <?php echo (int) $wp_query->found_posts; ?> passende Einträge gefunden
+            Finden und vergleichen Sie geprüfte Autowerkstätten, 24h-Pannenhilfen und TÜV-Stationen.
         </p>
+    </div>
+
+    <!-- Filterleiste -->
+    <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:16px; margin-bottom:30px; box-shadow:var(--fw-shadow-sm);">
+        <form action="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>" method="get" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)) auto; gap:12px; align-items:center;">
+            <!-- Stadt / Bundesland -->
+            <div>
+                <select name="fw_city" style="width:100%; padding:10px 14px; border:1px solid var(--fw-border); border-radius:8px; font-weight:600;">
+                    <option value="">Alle Bundesländer & Städte</option>
+                    <?php foreach ( $bundeslaender as $code => $land ) : ?>
+                        <option value="<?php echo esc_attr( $land['slug'] ); ?>" <?php selected( $current_city, $land['slug'] ); ?>><?php echo esc_html( $land['name'] ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Leistung -->
+            <div>
+                <select name="fw_service" style="width:100%; padding:10px 14px; border:1px solid var(--fw-border); border-radius:8px; font-weight:600;">
+                    <option value="">Alle Leistungen</option>
+                    <?php foreach ( $categories as $slug => $cat ) : ?>
+                        <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $current_service, $slug ); ?>><?php echo esc_html( $cat['name'] ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Marke -->
+            <div>
+                <select name="fw_brand" style="width:100%; padding:10px 14px; border:1px solid var(--fw-border); border-radius:8px; font-weight:600;">
+                    <option value="">Alle Marken</option>
+                    <?php foreach ( $brands as $slug => $name ) : ?>
+                        <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $current_brand, $slug ); ?>><?php echo esc_html( $name ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Filter anwenden -->
+            <button type="submit" class="fw-btn fw-btn-primary">
+                Filter anwenden
+            </button>
+        </form>
     </div>
 
     <!-- Werkstätten Grid -->
     <?php if ( have_posts() ) : ?>
+        <div style="font-size:14px; font-weight:700; color:var(--fw-text-muted); margin-bottom:16px;">
+            Insgesamt <?php echo (int) $wp_query->found_posts; ?> Werkstätten gefunden
+        </div>
+
         <div class="fw-workshops-grid">
             <?php while ( have_posts() ) : the_post();
                 $post_id    = get_the_ID();
@@ -97,8 +147,8 @@ $search_query = get_search_query();
             <?php
             the_posts_pagination( array(
                 'mid_size'  => 2,
-                'prev_text' => '← Vorherige',
-                'next_text' => 'Nächste →',
+                'prev_text' => __( '← Vorherige', 'findewerkstatt' ),
+                'next_text' => __( 'Nächste →', 'findewerkstatt' ),
             ) );
             ?>
         </div>
@@ -106,12 +156,12 @@ $search_query = get_search_query();
     <?php else : ?>
         <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:48px; text-align:center;">
             <div style="font-size:48px; margin-bottom:12px;">🔍</div>
-            <h2 style="font-size:22px; margin-bottom:8px;">Keine Treffer für „<?php echo esc_html( $search_query ); ?>“</h2>
+            <h2 style="font-size:22px; margin-bottom:8px;">Keine Werkstätten gefunden</h2>
             <p style="color:var(--fw-text-muted); margin-bottom:20px;">
-                Probieren Sie einen anderen Suchbegriff oder stöbern Sie im bundesweiten Werkstattverzeichnis.
+                Für Ihre aktuellen Filterkriterien wurden keine Werkstätten gefunden. Bitte lockern Sie Ihre Suche.
             </p>
             <a href="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>" class="fw-btn fw-btn-primary">
-                Alle Werkstätten ansehen
+                Alle Filter zurücksetzen
             </a>
         </div>
     <?php endif; ?>

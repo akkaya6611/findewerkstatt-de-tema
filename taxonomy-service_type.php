@@ -1,6 +1,6 @@
 <?php
 /**
- * FindeWerkstatt.de — Stadt & Bundesland Landingpage (Taxonomie mechanic_city)
+ * FindeWerkstatt.de — Service & Kategorie Landingpage (Taxonomie service_type)
  * 
  * @package FindeWerkstatt
  * @version 2.0.0
@@ -11,14 +11,6 @@ get_header();
 $current_term = get_queried_object();
 $term_name    = $current_term->name;
 $term_desc    = $current_term->description;
-$term_id      = $current_term->term_id;
-
-// Prüfen, ob Unterstädte oder Stadtteile existieren
-$child_terms = get_terms( array(
-    'taxonomy'   => 'mechanic_city',
-    'parent'     => $term_id,
-    'hide_empty' => false,
-) );
 ?>
 
 <div class="fw-container" style="padding-top:30px; padding-bottom:60px;">
@@ -34,36 +26,20 @@ $child_terms = get_terms( array(
     <!-- Hero Header -->
     <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:32px; margin-bottom:30px; box-shadow:var(--fw-shadow-sm);">
         <div style="display:inline-block; font-size:12px; font-weight:800; color:var(--fw-info); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
-            📍 Standort-Verzeichnis
+            ⚙️ Fachkategorie
         </div>
         <h1 style="font-size:34px; font-weight:900; color:var(--fw-primary); margin-bottom:12px; line-height:1.2;">
-            Kfz-Werkstätten & Autoreparatur in <?php echo esc_html( $term_name ); ?>
+            <?php echo esc_html( $term_name ); ?> in Deutschland
         </h1>
         <p style="font-size:16px; color:var(--fw-text-muted); max-width:850px; line-height:1.6;">
-            <?php echo esc_html( $term_desc ?: "Vergleichen Sie geprüfte Kfz-Meisterwerkstätten, TÜV-Prüfstellen und 24h-Pannendienste in {$term_name}. Finden Sie die passende Werkstatt mit echten Kundenbewertungen und transparenten Festpreisen." ); ?>
+            <?php echo esc_html( $term_desc ?: "Finden Sie spezialisierte Fachbetriebe und Kfz-Meisterwerkstätten für {$term_name}. Geprüfte Qualität, transparente Kosten und direkte Kontaktaufnahme." ); ?>
         </p>
-
-        <!-- Untergeordnete Städte (falls Bundesland) -->
-        <?php if ( ! empty( $child_terms ) && ! is_wp_error( $child_terms ) ) : ?>
-            <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--fw-border);">
-                <div style="font-size:13px; font-weight:700; color:var(--fw-primary); margin-bottom:10px;">
-                    Städte in <?php echo esc_html( $term_name ); ?>:
-                </div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    <?php foreach ( $child_terms as $child ) : ?>
-                        <a href="<?php echo esc_url( get_term_link( $child ) ); ?>" class="fw-badge fw-badge-service" style="padding:6px 12px; font-size:13px;">
-                            <?php echo esc_html( $child->name ); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endif; ?>
     </div>
 
     <!-- Werkstätten Grid -->
     <?php if ( have_posts() ) : ?>
         <div style="font-size:14px; font-weight:700; color:var(--fw-text-muted); margin-bottom:16px;">
-            <?php echo (int) $wp_query->found_posts; ?> Werkstätten in <?php echo esc_html( $term_name ); ?> gelistet
+            <?php echo (int) $wp_query->found_posts; ?> Betriebe für <?php echo esc_html( $term_name ); ?>
         </div>
 
         <div class="fw-workshops-grid">
@@ -74,6 +50,9 @@ $child_terms = get_terms( array(
                 $plz        = get_post_meta( $post_id, '_mechanic_plz', true );
                 $rating_avg = get_post_meta( $post_id, '_mechanic_rating_avg', true ) ?: '4.9';
                 $rating_cnt = get_post_meta( $post_id, '_mechanic_rating_count', true ) ?: '18';
+                
+                $city_terms = wp_get_post_terms( $post_id, 'mechanic_city' );
+                $city_name  = ( $city_terms && ! is_wp_error( $city_terms ) ) ? $city_terms[0]->name : '';
                 $services   = wp_get_post_terms( $post_id, 'service_type' );
                 ?>
                 <div class="fw-workshop-card">
@@ -98,7 +77,7 @@ $child_terms = get_terms( array(
 
                         <div class="fw-card-address">
                             <span>📍</span>
-                            <span><?php echo esc_html( trim( "{$address}, {$plz} {$term_name}", ', ' ) ); ?></span>
+                            <span><?php echo esc_html( trim( "{$address}, {$plz} {$city_name}", ', ' ) ); ?></span>
                         </div>
 
                         <?php if ( ! empty( $services ) && ! is_wp_error( $services ) ) : ?>
@@ -137,51 +116,16 @@ $child_terms = get_terms( array(
 
     <?php else : ?>
         <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:48px; text-align:center;">
-            <div style="font-size:48px; margin-bottom:12px;">📍</div>
-            <h2 style="font-size:22px; margin-bottom:8px;">Noch keine Werkstätten in <?php echo esc_html( $term_name ); ?></h2>
+            <div style="font-size:48px; margin-bottom:12px;">⚙️</div>
+            <h2 style="font-size:22px; margin-bottom:8px;">Noch keine Betriebe für diesen Service gelistet</h2>
             <p style="color:var(--fw-text-muted); margin-bottom:20px;">
-                Sind Sie Werkstattinhaber in dieser Region? Tragen Sie Ihren Betrieb als erster ein!
+                Bieten Sie diesen Service an? Tragen Sie Ihren Fachbetrieb jetzt kostenlos ein!
             </p>
             <a href="<?php echo esc_url( home_url( '/werkstatt-anmelden/' ) ); ?>" class="fw-btn fw-btn-primary">
                 + Werkstatt jetzt eintragen
             </a>
         </div>
     <?php endif; ?>
-
-    <!-- FAQ Accordion für die Stadt -->
-    <div class="fw-box" style="margin-top:50px;">
-        <h2>Häufige Fragen zu Kfz-Werkstätten in <?php echo esc_html( $term_name ); ?></h2>
-        
-        <div class="fw-faq-item">
-            <button type="button" class="fw-faq-question">
-                <span>Wie finde ich eine vertrauenswürdige Werkstatt in <?php echo esc_html( $term_name ); ?>?</span>
-                <span class="fw-faq-icon">+</span>
-            </button>
-            <div class="fw-faq-answer" style="display:none;">
-                Achten Sie auf das Siegel „Kfz-Meisterbetrieb“ und Kundenbewertungen auf FindeWerkstatt.de. Unsere geprüften Partnerbetriebe in <?php echo esc_html( $term_name ); ?> erfüllen hohe Qualitätsstandards und reparieren nach Herstellervorgaben.
-            </div>
-        </div>
-
-        <div class="fw-faq-item">
-            <button type="button" class="fw-faq-question">
-                <span>Wann ist die Hauptuntersuchung (HU/AU) fällig?</span>
-                <span class="fw-faq-icon">+</span>
-            </button>
-            <div class="fw-faq-answer" style="display:none;">
-                Neuwagen müssen nach 3 Jahren zum ersten Mal zur Hauptuntersuchung. Danach ist der TÜV alle 2 Jahre fällig. Das genaue Fälligkeitsdatum entnehmen Sie der Prüfplakette auf dem hinteren Kennzeichen oder dem Fahrzeugschein.
-            </div>
-        </div>
-
-        <div class="fw-faq-item">
-            <button type="button" class="fw-faq-question">
-                <span>Bieten Werkstätten in <?php echo esc_html( $term_name ); ?> einen Ersatzwagen an?</span>
-                <span class="fw-faq-icon">+</span>
-            </button>
-            <div class="fw-faq-answer" style="display:none;">
-                Viele Betriebe in <?php echo esc_html( $term_name ); ?> stellen während längerer Reparaturen einen Werkstattersatzwagen oder Leihfahrräder zur Verfügung. Fragen Sie diesen Service einfach bei der Terminvereinbarung an.
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php
