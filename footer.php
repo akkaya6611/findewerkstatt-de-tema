@@ -10,11 +10,17 @@
     <div class="fw-container">
         <div class="fw-footer-grid">
             <div class="fw-footer-col">
-                <h4>FindeWerkstatt.de</h4>
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="fw-footer-logo" title="FindeWerkstatt.de — Finde Deine Werkstatt in Sekunden">
+                    <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.png' ); ?>" 
+                         alt="FindeWerkstatt.de" 
+                         class="fw-footer-logo-img" 
+                         width="210" 
+                         height="43">
+                </a>
                 <p style="font-size:14px; line-height:1.6; margin-bottom:16px;">
                     Deutschlands modernes Verzeichnis für Kfz-Meisterbetriebe, freie Werkstätten, TÜV-Prüfstellen und 24h-Pannenhilfen. Unabhängig, transparent und geprüft.
                 </p>
-                <div style="font-size:13px; color:#64748b;">
+                <div style="font-size:13px; color:#94a3b8;">
                     🛡️ Geprüfte Partnerbetriebe in allen 16 Bundesländern
                 </div>
             </div>

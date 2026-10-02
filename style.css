@@ -14,10 +14,10 @@ Text Domain: findewerkstatt
 */
 
 :root {
-  --fw-primary: #0f172a;
-  --fw-primary-light: #1e293b;
-  --fw-accent: #f59e0b;
-  --fw-accent-hover: #d97706;
+  --fw-primary: #05295d;
+  --fw-primary-light: #0d3b7e;
+  --fw-accent: #fb6006;
+  --fw-accent-hover: #e05300;
   --fw-success: #10b981;
   --fw-danger: #ef4444;
   --fw-info: #0284c7;
@@ -118,23 +118,43 @@ img {
 }
 
 .fw-logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  color: var(--fw-primary);
+  text-decoration: none;
+  line-height: 1;
 }
 
-.fw-logo .fw-logo-badge {
-  background: var(--fw-accent);
-  color: #000;
-  padding: 2px 7px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0;
+.fw-logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 235px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.fw-logo:hover .fw-logo-img {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.fw-footer-logo {
+  display: inline-block;
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+
+.fw-footer-logo-img {
+  height: 42px;
+  width: auto;
+  max-width: 210px;
+  object-fit: contain;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.fw-footer-logo:hover .fw-footer-logo-img {
+  opacity: 0.9;
 }
 
 .fw-nav {
@@ -932,6 +952,10 @@ img {
 }
 
 @media (max-width: 640px) {
+  .fw-logo-img {
+    height: 38px;
+    max-width: 180px;
+  }
   .fw-hero h1 {
     font-size: 30px;
   }

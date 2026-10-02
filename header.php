@@ -11,6 +11,8 @@
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="profile" href="https://gmpg.org/xfn/11">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon-32x32.png' ); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/apple-touch-icon.png' ); ?>">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -30,8 +32,12 @@
 
     <div class="fw-container">
         <div class="fw-header-main">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="fw-logo" title="FindeWerkstatt.de">
-                <span>FindeWerkstatt</span><span class="fw-logo-badge">.DE</span>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="fw-logo" title="FindeWerkstatt.de — Finde Deine Werkstatt in Sekunden">
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.png' ); ?>" 
+                     alt="FindeWerkstatt.de — Finde Deine Werkstatt in Sekunden" 
+                     class="fw-logo-img" 
+                     width="220" 
+                     height="45">
             </a>
 
             <nav class="fw-nav">

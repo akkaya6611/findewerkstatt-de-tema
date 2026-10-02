@@ -9,8 +9,11 @@
 get_header();
 
 $current_term = get_queried_object();
-$brand_name   = $current_term->name;
-$brand_desc   = $current_term->description;
+$brand_name   = $current_term && isset( $current_term->name ) ? $current_term->name : 'Kfz-Marke';
+$brand_desc   = $current_term && isset( $current_term->description ) ? $current_term->description : '';
+
+$pseo_loc     = get_query_var( 'fw_pseo_location' );
+$loc_name     = ! empty( $pseo_loc ) ? ucwords( str_replace( '-', ' ', $pseo_loc ) ) : 'Deutschland';
 ?>
 
 <div class="fw-container" style="padding-top:30px; padding-bottom:60px;">
@@ -20,19 +23,25 @@ $brand_desc   = $current_term->description;
         <span>›</span>
         <a href="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>">Werkstätten</a>
         <span>›</span>
-        <span><?php echo esc_html( $brand_name ); ?></span>
+        <?php if ( ! empty( $pseo_loc ) && $current_term ) : ?>
+            <a href="<?php echo esc_url( get_term_link( $current_term ) ); ?>"><?php echo esc_html( $brand_name ); ?></a>
+            <span>›</span>
+            <span>in <?php echo esc_html( $loc_name ); ?></span>
+        <?php else : ?>
+            <span><?php echo esc_html( $brand_name ); ?></span>
+        <?php endif; ?>
     </nav>
 
     <!-- Hero Header -->
     <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:32px; margin-bottom:30px; box-shadow:var(--fw-shadow-sm);">
         <div style="display:inline-block; font-size:12px; font-weight:800; color:var(--fw-info); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
-            🚗 Markenspezialist
+            🚗 Markenspezialist & Standort
         </div>
         <h1 style="font-size:34px; font-weight:900; color:var(--fw-primary); margin-bottom:12px; line-height:1.2;">
-            <?php echo esc_html( $brand_name ); ?> Werkstätten & Spezialisten
+            <?php echo esc_html( $brand_name ); ?> Werkstätten in <?php echo esc_html( $loc_name ); ?>
         </h1>
         <p style="font-size:16px; color:var(--fw-text-muted); max-width:850px; line-height:1.6;">
-            <?php echo esc_html( $brand_desc ?: "Finden Sie qualifizierte Kfz-Meisterbetriebe mit Spezialisierung auf {$brand_name}. Fachgerechte Inspektion nach Herstellervorgaben, Original- oder Erstausrüsterteile und Erhalt der vollen Werksgarantie." ); ?>
+            <?php echo esc_html( $brand_desc ?: "Finden Sie qualifizierte Kfz-Meisterbetriebe mit Spezialisierung auf {$brand_name} in {$loc_name}. Fachgerechte Inspektion nach Herstellervorgaben, Originalteile und Erhalt der vollen Werksgarantie." ); ?>
         </p>
     </div>
 
