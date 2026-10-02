@@ -1127,6 +1127,242 @@ img {
   object-fit: contain;
   display: block;
   filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
+/* ========================================================
+   GLOBAL MASCOT PROTECTION
+   ======================================================== */
+.fw-mascot-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.fw-mascot-art img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ========================================================
+   GLOBAL FORM & INNER PAGE WRAPPERS
+   ======================================================== */
+.fw-form-page {
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.fw-form-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.fw-form-wrap-wide {
+  max-width: 980px;
+}
+
+.fw-registration-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 32px;
+  background: linear-gradient(135deg, #05295d 0%, #0a192f 100%);
+  padding: 36px 44px;
+  border-radius: var(--fw-radius-lg);
+  color: #ffffff;
+  box-shadow: 0 16px 36px rgba(5, 41, 93, 0.14);
+}
+
+.fw-registration-intro .fw-section-header {
+  text-align: left;
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.fw-registration-intro .fw-section-tag {
+  background: rgba(251, 96, 6, 0.15);
+  border: 1px solid rgba(251, 96, 6, 0.3);
+  color: #fed7aa;
+  margin-bottom: 12px;
+}
+
+.fw-registration-intro h1 {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.fw-registration-intro p {
+  color: #cbd5e1;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 0;
+  max-width: 620px;
+}
+
+.fw-registration-mascot {
+  flex: 0 0 160px;
+  max-width: 170px;
+  line-height: 0;
+}
+
+.fw-registration-mascot img {
+  max-height: 190px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+}
+
+.fw-box {
+  background: #ffffff;
+  border: 1px solid var(--fw-border);
+  border-radius: var(--fw-radius-lg);
+  padding: 32px 36px;
+  box-shadow: var(--fw-shadow-sm);
+  margin-bottom: 24px;
+}
+
+.fw-box h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--fw-primary);
+  margin-bottom: 14px;
+}
+
+.fw-box p {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.fw-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Forms: Fields, Grid, Fieldset */
+.fw-form-section {
+  border: none;
+  padding: 0;
+  margin: 0 0 28px;
+}
+
+.fw-form-section legend {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--fw-primary);
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f1f5f9;
+  width: 100%;
+}
+
+.fw-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.fw-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.fw-form-field label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fw-primary);
+}
+
+.fw-form-field input[type="text"],
+.fw-form-field input[type="email"],
+.fw-form-field input[type="tel"],
+.fw-form-field input[type="password"],
+.fw-form-field input[type="search"],
+.fw-form-field select,
+.fw-form-field textarea {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14.5px;
+  color: var(--fw-text-main);
+  background: #ffffff;
+  border: 1px solid var(--fw-border);
+  border-radius: var(--fw-radius-sm);
+  outline: none;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.fw-form-field input:focus,
+.fw-form-field select:focus,
+.fw-form-field textarea:focus {
+  border-color: var(--fw-accent);
+  box-shadow: 0 0 0 3px rgba(251, 96, 6, 0.12);
+}
+
+.fw-form-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.fw-form-help {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.fw-form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #475569;
+  margin: 18px 0;
+  cursor: pointer;
+}
+
+.fw-form-check input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--fw-accent);
+  width: 16px;
+  height: 16px;
+}
+
+.fw-form-honeypot {
+  display: none !important;
+}
+
+/* Form Notices */
+.fw-form-notice {
+  padding: 16px 20px;
+  border-radius: var(--fw-radius);
+  margin-bottom: 24px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.fw-form-notice-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.fw-form-notice-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.fw-form-notice ul {
+  margin: 8px 0 0 20px;
+  padding: 0;
 }
 
 /* ========================================================
