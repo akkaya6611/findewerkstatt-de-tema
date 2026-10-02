@@ -35,9 +35,9 @@
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="fw-logo" title="FindeWerkstatt.de — Finde Deine Werkstatt in Sekunden">
                 <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.png' ); ?>" 
                      alt="FindeWerkstatt.de — Finde Deine Werkstatt in Sekunden" 
-                     class="fw-logo-img" 
-                     width="220" 
-                     height="45">
+                     class="fw-logo-img fw-logo-image" 
+                     width="250" 
+                     height="52">
             </a>
 
             <nav class="fw-nav">

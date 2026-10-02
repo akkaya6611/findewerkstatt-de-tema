@@ -3,8 +3,8 @@
  * FindeWerkstatt.de — Deutschland Geodaten & Kfz-Kategorien
  * 
  * 1. 16 Deutsche Bundesländer (ISO 3166-2:DE)
- * 2. Top 100 Deutsche Großstädte mit GPS-Koordinaten
- * 3. 11 Fachkategorien für den deutschen Kfz-Markt
+ * 2. Auswahl deutscher Großstädte mit GPS-Koordinaten
+ * 3. Fachkategorien für den deutschen Kfz-Markt
  * 4. Automarken für Werkstatt-Spezialisierungen
  * 
  * @package FindeWerkstatt
@@ -42,7 +42,7 @@ class FindeWerkstatt_German_Data {
     }
 
     /**
-     * Top 100 Deutsche Städte mit Bundesland-Zuordnung und GPS-Koordinaten
+     * Ausgewählte deutsche Städte mit Bundesland-Zuordnung und GPS-Koordinaten
      */
     public static function get_top_cities() {
         return array(
@@ -90,7 +90,7 @@ class FindeWerkstatt_German_Data {
             'potsdam'          => array( 'name' => 'Potsdam',              'land' => 'brandenburg',           'lat' => 52.3906, 'lng' => 13.0645, 'pop' => 185000 ),
             'saarbruecken'     => array( 'name' => 'Saarbrücken',          'land' => 'saarland',              'lat' => 49.2402, 'lng' => 6.9969,  'pop' => 180000 ),
             'hamm'             => array( 'name' => 'Hamm',                 'land' => 'nordrhein-westfalen', 'lat' => 51.6812, 'lng' => 7.8188,  'pop' => 180000 ),
-            'ludwigshafen'     => array( 'name' => 'Ludwigshafen',         'land' => 'rheinland-pfalz',       'lat' => 49.4811, 'lng' => 8.4464,  'pop' => 170000 ),
+            'ludwigshafen-am-rhein' => array( 'name' => 'Ludwigshafen am Rhein', 'land' => 'rheinland-pfalz',     'lat' => 49.4811, 'lng' => 8.4464,  'pop' => 170000 ),
             'muelheim'         => array( 'name' => 'Mülheim an der Ruhr',  'land' => 'nordrhein-westfalen', 'lat' => 51.4272, 'lng' => 6.8829,  'pop' => 170000 ),
             'oldenburg'        => array( 'name' => 'Oldenburg',            'land' => 'niedersachsen',       'lat' => 53.1435, 'lng' => 8.2146,  'pop' => 170000 ),
             'osnabrueck'       => array( 'name' => 'Osnabrück',            'land' => 'niedersachsen',       'lat' => 52.2799, 'lng' => 8.0472,  'pop' => 165000 ),
@@ -118,13 +118,18 @@ class FindeWerkstatt_German_Data {
     }
 
     /**
-     * 11 Offizielle Deutsche Fachbereiche & Dienstleistungen
+     * Werkstattkategorien und Dienstleistungen
      */
     public static function get_categories() {
         return array(
+            'kfz-werkstatt' => array(
+                'name'  => 'Kfz-Werkstatt',
+                'desc'  => 'Kfz-Werkstätten und Autoreparaturbetriebe mit Angaben zu Standort und Kontakt. Leistungen und Termine erfragen Sie direkt beim Betrieb.',
+                'icon'  => 'wrench-screwdriver',
+            ),
             'freie-werkstatt' => array(
                 'name'  => 'Freie Kfz-Werkstatt',
-                'desc'  => 'Herstellerunabhängige Meisterbetriebe für Inspektion nach Herstellervorgaben, Wartung und Reparaturen aller Fabrikate.',
+                'desc'  => 'Herstellerunabhängige Werkstätten für Inspektion nach Herstellervorgaben, Wartung und Reparaturen verschiedener Fabrikate.',
                 'icon'  => 'wrench',
             ),
             'tuev-hu-au' => array(
@@ -133,8 +138,8 @@ class FindeWerkstatt_German_Data {
                 'icon'  => 'shield-check',
             ),
             'abschleppdienst-pannenhilfe' => array(
-                'name'  => '24h Abschleppdienst & Pannenhilfe',
-                'desc'  => 'Rund um die Uhr Soforthilfe bei Pannen, Unfällen und Fahrzeugtransporten in ganz Deutschland.',
+                'name'  => 'Abschleppdienst & Pannenhilfe',
+                'desc'  => 'Abschleppdienste, Pannenhilfe und Fahrzeugtransporte. Einsatzgebiet, Erreichbarkeit und Verfügbarkeit klären Sie direkt mit dem Betrieb.',
                 'icon'  => 'truck',
             ),
             'autoglas-scheibenreparatur' => array(

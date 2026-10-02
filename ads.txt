@@ -1,2 +1,3 @@
-# Google AdSense ads.txt - Ototamircibul.com.tr
-google.com, pub-7207931778635058, DIRECT, f08c47fec0942fa0
+# FindeWerkstatt.de
+# Derzeit ist kein Werbeanbieter im Theme eingerichtet.
+# Autorisierte Publisher-Einträge erst nach Einrichtung des Anbieters ergänzen.

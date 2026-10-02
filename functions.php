@@ -2,10 +2,10 @@
 /**
  * FindeWerkstatt.de — Haupt-Themenfunktionen & Bootstrap
  * 
- * Saubere, modulare Architektur für Deutschlands führendes Kfz-Werkstattportal.
+ * Modulare Funktionen für das deutsche Kfz-Werkstattverzeichnis.
  * 
  * @package FindeWerkstatt
- * @version 2.0.0
+ * @version 3.2.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,17 +13,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // 1. Modulare Bibliotheken laden
+require_once get_template_directory() . '/inc/multilingual.php';
+require_once get_template_directory() . '/inc/workshop-languages.php';
 require_once get_template_directory() . '/inc/german-data.php';
 require_once get_template_directory() . '/inc/germany-geo-hierarchy.php';
 require_once get_template_directory() . '/inc/post-types-taxonomies.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/schema-seo.php';
 require_once get_template_directory() . '/inc/helpers.php';
+require_once get_template_directory() . '/inc/site-settings.php';
+require_once get_template_directory() . '/inc/branding.php';
 require_once get_template_directory() . '/inc/sample-data-seeder.php';
 require_once get_template_directory() . '/inc/programmatic-seo.php';
+require_once get_template_directory() . '/inc/city-indexing.php';
+require_once get_template_directory() . '/inc/city-migration.php';
+require_once get_template_directory() . '/inc/theme-upgrade.php';
+require_once get_template_directory() . '/inc/site-assets.php';
+require_once get_template_directory() . '/inc/form-handlers.php';
+require_once get_template_directory() . '/inc/membership.php';
+require_once get_template_directory() . '/inc/membership-workshops.php';
+require_once get_template_directory() . '/inc/membership-admin.php';
+require_once get_template_directory() . '/inc/member-dashboard.php';
+require_once get_template_directory() . '/inc/city-directory.php';
+require_once get_template_directory() . '/inc/location-search.php';
+require_once get_template_directory() . '/inc/location-picker.php';
+require_once get_template_directory() . '/inc/location-copy.php';
+require_once get_template_directory() . '/inc/location-content.php';
+require_once get_template_directory() . '/inc/import-compat.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
+    load_theme_textdomain( 'findewerkstatt', get_template_directory() . '/languages' );
     add_theme_support( 'title-tag' );
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ) );
@@ -37,20 +57,19 @@ add_action( 'after_setup_theme', 'findewerkstatt_setup' );
 
 // 3. Styles & Scripts einbinden
 function findewerkstatt_scripts() {
-    $ver = wp_get_theme()->get( 'Version' ) ?: '2.0.0';
+    $ver = wp_get_theme()->get( 'Version' ) ?: '3.2.0';
 
     wp_enqueue_style( 'findewerkstatt-main', get_stylesheet_uri(), array(), $ver );
+    wp_enqueue_style( 'findewerkstatt-header', get_template_directory_uri() . '/assets/css/header.css', array( 'findewerkstatt-main' ), $ver );
+    if ( is_page( array( 'pakete', 'mein-konto', 'werkstatt-anmelden' ) ) || is_page_template( array( 'page-pakete.php', 'page-mein-konto.php', 'page-werkstatt-anmelden.php' ) ) ) {
+        wp_enqueue_style( 'findewerkstatt-membership', get_template_directory_uri() . '/assets/css/membership.css', array( 'findewerkstatt-main', 'findewerkstatt-header' ), $ver );
+    }
 
     // Theme JS
     if ( file_exists( get_template_directory() . '/assets/js/main.js' ) ) {
         wp_enqueue_script( 'findewerkstatt-main', get_template_directory_uri() . '/assets/js/main.js', array(), $ver, true );
     }
 
-    // Localize Script für AJAX
-    wp_localize_script( 'findewerkstatt-main', 'fwData', array(
-        'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-        'nonce'   => wp_create_nonce( 'fw_ajax_nonce' ),
-    ) );
 }
 add_action( 'wp_enqueue_scripts', 'findewerkstatt_scripts' );
 
@@ -72,12 +91,14 @@ function findewerkstatt_archive_query_filter( $query ) {
 
         $tax_query = array( 'relation' => 'AND' );
 
-        // Filter nach Bundesland / Stadt
-        if ( ! empty( $_GET['fw_city'] ) ) {
+        $query->set( 'post_type', 'mechanic' );
+        // Validate both stages, retaining support for previous fw_city-only links.
+        $location_filter = findewerkstatt_resolve_location_filter( $_GET );
+        if ( '' !== $location_filter['location'] ) {
             $tax_query[] = array(
                 'taxonomy' => 'mechanic_city',
                 'field'    => 'slug',
-                'terms'    => sanitize_text_field( $_GET['fw_city'] ),
+                'terms'    => $location_filter['location'],
                 'include_children' => true,
             );
         }
@@ -87,7 +108,7 @@ function findewerkstatt_archive_query_filter( $query ) {
             $tax_query[] = array(
                 'taxonomy' => 'service_type',
                 'field'    => 'slug',
-                'terms'    => sanitize_text_field( $_GET['fw_service'] ),
+                'terms'    => is_string( $_GET['fw_service'] ) ? sanitize_title( wp_unslash( $_GET['fw_service'] ) ) : '__invalid__',
             );
         }
 
@@ -96,13 +117,21 @@ function findewerkstatt_archive_query_filter( $query ) {
             $tax_query[] = array(
                 'taxonomy' => 'car_brand',
                 'field'    => 'slug',
-                'terms'    => sanitize_text_field( $_GET['fw_brand'] ),
+                'terms'    => is_string( $_GET['fw_brand'] ) ? sanitize_title( wp_unslash( $_GET['fw_brand'] ) ) : '__invalid__',
             );
         }
 
         if ( count( $tax_query ) > 1 ) {
+            $existing = $query->get( 'tax_query' );
+            if ( ! empty( $existing ) ) { $tax_query[] = $existing; }
             $query->set( 'tax_query', $tax_query );
         }
     }
 }
 add_action( 'pre_get_posts', 'findewerkstatt_archive_query_filter' );
+
+add_filter( 'document_title_parts', function ( $parts ) {
+    if ( is_404() ) { $parts['title'] = 'Seite nicht gefunden'; }
+    elseif ( is_search() ) { $parts['title'] = 'Werkstattsuche: ' . get_search_query( false ); }
+    return $parts;
+}, 30 );

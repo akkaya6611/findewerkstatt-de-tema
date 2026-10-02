@@ -1,72 +1,68 @@
 <?php
 /**
  * Template Name: Kontakt
- * 
- * FindeWerkstatt.de — Kontakt & Support
- * 
  * @package FindeWerkstatt
- * @version 2.0.0
  */
-
+$notice = findewerkstatt_get_form_notice( 'contact' );
+$values = $notice['values'] ?? array();
+$received = ! empty( $notice['received'] );
+$site_details = findewerkstatt_get_site_details();
+$support_email = sanitize_email( $site_details['email'] );
 get_header();
-
-$sent = false;
-if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['fw_kontakt_nonce'] ) && wp_verify_nonce( $_POST['fw_kontakt_nonce'], 'fw_send_kontakt' ) ) {
-    $sent = true;
-}
 ?>
-
-<div class="fw-container" style="padding-top:40px; padding-bottom:70px;">
-    <div style="max-width:760px; margin:0 auto;">
-        <div style="text-align:center; margin-bottom:36px;">
-            <h1 style="font-size:32px; font-weight:900; color:var(--fw-primary); margin-bottom:12px;">
-                Kontakt & Support
-            </h1>
-            <p style="font-size:16px; color:var(--fw-text-muted);">
-                Haben Sie Fragen zur Nutzung, zu Ihrem Werkstatt-Eintrag oder Feedback? Wir helfen Ihnen gerne weiter.
-            </p>
+<main id="main-content" class="fw-container fw-form-page">
+    <div class="fw-form-wrap">
+        <div class="fw-section-header">
+            <div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Wir helfen Ihnen weiter' ) ); ?></div>
+            <h1 id="fw-contact-heading">Kontakt &amp; Support</h1>
+            <p><?php echo esc_html( findewerkstatt_t( 'Sie haben eine Frage zum Verzeichnis, möchten einen Eintrag korrigieren oder uns Feedback geben? Schreiben Sie uns. Für einen Werkstatttermin kontaktieren Sie bitte den jeweiligen Betrieb direkt.' ) ); ?></p>
+            <?php if ( is_email( $support_email ) ) : ?><p><?php echo esc_html( findewerkstatt_t( 'Sie erreichen uns auch per E-Mail:' ) ); ?> <a href="<?php echo esc_url( 'mailto:' . $support_email ); ?>"><?php echo esc_html( $support_email ); ?></a>.</p><?php endif; ?>
         </div>
-
-        <?php if ( $sent ) : ?>
-            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:var(--fw-radius); padding:24px; text-align:center;">
-                <div style="font-size:36px; margin-bottom:10px;">✉️</div>
-                <h3 style="color:#065f46; font-size:18px; margin-bottom:8px;">Nachricht erfolgreich gesendet!</h3>
-                <p style="color:#047857; font-size:14.5px;">
-                    Vielen Dank für Ihre Kontaktaufnahme. Unser Team wird sich schnellstmöglich bei Ihnen melden.
-                </p>
+        <?php if ( $notice ) : ?>
+            <div id="fw-contact-notice" class="fw-form-notice fw-form-notice-<?php echo esc_attr( $notice['type'] ); ?>" tabindex="-1" role="<?php echo $notice['type'] === 'error' ? 'alert' : 'status'; ?>">
+                <p><?php echo esc_html( $notice['message'] ); ?></p>
+                <?php if ( ! empty( $notice['errors'] ) ) : ?>
+                    <ul><?php foreach ( $notice['errors'] as $error ) : ?><li><?php echo esc_html( $error ); ?></li><?php endforeach; ?></ul>
+                <?php endif; ?>
             </div>
-        <?php else : ?>
-            <form method="post" class="fw-box">
+        <?php endif; ?>
+        <?php if ( ! $received ) : ?>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="fw-box fw-form" aria-labelledby="fw-contact-heading" aria-describedby="fw-contact-required-help"><?php findewerkstatt_language_field(); ?>
+                <input type="hidden" name="action" value="fw_contact">
+                <input type="hidden" name="fw_submission_token" value="<?php echo esc_attr( findewerkstatt_form_submission_token( 'contact' ) ); ?>">
                 <?php wp_nonce_field( 'fw_send_kontakt', 'fw_kontakt_nonce' ); ?>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Ihr Name *</label>
-                        <input type="text" name="name" required placeholder="Vor- und Nachname" style="width:100%; padding:10px; border:1px solid var(--fw-border); border-radius:8px;">
+                <div class="fw-form-honeypot" aria-hidden="true">
+                    <label for="fw-contact-company-website"><?php echo esc_html( findewerkstatt_t( 'Dieses Feld bitte leer lassen' ) ); ?></label>
+                    <input id="fw-contact-company-website" type="text" name="company_website" tabindex="-1" autocomplete="off">
+                </div>
+                <p id="fw-contact-required-help" class="fw-form-help"><?php echo esc_html( findewerkstatt_t( 'Felder mit * sind erforderlich.' ) ); ?></p>
+                <div class="fw-form-grid">
+                    <div class="fw-form-field">
+                        <label for="fw-contact-name"><?php echo esc_html( findewerkstatt_t( 'Ihr Name *' ) ); ?></label>
+                        <input id="fw-contact-name" type="text" name="name" required maxlength="160" autocomplete="name" value="<?php echo esc_attr( $values['name'] ?? '' ); ?>" placeholder="<?php echo esc_attr( findewerkstatt_t( 'Vor- und Nachname' ) ); ?>">
                     </div>
-                    <div>
-                        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Ihre E-Mail-Adresse *</label>
-                        <input type="email" name="email" required placeholder="name@beispiel.de" style="width:100%; padding:10px; border:1px solid var(--fw-border); border-radius:8px;">
+                    <div class="fw-form-field">
+                        <label for="fw-contact-email">Ihre E-Mail-Adresse *</label>
+                        <input id="fw-contact-email" type="email" name="email" required maxlength="254" autocomplete="email" value="<?php echo esc_attr( $values['email'] ?? '' ); ?>" placeholder="name@beispiel.de">
                     </div>
                 </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Betreff</label>
-                    <input type="text" name="subject" placeholder="Worum geht es?" style="width:100%; padding:10px; border:1px solid var(--fw-border); border-radius:8px;">
+                <div class="fw-form-field">
+                    <label for="fw-contact-subject"><?php echo esc_html( findewerkstatt_t( 'Betreff' ) ); ?></label>
+                    <input id="fw-contact-subject" type="text" name="subject" maxlength="160" value="<?php echo esc_attr( $values['subject'] ?? '' ); ?>" placeholder="<?php echo esc_attr( findewerkstatt_t( 'Worum geht es?' ) ); ?>">
                 </div>
-
-                <div style="margin-bottom:20px;">
-                    <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Ihre Nachricht *</label>
-                    <textarea name="message" rows="5" required placeholder="Wie können wir Ihnen helfen?" style="width:100%; padding:10px; border:1px solid var(--fw-border); border-radius:8px; font-family:inherit;"></textarea>
+                <div class="fw-form-field">
+                    <label for="fw-contact-message"><?php echo esc_html( findewerkstatt_t( 'Ihre Nachricht *' ) ); ?></label>
+                    <textarea id="fw-contact-message" name="message" rows="6" required maxlength="5000" placeholder="<?php echo esc_attr( findewerkstatt_t( 'Wie können wir Ihnen helfen? Bei Fragen zu einem Eintrag nennen Sie bitte den Betrieb und den Ort.' ) ); ?>"><?php echo esc_textarea( $values['message'] ?? '' ); ?></textarea>
                 </div>
-
-                <button type="submit" class="fw-btn fw-btn-primary fw-btn-lg fw-btn-block">
-                    Nachricht absenden
-                </button>
+                <label class="fw-form-check" for="fw-contact-privacy">
+                    <input id="fw-contact-privacy" type="checkbox" name="privacy" value="1" required <?php checked( ! empty( $values['privacy'] ) ); ?>>
+                    <span><?php echo esc_html( findewerkstatt_t( 'Ich habe die' ) ); ?> <a href="<?php echo esc_url( findewerkstatt_page_url( 'datenschutz' ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( findewerkstatt_t( 'Datenschutzerklärung' ) ); ?><span class="screen-reader-text"> <?php echo esc_html( findewerkstatt_t( '(öffnet einen neuen Tab)' ) ); ?></span></a> <?php echo esc_html( findewerkstatt_t( 'gelesen. Meine Angaben werden zur Bearbeitung dieser Anfrage verwendet. *' ) ); ?></span>
+                </label>
+                <button type="submit" class="fw-btn fw-btn-primary fw-btn-lg fw-btn-block"><?php echo esc_html( findewerkstatt_t( 'Nachricht senden' ) ); ?></button>
             </form>
+        <?php else : ?>
+            <div class="fw-form-success-actions"><a class="fw-btn fw-btn-outline" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Zur Startseite' ) ); ?></a></div>
         <?php endif; ?>
     </div>
-</div>
-
-<?php
-get_footer();
+</main>
+<?php get_footer(); ?>

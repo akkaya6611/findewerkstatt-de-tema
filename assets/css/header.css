@@ -1,0 +1,293 @@
+/** Single-row brand navigation and account entry points. */
+.fw-header > .fw-container {
+  max-width: 1660px;
+  padding-inline: 32px;
+}
+.fw-header .fw-header-main {
+  height: 96px;
+  gap: 24px;
+}
+.fw-header .fw-logo {
+  max-width: 280px;
+  min-width: 0;
+}
+.fw-header .fw-logo-image {
+  width: auto;
+  max-width: 260px;
+  height: 52px;
+  max-height: 56px;
+  object-fit: contain;
+  display: block;
+}
+.fw-header .fw-nav {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(14px, 1.2vw, 24px);
+  min-width: 0;
+}
+.fw-header .fw-nav a {
+  color: #101d35;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 12px 0;
+}
+.fw-header .fw-nav a:hover,
+.fw-header .fw-nav a[aria-current] {
+  color: #be4800;
+}
+.fw-header .fw-nav a[aria-current]::after {
+  background: #f97316;
+}
+.fw-header .fw-header-cta {
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.fw-account-menu { position: relative; flex: 0 0 auto; }
+.fw-account-menu-toggle { display: inline-flex; align-items: center; gap: 9px; min-height: 48px; padding: 5px 10px 5px 5px; border: 1px solid #e2e8f0; border-radius: 12px; color: #203b70; background: #fff; cursor: pointer; list-style: none; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.fw-account-menu-toggle::-webkit-details-marker { display: none; }
+.fw-account-menu-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #eef3fb; color: #203b70; }
+.fw-account-menu-toggle:hover, .fw-account-menu[open] .fw-account-menu-toggle { border-color: #fed7aa; background: #fff8f1; color: #a44105; }
+.fw-account-menu-toggle:hover .fw-account-menu-avatar, .fw-account-menu[open] .fw-account-menu-avatar { background: #ffeddb; color: #b44300; }
+.fw-account-menu-chevron { transition: transform .15s ease; }
+.fw-account-menu[open] .fw-account-menu-chevron { transform: rotate(180deg); }
+.fw-account-dropdown { position: absolute; right: 0; top: calc(100% + 12px); width: 260px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 14px; background: #fff; box-shadow: 0 16px 40px rgb(15 23 42 / 14%); z-index: 120; }
+.fw-account-menu:not([open]) > .fw-account-dropdown { display: none; }
+.fw-account-dropdown-title { margin: 0 0 6px; padding: 8px 10px 12px; border-bottom: 1px solid #e2e8f0; color: #526582; font-size: 12px; line-height: 1.5; }
+.fw-account-dropdown a, .fw-account-dropdown button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 10px; border: 0; border-radius: 9px; background: transparent; color: #203b70; font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1.5; text-align: left; cursor: pointer; }
+.fw-account-dropdown svg { flex: 0 0 auto; }
+.fw-account-dropdown a:hover, .fw-account-dropdown button:hover { background: #f1f5fb; color: #203b70; }
+.fw-account-dropdown .fw-account-dropdown-signup { background: #fff3e7; color: #a44105; margin-top: 4px; }
+.fw-account-dropdown .fw-account-dropdown-signup:hover { background: #ffe9d3; }
+.fw-account-dropdown-logout { border-top: 1px solid #e2e8f0; padding-top: 6px; margin-top: 6px; }
+.fw-account-dropdown-logout button { color: #a9283b; }
+.fw-account-menu summary:focus-visible, .fw-account-dropdown a:focus-visible, .fw-account-dropdown button:focus-visible { outline: 3px solid #0284c7; outline-offset: 3px; }
+.fw-header .fw-header-add {
+  display: inline-flex;
+  background: #cf4a00;
+  color: #fff;
+  padding: 12px 18px;
+  min-height: 48px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgb(249 115 22 / 22%);
+}
+.fw-header .fw-header-add:hover {
+  background: #b83e00;
+  color: #fff;
+}
+.fw-header .fw-header-add > span,
+.fw-header .fw-nav-register > span {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 500;
+}
+.fw-header .fw-menu-toggle,
+.fw-header .fw-nav-account {
+  display: none;
+}
+
+@media (min-width: 1900px) {
+  .fw-header .fw-logo {
+    max-width: 300px;
+  }
+  .fw-header .fw-logo-image {
+    width: 300px;
+    max-height: 68px;
+  }
+  .fw-header .fw-nav a,
+  .fw-header .fw-account-menu-toggle,
+  .fw-header .fw-header-add {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1280px) {
+  .fw-header > .fw-container {
+    padding-inline: 20px;
+  }
+  .fw-header .fw-header-main {
+    height: 84px;
+    gap: 14px;
+  }
+  .fw-header .fw-logo {
+    max-width: 210px;
+  }
+  .fw-header .fw-logo-image {
+    width: 210px;
+    max-height: 52px;
+  }
+  .fw-header .fw-nav {
+    gap: clamp(8px, 1vw, 16px);
+  }
+  .fw-header .fw-nav a {
+    font-size: 13.5px;
+    padding: 10px 0;
+  }
+  .fw-header .fw-header-cta {
+    gap: 8px;
+  }
+  .fw-header .fw-account-menu-toggle {
+    padding: 5px 8px 5px 5px;
+    font-size: 13px;
+  }
+  .fw-header .fw-header-add {
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 991px) {
+  .fw-header .fw-header-main {
+    height: 80px;
+  }
+  .fw-header .fw-logo-image {
+    width: 240px;
+    max-height: 54px;
+  }
+  .fw-header .fw-nav {
+    display: none;
+  }
+  .fw-header .fw-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    color: #203b70;
+    flex: 0 0 auto;
+  }
+  .fw-header .fw-menu-toggle:hover,
+  .fw-header .fw-menu-toggle[aria-expanded="true"] {
+    background: #fff7ed;
+    border-color: #fed7aa;
+  }
+  .fw-header .fw-nav.is-open {
+    display: flex;
+    position: absolute;
+    inset: 100% 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 16px 32px 22px;
+    max-height: calc(100vh - 130px);
+    max-height: calc(100dvh - 130px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 14px 24px rgb(15 23 42 / 8%);
+  }
+  .fw-header .fw-nav > a {
+    padding: 10px 12px;
+    border-radius: 7px;
+  }
+  .fw-header .fw-nav > a:hover,
+  .fw-header .fw-nav > a[aria-current] {
+    background: #fff7ed;
+  }
+  .fw-header .fw-nav a[aria-current]::after {
+    display: none;
+  }
+  .fw-header .fw-nav-account {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+    padding: 12px 0 0;
+    margin-top: 10px;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fw-header .fw-nav-account a {
+    padding: 10px 12px;
+  }
+  .fw-header .fw-nav-account .fw-nav-register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #fff;
+    background: #cf4a00;
+    border-radius: 9px;
+    margin-top: 8px;
+    min-height: 46px;
+    font-weight: 700;
+  }
+  .fw-header .fw-nav-account .fw-nav-register:hover {
+    color: #fff;
+    background: #b83e00;
+  }
+}
+
+@media (max-width: 767px) {
+  .fw-header > .fw-container {
+    padding-inline: 20px;
+  }
+  .fw-header .fw-header-main {
+    height: 76px;
+    gap: 12px;
+  }
+  .fw-header .fw-logo {
+    flex-shrink: 1;
+    max-width: calc(100vw - 206px);
+  }
+  .fw-header .fw-logo-image {
+    width: 252px;
+    max-height: 56px;
+  }
+  .fw-header .fw-header-cta > .fw-header-add {
+    display: none;
+  }
+  .fw-header .fw-header-cta {
+    gap: 8px;
+  }
+  .fw-header .fw-account-menu-toggle { padding: 0; width: 42px; height: 42px; min-height: 42px; justify-content: center; border-radius: 10px; }
+  .fw-header .fw-account-menu-avatar { width: 100%; height: 100%; background: transparent; }
+  .fw-header .fw-account-menu-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .fw-header .fw-account-menu-chevron { display: none; }
+  .fw-header .fw-menu-toggle { width: 42px; height: 42px; }
+  .fw-header .fw-account-dropdown { width: min(260px, calc(100vw - 48px)); right: -50px; }
+  .fw-header .fw-nav-account { display: flex; }
+  .fw-header .fw-nav-account .fw-nav-register {
+    display: inline-flex;
+  }
+  .fw-header .fw-nav.is-open {
+    padding-inline: 20px;
+    max-height: calc(100vh - 122px);
+    max-height: calc(100dvh - 122px);
+  }
+}
+
+/* Native locale switcher remains usable without JavaScript. */
+.fw-language-menu { position: relative; flex: 0 0 auto; }
+.fw-language-menu-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 48px; padding: 10px; color: #203b70; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; list-style: none; }
+.fw-language-menu-toggle::-webkit-details-marker { display: none; }
+.fw-language-menu[open] > summary, .fw-language-menu-toggle:hover { background: #fff8f1; border-color: #fed7aa; color: #a44105; }
+.fw-language-dropdown { position: absolute; right: 0; top: calc(100% + 12px); width: 184px; padding: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 16px 40px rgb(15 23 42 / 14%); z-index: 121; }
+.fw-language-menu:not([open]) > .fw-language-dropdown { display: none; }
+.fw-language-dropdown a { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 8px; color: #203b70; font-size: 14px; }
+.fw-language-dropdown a:hover { background: #f1f5fb; }
+.fw-language-dropdown a[aria-current] { background: #fff3e7; color: #a44105; font-weight: 700; }
+.fw-language-menu-toggle:focus-visible, .fw-language-dropdown a:focus-visible { outline: 3px solid #0284c7; outline-offset: 3px; }
+.fw-card-languages { margin: 12px 0; color: var(--fw-text-muted); font-size: 13px; line-height: 1.6; }
+@media (max-width: 767px) {
+  .fw-language-menu-toggle { width: 42px; height: 42px; min-height: 42px; padding: 0; }
+  .fw-language-menu-code { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .fw-language-dropdown { right: -100px; }
+}
+
+/* The additional spoken-language filter shares the existing directory controls. */
+.fw-filter-form { grid-template-columns: repeat(5, minmax(0, 1fr)) auto; }
+.fw-search-inline { display: grid; grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr) auto; align-items: end; }
+.fw-search-inline .fw-form-field { margin-bottom: 0; }
+@media (max-width: 1120px) { .fw-filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .fw-filter-form, .fw-search-inline { grid-template-columns: minmax(0, 1fr); } }

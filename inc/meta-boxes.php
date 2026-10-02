@@ -49,14 +49,15 @@ class FindeWerkstatt_Meta_Boxes {
         $phone       = get_post_meta( $post->ID, '_mechanic_phone', true );
         $whatsapp    = get_post_meta( $post->ID, '_mechanic_whatsapp', true );
         $email       = get_post_meta( $post->ID, '_mechanic_email', true );
+        $email_public = get_post_meta( $post->ID, '_mechanic_email_public', true );
         $website     = get_post_meta( $post->ID, '_mechanic_website', true );
         $address     = get_post_meta( $post->ID, '_mechanic_address', true );
         $plz         = get_post_meta( $post->ID, '_mechanic_plz', true );
         $lat         = get_post_meta( $post->ID, '_mechanic_latitude', true );
         $lng         = get_post_meta( $post->ID, '_mechanic_longitude', true );
-        $hours_week  = get_post_meta( $post->ID, '_mechanic_hours_weekday', true ) ?: '08:00 - 18:00 Uhr';
-        $hours_sat   = get_post_meta( $post->ID, '_mechanic_hours_saturday', true ) ?: '09:00 - 13:00 Uhr';
-        $hours_sun   = get_post_meta( $post->ID, '_mechanic_hours_sunday', true ) ?: 'Geschlossen';
+        $hours_week  = get_post_meta( $post->ID, '_mechanic_hours_weekday', true );
+        $hours_sat   = get_post_meta( $post->ID, '_mechanic_hours_saturday', true );
+        $hours_sun   = get_post_meta( $post->ID, '_mechanic_hours_sunday', true );
         ?>
         <style>
             .fw-admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -72,12 +73,17 @@ class FindeWerkstatt_Meta_Boxes {
                 <input type="text" id="fw_phone" name="_mechanic_phone" value="<?php echo esc_attr( $phone ); ?>">
             </div>
             <div class="fw-admin-field">
-                <label for="fw_whatsapp">WhatsApp-Nummer (ohne + oder Leerzeichen, z. B. 491701234567):</label>
+                <label for="fw_whatsapp">WhatsApp-Nummer (z. B. +49 170 1234567):</label>
                 <input type="text" id="fw_whatsapp" name="_mechanic_whatsapp" value="<?php echo esc_attr( $whatsapp ); ?>">
             </div>
             <div class="fw-admin-field">
                 <label for="fw_email">E-Mail-Adresse:</label>
                 <input type="email" id="fw_email" name="_mechanic_email" value="<?php echo esc_attr( $email ); ?>">
+                <input type="hidden" name="fw_email_public_box_present" value="1">
+                <label for="fw_email_public" style="display:flex; align-items:flex-start; gap:8px; margin-top:8px; font-weight:400;">
+                    <input type="checkbox" id="fw_email_public" name="_mechanic_email_public" value="yes" <?php checked( $email_public, 'yes' ); ?> style="width:auto; margin-top:2px;">
+                    <span>Diese E-Mail-Adresse öffentlich anzeigen (nur mit Zustimmung des Betriebs).</span>
+                </label>
             </div>
             <div class="fw-admin-field">
                 <label for="fw_website">Offizielle Website (inkl. https://):</label>
@@ -106,6 +112,7 @@ class FindeWerkstatt_Meta_Boxes {
         </div>
 
         <div class="fw-admin-section-title">⏰ Öffnungszeiten</div>
+        <p>Leer lassen, wenn unbekannt. Beispiele: 08:00–18:00, 08:00–12:00 / 13:00–18:00, 22:00–02:00, 24h oder Geschlossen.</p>
         <div class="fw-admin-grid">
             <div class="fw-admin-field">
                 <label for="fw_hours_week">Montag – Freitag:</label>
@@ -116,7 +123,7 @@ class FindeWerkstatt_Meta_Boxes {
                 <input type="text" id="fw_hours_sat" name="_mechanic_hours_saturday" value="<?php echo esc_attr( $hours_sat ); ?>">
             </div>
             <div class="fw-admin-field">
-                <label for="fw_hours_sun">Sonntag / Feiertage:</label>
+                <label for="fw_hours_sun">Sonntag:</label>
                 <input type="text" id="fw_hours_sun" name="_mechanic_hours_sunday" value="<?php echo esc_attr( $hours_sun ); ?>">
             </div>
         </div>
@@ -127,9 +134,11 @@ class FindeWerkstatt_Meta_Boxes {
         $is_verified = get_post_meta( $post->ID, '_mechanic_is_verified', true );
         $is_master   = get_post_meta( $post->ID, '_mechanic_is_master', true );
         $is_24h      = get_post_meta( $post->ID, '_mechanic_emergency_24h', true );
-        $rating_avg  = get_post_meta( $post->ID, '_mechanic_rating_avg', true ) ?: '4.9';
-        $rating_cnt  = get_post_meta( $post->ID, '_mechanic_rating_count', true ) ?: '18';
+        $rating      = findewerkstatt_get_rating( $post->ID );
+        $rating_avg  = null === $rating['rating'] ? '' : $rating['rating'];
+        $rating_cnt  = $rating['count'];
         ?>
+        <input type="hidden" name="fw_badges_box_present" value="1">
         <div style="margin-bottom:12px;">
             <label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer;">
                 <input type="checkbox" name="_mechanic_is_verified" value="yes" <?php checked( $is_verified, 'yes' ); ?>>
@@ -152,22 +161,22 @@ class FindeWerkstatt_Meta_Boxes {
         <hr style="border:0; border-top:1px solid #e2e8f0; margin:14px 0;">
 
         <div style="margin-bottom:10px;">
-            <label for="fw_rating_avg" style="font-size:12px; font-weight:600; display:block;">Durchschnittsbewertung (z. B. 4.9):</label>
+            <label for="fw_rating_avg" style="font-size:12px; font-weight:600; display:block;">Nachgewiesene Durchschnittsbewertung (0 bis 5; leer = unbekannt):</label>
             <input type="text" id="fw_rating_avg" name="_mechanic_rating_avg" value="<?php echo esc_attr( $rating_avg ); ?>" style="width:100%; padding:4px 8px;">
         </div>
         <div>
             <label for="fw_rating_cnt" style="font-size:12px; font-weight:600; display:block;">Anzahl Bewertungen (z. B. 24):</label>
-            <input type="number" id="fw_rating_cnt" name="_mechanic_rating_count" value="<?php echo esc_attr( $rating_cnt ); ?>" style="width:100%; padding:4px 8px;">
+            <input type="number" min="0" step="1" id="fw_rating_cnt" name="_mechanic_rating_count" value="<?php echo esc_attr( $rating_cnt ); ?>" style="width:100%; padding:4px 8px;">
         </div>
         <?php
     }
 
     public static function save_meta_boxes( $post_id ) {
-        if ( ! isset( $_POST['fw_mechanic_nonce'] ) || ! wp_verify_nonce( $_POST['fw_mechanic_nonce'], 'fw_save_mechanic_meta' ) ) {
+        if ( ! isset( $_POST['fw_mechanic_nonce'] ) || ! is_string( $_POST['fw_mechanic_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['fw_mechanic_nonce'] ), 'fw_save_mechanic_meta' ) ) {
             return;
         }
 
-        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) || 'mechanic' !== get_post_type( $post_id ) ) {
             return;
         }
 
@@ -177,10 +186,10 @@ class FindeWerkstatt_Meta_Boxes {
 
         // Text Fields
         $fields = array(
-            '_mechanic_phone'          => 'sanitize_text_field',
-            '_mechanic_whatsapp'       => 'sanitize_text_field',
+            '_mechanic_phone'          => 'findewerkstatt_normalize_phone',
+            '_mechanic_whatsapp'       => 'findewerkstatt_normalize_phone',
             '_mechanic_email'          => 'sanitize_email',
-            '_mechanic_website'        => 'esc_url_raw',
+            '_mechanic_website'        => 'findewerkstatt_get_website_url',
             '_mechanic_address'        => 'sanitize_text_field',
             '_mechanic_plz'            => 'sanitize_text_field',
             '_mechanic_latitude'       => 'sanitize_text_field',
@@ -188,21 +197,42 @@ class FindeWerkstatt_Meta_Boxes {
             '_mechanic_hours_weekday'  => 'sanitize_text_field',
             '_mechanic_hours_saturday' => 'sanitize_text_field',
             '_mechanic_hours_sunday'   => 'sanitize_text_field',
-            '_mechanic_rating_avg'     => 'sanitize_text_field',
-            '_mechanic_rating_count'   => 'absint',
+            '_mechanic_rating_avg'     => 'findewerkstatt_normalize_rating',
+            '_mechanic_rating_count'   => 'findewerkstatt_normalize_review_count',
         );
 
         foreach ( $fields as $field => $sanitizer ) {
-            if ( isset( $_POST[ $field ] ) ) {
-                update_post_meta( $post_id, $field, call_user_func( $sanitizer, $_POST[ $field ] ) );
+            if ( isset( $_POST[ $field ] ) && is_scalar( $_POST[ $field ] ) ) {
+                $raw   = wp_unslash( $_POST[ $field ] );
+                $value = call_user_func( $sanitizer, $raw );
+                if ( in_array( $field, array( '_mechanic_latitude', '_mechanic_longitude' ), true ) ) {
+                    $coordinate = str_replace( ',', '.', trim( $raw ) );
+                    $limit      = '_mechanic_latitude' === $field ? 90 : 180;
+                    $value      = is_numeric( $coordinate ) && is_finite( (float) $coordinate ) && abs( (float) $coordinate ) <= $limit ? (float) $coordinate : '';
+                } elseif ( '_mechanic_plz' === $field && '' !== $value && ! preg_match( '/^[0-9]{5}$/', $value ) ) {
+                    $value = '';
+                }
+                if ( null === $value || '' === $value ) {
+                    delete_post_meta( $post_id, $field );
+                } else {
+                    update_post_meta( $post_id, $field, is_string( $value ) ? wp_slash( $value ) : $value );
+                }
             }
         }
 
+        // Zustimmung bleibt bei Teilanfragen ohne diese Formulargruppe erhalten.
+        if ( isset( $_POST['fw_email_public_box_present'] ) && '1' === $_POST['fw_email_public_box_present'] ) {
+            $email_public = isset( $_POST['_mechanic_email_public'] ) && 'yes' === $_POST['_mechanic_email_public'] ? 'yes' : 'no';
+            update_post_meta( $post_id, '_mechanic_email_public', $email_public );
+        }
+
         // Checkboxes
-        $checkboxes = array( '_mechanic_is_verified', '_mechanic_is_master', '_mechanic_emergency_24h' );
-        foreach ( $checkboxes as $cb ) {
-            $val = isset( $_POST[ $cb ] ) && $_POST[ $cb ] === 'yes' ? 'yes' : 'no';
-            update_post_meta( $post_id, $cb, $val );
+        if ( isset( $_POST['fw_badges_box_present'] ) && '1' === $_POST['fw_badges_box_present'] ) {
+            $checkboxes = array( '_mechanic_is_verified', '_mechanic_is_master', '_mechanic_emergency_24h' );
+            foreach ( $checkboxes as $cb ) {
+                $val = isset( $_POST[ $cb ] ) && $_POST[ $cb ] === 'yes' ? 'yes' : 'no';
+                update_post_meta( $post_id, $cb, $val );
+            }
         }
     }
 }

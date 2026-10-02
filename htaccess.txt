@@ -1,139 +1,35 @@
-# ================================================================
-# OtoTamirciBul — Performans & Güvenlik (.htaccess v1.2.4)
-# ================================================================
+# FindeWerkstatt.de — optionale Apache-Vorlage
+# Vor der Übernahme die vorhandene Serverkonfiguration sichern und prüfen.
+# Für Nginx werden diese Regeln nicht verwendet.
 
-# ----------------------------------------------------------------
-# 1. GZIP / Deflate Sıkıştırma (Metin tabanlı dosyaları ~70% küçültür)
-# ----------------------------------------------------------------
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
-    AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript
-    AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
-    AddOutputFilterByType DEFLATE application/x-font application/x-font-truetype
-    AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-opentype
-    AddOutputFilterByType DEFLATE application/x-font-otf font/ttf font/otf font/opentype
-    AddOutputFilterByType DEFLATE image/svg+xml image/x-icon
-    # Zaten sıkıştırılmış dosyaları tekrar sıkıştırma
+    AddOutputFilterByType DEFLATE application/javascript application/json application/xml image/svg+xml
     SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|avif|woff2?|zip|gz)$ no-gzip dont-vary
 </IfModule>
 
-# Brotli (LiteSpeed/Apache mod_brotli varsa)
-<IfModule mod_brotli.c>
-    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
-    AddOutputFilterByType BROTLI_COMPRESS text/javascript application/javascript
-    AddOutputFilterByType BROTLI_COMPRESS application/json application/xml
-</IfModule>
-
-# ----------------------------------------------------------------
-# 2. Browser Cache (Tarayıcı Önbelleği) — Lighthouse "Uzun Önbellek" talebi
-# ----------------------------------------------------------------
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresDefault                          "access plus 1 month"
-
-    # HTML — kısa (sayfa değişiyor olabilir)
-    ExpiresByType text/html                 "access plus 0 seconds"
-
-    # CSS & JavaScript — 1 yıl (ver string ile cache-bust edilir)
-    ExpiresByType text/css                  "access plus 1 year"
-    ExpiresByType application/javascript    "access plus 1 year"
-    ExpiresByType text/javascript           "access plus 1 year"
-
-    # Görseller — 1 yıl
-    ExpiresByType image/jpeg                "access plus 1 year"
-    ExpiresByType image/png                 "access plus 1 year"
-    ExpiresByType image/gif                 "access plus 1 year"
-    ExpiresByType image/webp                "access plus 1 year"
-    ExpiresByType image/avif                "access plus 1 year"
-    ExpiresByType image/svg+xml             "access plus 1 year"
-    ExpiresByType image/x-icon              "access plus 1 year"
-
-    # Fontlar — 1 yıl
-    ExpiresByType font/ttf                  "access plus 1 year"
-    ExpiresByType font/otf                  "access plus 1 year"
-    ExpiresByType font/woff                 "access plus 1 year"
-    ExpiresByType font/woff2                "access plus 1 year"
-    ExpiresByType application/x-font-woff   "access plus 1 year"
-
-    # Diğer
-    ExpiresByType application/pdf           "access plus 1 month"
-    ExpiresByType application/json          "access plus 0 seconds"
-    ExpiresByType application/xml           "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 month"
 </IfModule>
 
-# Cache-Control başlıkları (mod_expires ile çakışmaz, destekler)
 <IfModule mod_headers.c>
-    # Statik dosyalar immutable (değişmez, version string var)
-    <FilesMatch "\.(css|js|woff2?|ttf|otf|svg|webp|avif|png|jpg|jpeg|gif|ico)$">
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </FilesMatch>
-    # HTML sayfalar — cache'e alınmasın, hep taze gelsin
-    <FilesMatch "\.(html|php)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-    </FilesMatch>
-</IfModule>
-
-# ----------------------------------------------------------------
-# 3. ETag'leri Kaldır (mod_expires yeterli, ETag çakışma yaratabilir)
-# ----------------------------------------------------------------
-<IfModule mod_headers.c>
-    Header unset ETag
-</IfModule>
-FileETag None
-
-# ----------------------------------------------------------------
-# 4. Keep-Alive (TCP bağlantısını yeniden kullan, RTT azalır)
-# ----------------------------------------------------------------
-<IfModule mod_headers.c>
-    Header set Connection keep-alive
-</IfModule>
-
-# ----------------------------------------------------------------
-# 5. WebP Otomatik Servis (webp dosyası varsa jpg/png yerine sun)
-# ----------------------------------------------------------------
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    # Tarayıcı WebP destekliyorsa ve .webp dosyası varsa otomatik sun
-    RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_FILENAME} \.(jpe?g|png)$
-    RewriteCond %{REQUEST_FILENAME}\.webp -f
-    RewriteRule ^ %{REQUEST_URI}.webp [L,T=image/webp]
-</IfModule>
-<IfModule mod_headers.c>
-    <FilesMatch "\.(jpe?g|png)$">
-        Header append Vary Accept
-    </FilesMatch>
-</IfModule>
-
-# ----------------------------------------------------------------
-# 6. Temel Güvenlik Başlıkları
-# ----------------------------------------------------------------
-<IfModule mod_headers.c>
-    # Clickjacking koruması
     Header always set X-Frame-Options "SAMEORIGIN"
-    # XSS koruması
     Header always set X-Content-Type-Options "nosniff"
-    # Referrer bilgisini sınırla
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    # HSTS (HTTPS zorla — sadece canlı HTTPS sunucuda etkin olsun)
-    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    # Nur auf einer dauerhaft per HTTPS erreichbaren Website aktivieren:
+    # Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
-# ----------------------------------------------------------------
-# 7. Gereksiz Sunucu Bilgisini Gizle
-# ----------------------------------------------------------------
-ServerSignature Off
-
-# ----------------------------------------------------------------
-# 8. Dizin Listelemeyi Kapat
-# ----------------------------------------------------------------
-Options -Indexes
-
+# WordPress erzeugt diesen Abschnitt bei Bedarf selbst.
+# Bei Installation in einem Unterverzeichnis RewriteBase entsprechend anpassen.
 # BEGIN WordPress
-# The directives (lines) between "BEGIN WordPress" and "END WordPress" are
-# dynamically generated, and should only be modified via WordPress filters.
-# Any changes to the directives between these markers will be overwritten.
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -143,5 +39,4 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
-
 # END WordPress

@@ -25,7 +25,6 @@ class FindeWerkstatt_CPT_Taxonomies {
         add_action( 'init', array( __CLASS__, 'add_rewrite_rules' ), 10 );
         add_action( 'after_switch_theme', array( __CLASS__, 'check_and_seed' ) );
         add_action( 'admin_init', array( __CLASS__, 'check_and_seed' ) );
-        add_filter( 'post_type_link', array( __CLASS__, 'custom_mechanic_permalink' ), 10, 2 );
     }
 
     public static function register_post_type_and_taxonomies() {
@@ -139,17 +138,13 @@ class FindeWerkstatt_CPT_Taxonomies {
         add_rewrite_rule( '^werkstatt/([^/]+)/?$', 'index.php?mechanic=$matches[1]', 'top' );
     }
 
-    public static function custom_mechanic_permalink( $post_link, $post ) {
-        if ( is_object( $post ) && $post->post_type === 'mechanic' ) {
-            return home_url( user_trailingslashit( 'werkstatt/' . $post->post_name ) );
-        }
-        return $post_link;
-    }
-
     /**
      * Automatische Initialisierung von Bundesländern, Städten, Kategorien und Marken
      */
     public static function check_and_seed() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
         if ( get_option( self::OPTION_SEEDED ) ) {
             return;
         }
@@ -204,7 +199,7 @@ class FindeWerkstatt_CPT_Taxonomies {
                 $inserted = wp_insert_term( $city['name'], 'mechanic_city', array(
                     'slug'        => $slug,
                     'parent'      => $parent_id,
-                    'description' => "Geprüfte Kfz-Werkstätten, 24h Pannenhilfe und Autoreparatur in {$city['name']}.",
+                    'description' => "Verzeichnis für Kfz-Werkstätten, Pannenhilfe und Autoreparatur in {$city['name']}.",
                 ) );
                 if ( ! is_wp_error( $inserted ) ) {
                     update_term_meta( (int) $inserted['term_id'], '_geo_lat', $city['lat'] );

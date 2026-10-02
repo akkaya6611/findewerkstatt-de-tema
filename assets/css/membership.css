@@ -1,0 +1,229 @@
+/* Member pages and their forms use the site's existing brand and local fonts. */
+.fw-member { padding-bottom: 64px; }
+.fw-member-intro { max-width: 800px; margin: 8px auto 32px; text-align: center; }
+.fw-member-intro h1 { margin: 8px 0 16px; color: var(--fw-primary); font-size: clamp(28px, 4vw, 40px); line-height: 1.2; overflow-wrap: anywhere; }
+.fw-member-intro p { color: #475569; font-size: 17px; line-height: 1.7; }
+.fw-member-plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0 0 32px; }
+.fw-member-plan { display: flex; flex-direction: column; min-width: 0; padding: 28px; border: 1px solid var(--fw-border); border-radius: var(--fw-radius-lg); background: #fff; box-shadow: var(--fw-shadow); }
+.fw-member-plan-current { border: 2px solid var(--fw-primary); padding: 27px; }
+.fw-member-plan-label { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #edf2fb; color: var(--fw-primary); font-size: 12px; font-weight: 700; }
+.fw-member-plan h2 { color: var(--fw-primary); margin: 14px 0 6px; font-size: 26px; line-height: 1.3; overflow-wrap: anywhere; }
+.fw-member-plan-price { font-size: 30px; line-height: 1.3; font-weight: 800; margin-bottom: 12px; }
+.fw-member-plan-description { color: #475569; margin-bottom: 20px; }
+.fw-member-plan-features { list-style: none; border-top: 1px solid var(--fw-border); padding: 16px 0 24px; flex: 1; }
+.fw-member-plan-features li { position: relative; padding-left: 22px; margin-bottom: 12px; color: #334155; font-size: 14px; }
+.fw-member-plan-features li::before { content: "✓"; position: absolute; left: 0; color: #047857; font-weight: 800; }
+.fw-member-plan-features li:last-child { margin-bottom: 0; }
+.fw-member-explainer { max-width: 1000px; margin: 0 auto; }
+.fw-member-explainer ol { padding-left: 22px; margin-bottom: 20px; }
+.fw-member-explainer li { margin-bottom: 12px; }
+.fw-member-explainer p { color: #475569; margin-bottom: 16px; }
+.fw-member-legal-links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.fw-member-legal-links a, .fw-member-form-link a { color: #0369a1; text-decoration: underline; text-underline-offset: 3px; }
+.fw-member-auth-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
+.fw-member-auth-panel { min-width: 0; margin-bottom: 0; }
+.fw-member-panel-intro { color: #475569; margin: 0 0 22px; }
+.fw-member .fw-form-grid { gap: 16px; }
+.fw-member .fw-form-grid .fw-form-field { margin-bottom: 0; }
+.fw-member-form-link { margin-top: 18px; font-size: 14px; }
+.fw-member-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; gap: 24px; margin-bottom: 24px; padding: 24px 28px; border: 1px solid var(--fw-border); border-radius: var(--fw-radius-lg); background: #fff; }
+.fw-member-summary-label { color: #475569; font-size: 13px; }
+.fw-member-summary-name { color: var(--fw-primary); font-weight: 800; font-size: 22px; overflow-wrap: anywhere; }
+.fw-member-summary-email, .fw-member-account-email { overflow-wrap: anywhere; }
+.fw-member-section-heading { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.fw-member-section-heading h2 { flex: 1; min-width: 200px; margin-bottom: 0; }
+.fw-member-workshop-list { list-style: none; }
+.fw-member-workshop-list > li { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--fw-border); }
+.fw-member-workshop-list > li:first-child { padding-top: 0; }
+.fw-member-workshop-list > li > div { min-width: 0; }
+.fw-member-workshop-list h3 { color: var(--fw-primary); font-size: 17px; margin-bottom: 6px; overflow-wrap: anywhere; }
+.fw-member-status { display: inline-block; font-size: 12px; color: #334155; background: #f1f5f9; border-radius: 999px; padding: 3px 10px; }
+.fw-member-workshop-actions { display: flex; flex-wrap: wrap; gap: 8px; flex-shrink: 0; }
+.fw-member-quota-note { padding: 12px 16px; border-radius: 8px; color: #92400e; background: #fffbeb; }
+.fw-member .fw-form-notice a, .fw-member-quota-note a { text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.fw-member-dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: start; }
+.fw-member-account-email { margin-bottom: 20px; font-size: 14px; }
+.fw-member [id] { scroll-margin-top: 150px; }
+.fw-member input:focus-visible, .fw-member select:focus-visible, .fw-member textarea:focus-visible, .fw-member a:focus-visible, .fw-member button:focus-visible { outline: 3px solid #0284c7; outline-offset: 3px; }
+
+/* A compact member workspace with actual counts and moderated business controls. */
+.fw-account-dashboard { padding-top: 36px; }
+.fw-dashboard-icon { flex: 0 0 auto; vertical-align: middle; }
+.fw-dashboard-hero { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 25px 28px; margin-bottom: 24px; border-radius: 18px; color: #fff; background: linear-gradient(110deg, #152c52, #111d33); box-shadow: 0 10px 25px #14294418; }
+.fw-dashboard-identity { display: flex; align-items: center; gap: 18px; min-width: 0; }
+.fw-dashboard-identity > div { min-width: 0; }
+.fw-dashboard-avatar { display: grid; place-items: center; flex: 0 0 58px; width: 58px; height: 58px; font-size: 25px; font-weight: 800; border: 3px solid #ffffff22; border-radius: 16px; background: #dc5008; }
+.fw-dashboard-hero h1 { margin: 0 0 4px; color: #cbd7eb; font-size: 12px; font-weight: 500; line-height: 1.4; }
+.fw-dashboard-name-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.fw-dashboard-name { margin: 0; font-size: 23px; font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }
+.fw-dashboard-plan-badge { display: inline-block; padding: 4px 10px; border-radius: 7px; background: #eef3ff; color: #294270; font-size: 12px; font-weight: 700; }
+.fw-dashboard-hero .fw-dashboard-plan-badge { color: #baf4d9; background: #0e745b55; border: 1px solid #52c09b55; }
+.fw-dashboard-identity-details { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 5px; color: #b5c5df; font-size: 12px; overflow-wrap: anywhere; }
+.fw-dashboard-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
+.fw-member .fw-dashboard-add { display: inline-flex; gap: 7px; background: #d94b00; color: #fff; border-color: #d94b00; box-shadow: 0 4px 12px #e653081c; }
+.fw-member .fw-dashboard-add:hover { background: #b83b00; border-color: #b83b00; color: #fff; }
+.fw-dashboard-logout { gap: 6px; color: #ffb5a5; border: 1px solid #ae645b55; background: #a954491a; }
+.fw-dashboard-logout:hover { color: #fff; background: #a9544933; }
+.fw-dashboard-layout { display: grid; grid-template-columns: 228px minmax(0, 1fr); gap: 24px; align-items: start; }
+.fw-dashboard-sidebar { position: sticky; top: 112px; padding: 14px 10px; border: 1px solid var(--fw-border); background: #fff; border-radius: 16px; }
+body.admin-bar .fw-dashboard-sidebar { top: 144px; }
+.fw-dashboard-menu-label { color: #60728c; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; margin: 16px 12px 10px; }
+.fw-dashboard-menu-link { display: flex; align-items: center; gap: 9px; padding: 12px 11px; border-radius: 9px; color: #43546e; font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.fw-dashboard-menu-link > span:not(.fw-dashboard-menu-count) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.fw-dashboard-menu-link:hover { color: #173566; background: #f1f5fc; }
+.fw-dashboard-menu-link.is-active { color: #fff; background: #172c4b; box-shadow: 0 3px 8px #1d335521; }
+.fw-dashboard-menu-link.is-active > .fw-dashboard-icon { color: #ff984d; }
+.fw-dashboard-menu-count { flex: 0 0 auto; padding: 1px 6px; font-size: 10px; border-radius: 5px; color: #31558c; background: #edf3fe; }
+.fw-dashboard-menu-link.is-active .fw-dashboard-menu-count { color: #fff; background: #ffffff24; }
+.fw-dashboard-upgrade { margin: 24px 6px 5px; padding: 15px; border: 1px solid #ffcfad; border-radius: 11px; background: #fff8f2; }
+.fw-dashboard-upgrade-icon { color: #d94b00; }
+.fw-dashboard-upgrade h2 { color: #9c3905; font-size: 13px; margin: 8px 0 6px; }
+.fw-dashboard-upgrade p { color: #944114; font-size: 11px; line-height: 1.65; }
+.fw-dashboard-upgrade a { display: flex; align-items: center; gap: 6px; margin-top: 12px; color: #a63c00; font-size: 12px; font-weight: 700; }
+.fw-dashboard-upgrade a .fw-dashboard-icon { width: 15px; height: 15px; }
+.fw-dashboard-content { min-width: 0; }
+.fw-dashboard-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
+.fw-dashboard-stat { display: flex; align-items: center; gap: 10px; padding: 17px 13px; min-width: 0; background: #fff; border: 1px solid var(--fw-border); border-radius: 13px; }
+.fw-dashboard-stat > div { min-width: 0; }
+.fw-dashboard-stat-icon { display: grid; place-items: center; flex: 0 0 36px; height: 36px; border-radius: 10px; }
+.fw-dashboard-stat-orange { background: #fff4e8; color: #b74400; }
+.fw-dashboard-stat-green { background: #e7faf1; color: #047857; }
+.fw-dashboard-stat-blue { background: #edf6ff; color: #066dba; }
+.fw-dashboard-stat-purple { background: #f4efff; color: #7c3aed; }
+.fw-dashboard-stat-label { display: block; color: #526582; font-size: 10px; margin-bottom: 3px; }
+.fw-dashboard-stat strong { display: block; color: #173562; font-size: 17px; line-height: 1.25; overflow-wrap: anywhere; }
+.fw-dashboard-section-top { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 18px 20px; border: 1px solid var(--fw-border); border-radius: 13px; background: #fff; margin-bottom: 14px; }
+.fw-dashboard-section-top h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 3px; font-size: 17px; color: #173562; }
+.fw-dashboard-section-top h2 .fw-dashboard-icon { color: #d94b00; }
+.fw-dashboard-section-top p { color: #64748b; font-size: 11px; margin: 0; }
+.fw-dashboard-section-top .fw-btn { font-size: 12px; padding: 10px 12px; }
+.fw-dashboard-filter { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin: 0 0 14px; padding: 16px 18px; background: #fff; border: 1px solid var(--fw-border); border-radius: 12px; }
+.fw-dashboard-filter > div:first-of-type { flex: 1 1 230px; min-width: 0; }
+.fw-dashboard-filter > div { flex: 1 1 150px; min-width: 0; }
+.fw-dashboard-filter label { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: #526582; }
+.fw-dashboard-filter input, .fw-dashboard-filter select { width: 100%; min-width: 0; padding: 9px 11px; border: 1px solid #dbe4f0; border-radius: 7px; background: #f8fafd; color: #334155; font: inherit; font-size: 12px; line-height: 1.5; }
+.fw-dashboard-filter .fw-btn { font-size: 12px; min-height: 38px; }
+.fw-dashboard-filter > a { padding: 9px 0; font-size: 12px; color: #0369a1; text-decoration: underline; }
+.fw-dashboard-business-list { display: grid; gap: 13px; list-style: none; padding: 0; }
+.fw-dashboard-business-card { display: flex; align-items: center; gap: 15px; padding: 20px; background: #fff; border: 1px solid var(--fw-border); border-radius: 14px; }
+.fw-dashboard-business-photo { position: relative; flex: 0 0 85px; width: 85px; height: 85px; overflow: hidden; border-radius: 11px; background: #e9eef5; }
+.fw-registration-packages { scroll-margin-top: 120px; }
+.fw-registration-package-intro { margin: 0 0 16px; color: #526582; }
+.fw-registration-package-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+.fw-registration-package { position: relative; cursor: pointer; min-width: 0; }
+.fw-registration-package input { position: absolute; top: 24px; left: 18px; width: 18px; height: 18px; margin: 0; accent-color: #e75205; }
+.fw-registration-package-card { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 20px 18px 20px 46px; border: 2px solid #dce4ef; border-radius: 14px; background: #fff; transition: border-color .15s, background .15s; }
+.fw-registration-package-name { font-size: 18px; color: #173562; overflow-wrap: anywhere; }
+.fw-registration-package-price { color: #d44904; font-size: 21px; font-weight: 700; }
+.fw-registration-package-limit { font-size: 13px; color: #43546e; }
+.fw-registration-package-status { align-self: flex-start; font-size: 11px; color: #526582; background: #edf2fa; border-radius: 6px; padding: 4px 7px; }
+.fw-registration-package input:checked + .fw-registration-package-card { border-color: #e75205; background: #fff8f1; }
+.fw-registration-package input:focus-visible + .fw-registration-package-card { outline: 3px solid #173562; outline-offset: 3px; }
+.fw-registration-package-disabled { cursor: default; }
+.fw-registration-package-disabled .fw-registration-package-card { background: #f5f7fa; border-color: #e2e8f0; }
+.fw-registration-package-unavailable { font-size: 11px; color: #526582; }
+@media (max-width: 700px) {
+    .fw-registration-package-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .fw-registration-package-card { gap: 7px; padding-block: 17px; }
+    .fw-registration-package input { top: 21px; }
+}
+.fw-dashboard-business-photo img { width: 100%; height: 100%; object-fit: cover; }
+.fw-dashboard-business-photo span { position: absolute; left: 0; right: 0; bottom: 0; padding: 2px 3px; background: #14263ccd; color: #fff; font-size: 9px; text-align: center; }
+.fw-dashboard-business-info { flex: 1; min-width: 0; }
+.fw-dashboard-business-info h3 { margin: 0 0 5px; color: #173562; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.fw-dashboard-business-info .fw-workshop-location { gap: 5px; margin: 0 0 5px; }
+.fw-dashboard-business-info .fw-workshop-location-item { font-size: 10px; padding: 3px 6px; }
+.fw-dashboard-business-info .fw-workshop-location-label { font-size: 9px; }
+.fw-dashboard-business-date { color: #64748b; margin: 0 0 7px; font-size: 10px; }
+.fw-dashboard-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 6px; font-size: 10px; background: #eff3f9; color: #43546e; border: 1px solid #dae2ef; }
+.fw-dashboard-status .fw-dashboard-icon { width: 12px; height: 12px; }
+.fw-dashboard-status-publish { color: #047857; background: #edfff6; border-color: #b4ead1; }
+.fw-dashboard-status-pending { color: #92400e; background: #fff9e9; border-color: #f5dfad; }
+.fw-dashboard-business-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 7px; flex: 0 1 400px; }
+.fw-dashboard-business-actions .fw-btn { display: flex; gap: 5px; font-size: 11px; padding: 8px 10px; min-height: 34px; }
+.fw-dashboard-business-actions .fw-dashboard-icon { width: 13px; height: 13px; }
+.fw-dashboard-admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.fw-dashboard-admin-card { border: 1px solid var(--fw-border); border-radius: 12px; padding: 18px; }
+.fw-dashboard-admin-card h3 { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+.fw-dashboard-admin-card p { color: #475569; font-size: 13px; margin: 10px 0 16px; }
+.fw-dashboard-edit { background: #fff8f0; color: #a44105; border: 1px solid #ffd4b2; }
+.fw-dashboard-edit:hover { background: #ffedda; color: #823503; }
+.fw-dashboard-pause { color: #b42339; border: 1px solid #f5c6d0; background: #fff5f6; }
+.fw-dashboard-pause:hover { background: #ffe9ed; color: #8a1c2d; }
+.fw-dashboard-review-note { margin: 16px 0 0; padding: 0 2px; font-size: 12px; color: #526582; line-height: 1.7; }
+.fw-dashboard-review-note a { color: #0369a1; text-decoration: underline; }
+.fw-dashboard-empty { padding: 38px 25px; text-align: center; background: #fff; border: 1px dashed #ccd8e7; border-radius: 14px; }
+.fw-dashboard-empty > span { display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; color: #d94b00; background: #fff1e7; margin-bottom: 16px; }
+.fw-dashboard-empty > span .fw-dashboard-icon { width: 26px; height: 26px; }
+.fw-dashboard-empty h3 { font-size: 19px; color: #173562; margin: 0 0 10px; }
+.fw-dashboard-empty p { color: #526582; font-size: 14px; max-width: 430px; margin: 0 auto 22px; }
+.fw-dashboard-empty > div { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.fw-dashboard-package-current { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px; margin-bottom: 20px; border-radius: 10px; background: #f3f6fc; }
+.fw-dashboard-package-current p { margin: 0; font-size: 13px; color: #43546e; }
+.fw-dashboard-help-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; font-size: 13px; }
+.fw-dashboard-help-links a { color: #0369a1; text-decoration: underline; }
+@media (max-width: 1080px) {
+    .fw-dashboard-hero-actions { flex-direction: column; }
+    .fw-dashboard-layout { grid-template-columns: 205px minmax(0, 1fr); gap: 18px; }
+    .fw-dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fw-dashboard-business-actions { flex-basis: 160px; }
+}
+@media (max-width: 800px) {
+    .fw-dashboard-layout { grid-template-columns: minmax(0, 1fr); }
+    .fw-dashboard-sidebar { position: static; }
+    .fw-dashboard-sidebar nav { display: flex; flex-wrap: wrap; gap: 5px; }
+    .fw-dashboard-menu-label { flex-basis: 100%; margin: 12px 10px 6px; }
+    .fw-dashboard-menu-link { flex: 1 1 190px; margin: 0; }
+    .fw-dashboard-upgrade { display: none; }
+    .fw-dashboard-business-actions { flex-basis: 190px; }
+}
+@media (max-width: 580px) {
+    .fw-dashboard-admin-grid { grid-template-columns: 1fr; }
+    .fw-account-dashboard { padding-top: 22px; }
+    .fw-dashboard-hero { padding: 21px 18px; flex-direction: column; align-items: stretch; gap: 20px; border-radius: 14px; }
+    .fw-dashboard-identity { gap: 12px; }
+    .fw-dashboard-avatar { width: 48px; height: 48px; flex-basis: 48px; font-size: 21px; border-radius: 12px; }
+    .fw-dashboard-name { font-size: 19px; }
+    .fw-dashboard-hero-actions { flex-direction: row; flex-wrap: wrap; }
+    .fw-dashboard-hero-actions > a, .fw-dashboard-hero-actions > form { flex: 1 1 120px; }
+    .fw-dashboard-hero-actions .fw-btn { width: 100%; font-size: 12px; padding: 10px 8px; }
+    .fw-dashboard-sidebar { padding: 10px; }
+    .fw-dashboard-menu-link { flex-basis: 130px; padding: 10px 8px; font-size: 11px; }
+    .fw-dashboard-menu-link .fw-dashboard-icon { width: 17px; height: 17px; }
+    .fw-dashboard-stats { gap: 10px; }
+    .fw-dashboard-stat { padding: 14px 10px; gap: 8px; }
+    .fw-dashboard-stat-icon { flex-basis: 30px; height: 30px; }
+    .fw-dashboard-stat strong { font-size: 15px; }
+    .fw-dashboard-section-top { align-items: flex-start; padding: 15px; flex-wrap: wrap; }
+    .fw-dashboard-section-top h2 { font-size: 15px; }
+    .fw-dashboard-section-top > a { width: 100%; }
+    .fw-dashboard-business-card { flex-wrap: wrap; gap: 12px; padding: 16px; }
+    .fw-dashboard-business-photo { width: 64px; height: 72px; flex-basis: 64px; }
+    .fw-dashboard-business-info h3 { font-size: 14px; }
+    .fw-dashboard-business-actions { flex-basis: 100%; justify-content: flex-start; padding-top: 10px; border-top: 1px solid var(--fw-border); }
+    .fw-dashboard-business-actions .fw-btn { padding: 9px 10px; }
+    .fw-dashboard-filter { padding: 14px; }
+    .fw-dashboard-filter > div { flex-basis: 100%; }
+    .fw-dashboard-empty { padding: 30px 16px; }
+    .fw-dashboard-content .fw-box { padding: 20px; }
+}
+@media (max-width: 900px) {
+    .fw-member-plan-grid { gap: 16px; }
+    .fw-member-plan { padding: 20px; }
+    .fw-member-plan-current { padding: 19px; }
+    .fw-member-auth-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+    .fw-member .fw-form-grid { grid-template-columns: 1fr; }
+    .fw-member-workshop-list > li { align-items: flex-start; flex-direction: column; gap: 12px; }
+}
+@media (max-width: 680px) {
+    .fw-member-intro { margin-bottom: 24px; }
+    .fw-member-intro p { font-size: 15px; }
+    .fw-member-plan-grid, .fw-member-auth-grid, .fw-member-dashboard-grid, .fw-member-summary { grid-template-columns: 1fr; gap: 20px; }
+    .fw-member-summary { padding: 20px; }
+    .fw-member-summary form { justify-self: start; }
+    .fw-member-workshop-actions { width: 100%; }
+    .fw-member-workshop-actions .fw-btn { flex: 1 1 130px; }
+    .fw-member-section-heading h2 { min-width: 0; flex-basis: 100%; }
+    .fw-member-plan-description { margin-bottom: 18px; }
+    .fw-member [id] { scroll-margin-top: 120px; }
+}

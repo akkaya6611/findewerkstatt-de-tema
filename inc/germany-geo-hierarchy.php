@@ -1,11 +1,11 @@
 <?php
 /**
- * FindeWerkstatt.de — Deutschland Vollständige Geodaten-Hierarchie
+ * FindeWerkstatt.de — Regionale Geodaten-Hierarchie für Deutschland
  * 
  * Beinhaltet:
  * 1. 16 Deutsche Bundesländer
- * 2. Alle 401 Landkreise & kreisfreie Städte (100% der Bundesrepublik)
- * 3. Wichtige Gemeinden, Stadtteile und Ballungsräume
+ * 2. Auswahl von Landkreisen, Städten, Regionen und Stadtbezirken
+ * 3. Keine vollständige amtliche Verwaltungsgliederung
  * 
  * @package FindeWerkstatt
  * @version 2.1.0
@@ -42,7 +42,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
     }
 
     /**
-     * Ausführliche Landkreise & kreisfreie Städte (401 Bezirke) gruppiert nach Bundesland
+     * Landkreise, Städte, Regionen und Bezirke, gruppiert nach Bundesland
      */
     public static function get_districts_by_state( $state_slug = '' ) {
         static $districts = null;
@@ -59,7 +59,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'lk-freudenstadt' => 'Landkreis Freudenstadt', 'lk-goeppingen' => 'Landkreis Göppingen', 'lk-heidenheim' => 'Landkreis Heidenheim',
                     'lk-heilbronn' => 'Landkreis Heilbronn', 'lk-hohenlohekreis' => 'Hohenlohekreis', 'lk-karlsruhe' => 'Landkreis Karlsruhe',
                     'lk-konstanz' => 'Landkreis Konstanz', 'lk-loerrach' => 'Landkreis Lörrach', 'lk-ludwigsburg' => 'Landkreis Ludwigsburg',
-                    'lk-main-tauber' => 'Main-Tauber-Kreis', 'lk-neckar-odenwald' => 'Neckar-Odenwald-Kreis', 'lk-ortenaubreis' => 'Ortenaukreis',
+                    'lk-main-tauber' => 'Main-Tauber-Kreis', 'lk-neckar-odenwald' => 'Neckar-Odenwald-Kreis', 'lk-ortenaukreis' => 'Ortenaukreis',
                     'lk-ostalbkreis' => 'Ostalbkreis', 'lk-rastatt' => 'Landkreis Rastatt', 'lk-ravensburg' => 'Landkreis Ravensburg',
                     'lk-rems-murr' => 'Rems-Murr-Kreis', 'lk-reutlingen' => 'Landkreis Reutlingen', 'lk-rhein-neckar' => 'Rhein-Neckar-Kreis',
                     'lk-rottweil' => 'Landkreis Rottweil', 'lk-schwaebisch-hall' => 'Landkreis Schwäbisch Hall', 'lk-schwarzwald-baar' => 'Schwarzwald-Baar-Kreis',
@@ -67,7 +67,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'lk-waldshut' => 'Landkreis Waldshut', 'lk-zollernalbkreis' => 'Zollernalbkreis'
                 ),
 
-                // 2. Bayern (96)
+                // 2. Bayern
                 'bayern' => array(
                     'muenchen' => 'München (Stadt)', 'nuernberg' => 'Nürnberg (Stadt)', 'augsburg' => 'Augsburg (Stadt)',
                     'regensburg' => 'Regensburg (Stadt)', 'ingolstadt' => 'Ingolstadt (Stadt)', 'wuerzburg' => 'Würzburg (Stadt)',
@@ -75,7 +75,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'bayreuth' => 'Bayreuth (Stadt)', 'aschaffenburg' => 'Aschaffenburg (Stadt)', 'landshut' => 'Landshut (Stadt)',
                     'kempten' => 'Kempten (Allgäu)', 'rosenheim' => 'Rosenheim (Stadt)', 'schweinfurt' => 'Schweinfurt (Stadt)',
                     'passau' => 'Passau (Stadt)', 'straubing' => 'Straubing (Stadt)', 'weiden' => 'Weiden in der Oberpfalz',
-                    'coburg' => 'Coburg (Stadt)', 'amberg' => 'Amberg (Stadt)', 'anbach' => 'Ansbach (Stadt)',
+                    'coburg' => 'Coburg (Stadt)', 'amberg' => 'Amberg (Stadt)', 'ansbach' => 'Ansbach (Stadt)',
                     'kaufbeuren' => 'Kaufbeuren (Stadt)', 'memmingen' => 'Memmingen (Stadt)', 'schwabach' => 'Schwabach (Stadt)',
                     'hof' => 'Hof (Stadt)', 'lk-aichach-friedberg' => 'Landkreis Aichach-Friedberg', 'lk-altoetting' => 'Landkreis Altötting',
                     'lk-amberg-sulzbach' => 'Landkreis Amberg-Sulzbach', 'lk-ansbach' => 'Landkreis Ansbach', 'lk-aschaffenburg' => 'Landkreis Aschaffenburg',
@@ -156,7 +156,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'lk-rostock' => 'Landkreis Rostock', 'lk-vorpommern-greifswald' => 'Vorpommern-Greifswald', 'lk-vorpommern-ruegen' => 'Vorpommern-Rügen'
                 ),
 
-                // 9. Niedersachsen (45)
+                // 9. Niedersachsen
                 'niedersachsen' => array(
                     'hannover-region' => 'Region Hannover', 'braunschweig' => 'Braunschweig (Stadt)', 'oldenburg-stadt' => 'Oldenburg (Stadt)',
                     'osnabrueck-stadt' => 'Osnabrück (Stadt)', 'wolfsburg' => 'Wolfsburg (Stadt)', 'goettingen-stadt' => 'Göttingen (Stadt)',
@@ -198,9 +198,9 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'lk-oberbergischer-kreis' => 'Oberbergischer Kreis', 'lk-paderborn' => 'Kreis Paderborn'
                 ),
 
-                // 11. Rheinland-Pfalz (36)
+                // 11. Rheinland-Pfalz
                 'rheinland-pfalz' => array(
-                    'mainz' => 'Mainz (Stadt)', 'ludwigshafen' => 'Ludwigshafen am Rhein', 'koblenz' => 'Koblenz (Stadt)',
+                    'mainz' => 'Mainz (Stadt)', 'ludwigshafen-am-rhein' => 'Ludwigshafen am Rhein', 'koblenz' => 'Koblenz (Stadt)',
                     'trier' => 'Trier (Stadt)', 'kaiserslautern-stadt' => 'Kaiserslautern (Stadt)', 'worms' => 'Worms (Stadt)',
                     'neuwied-stadt' => 'Neuwied (Stadt)', 'neustadt-weinstrasse' => 'Neustadt an der Weinstraße', 'speyer' => 'Speyer (Stadt)',
                     'frankenthal' => 'Frankenthal (Pfalz)', 'bad-kreuznach-stadt' => 'Bad Kreuznach (Stadt)', 'landau' => 'Landau in der Pfalz',
@@ -234,7 +234,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                 // 14. Sachsen-Anhalt (14)
                 'sachsen-anhalt' => array(
                     'halle-saale' => 'Halle (Saale)', 'magdeburg' => 'Magdeburg (Stadt)', 'dessau-rosslau' => 'Dessau-Roßlau',
-                    'lk-altmarkkreis-salzwedel' => 'Altmarkkreis Salzwedel', 'lk-anholt-bitterfeld' => 'Anhalt-Bitterfeld',
+                    'lk-altmarkkreis-salzwedel' => 'Altmarkkreis Salzwedel', 'lk-anhalt-bitterfeld' => 'Anhalt-Bitterfeld',
                     'lk-boerde' => 'Landkreis Börde', 'lk-burgenlandkreis' => 'Burgenlandkreis', 'lk-harz' => 'Landkreis Harz',
                     'lk-jerichower-land' => 'Jerichower Land', 'lk-mansfeld-suedharz' => 'Mansfeld-Südharz', 'lk-saalekreis' => 'Saalekreis',
                     'lk-salzlandkreis' => 'Salzlandkreis', 'lk-stendal' => 'Landkreis Stendal', 'lk-wittenberg' => 'Landkreis Wittenberg'
@@ -249,7 +249,7 @@ class FindeWerkstatt_Germany_Geo_Hierarchy {
                     'lk-segeberg' => 'Kreis Segeberg', 'lk-steinburg' => 'Kreis Steinburg', 'lk-stormarn' => 'Kreis Stormarn'
                 ),
 
-                // 16. Thüringen (22)
+                // 16. Thüringen
                 'thueringen' => array(
                     'erfurt' => 'Erfurt (Stadt)', 'jena' => 'Jena (Stadt)', 'gera' => 'Gera (Stadt)', 'weimar' => 'Weimar (Stadt)',
                     'suhl' => 'Suhl (Stadt)', 'eisenach' => 'Eisenach (Stadt)', 'lk-altenburger-land' => 'Altenburger Land',

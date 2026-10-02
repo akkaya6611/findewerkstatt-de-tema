@@ -1,267 +1,81 @@
 <?php
-/**
- * FindeWerkstatt.de — Startseite (Homepage)
- * 
- * @package FindeWerkstatt
- * @version 2.0.0
- */
-
+/** Germany-wide workshop directory homepage. */
 get_header();
-
-// Daten für Suchfilter laden
-$bundeslaender = FindeWerkstatt_German_Data::get_bundeslaender();
-$categories    = FindeWerkstatt_German_Data::get_categories();
-$brands        = FindeWerkstatt_German_Data::get_car_brands();
+$states = FindeWerkstatt_German_Data::get_bundeslaender();
+$services = FindeWerkstatt_German_Data::get_categories();
+$brands = FindeWerkstatt_German_Data::get_car_brands();
 ?>
-
-<!-- 1. HERO SEARCH SECTION -->
+<main id="main-content">
 <section class="fw-hero">
-    <div class="fw-container">
-        <div class="fw-hero-content">
-            <div class="fw-hero-badge">
-                <span>🛡️</span> Offizielles deutsches Kfz-Werkstattverzeichnis
+    <div class="fw-container"><div class="fw-hero-content">
+        <div class="fw-hero-intro">
+            <div class="fw-hero-copy">
+                <div class="fw-hero-badge"><?php echo esc_html( findewerkstatt_t( 'Kfz-Werkstätten und Autoservices in Deutschland' ) ); ?></div>
+                <h1><?php echo wp_kses( findewerkstatt_t( 'Die passende <span>Autowerkstatt</span> in Ihrer Nähe finden' ), array( 'span' => array() ) ); ?></h1>
+                <p><?php echo esc_html( findewerkstatt_t( 'Wählen Sie zuerst Ihr Bundesland, dann Ihre Stadt. Finden Sie passende Betriebe nach Leistung und Fahrzeugmarke.' ) ); ?></p>
             </div>
-            <h1>Die beste <span>Kfz-Werkstatt</span> in Ihrer Nähe finden</h1>
-            <p>Vergleichen Sie geprüfte Meisterbetriebe, TÜV-Stationen und 24h-Pannenhilfen in allen 16 Bundesländern.</p>
-
-            <form action="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>" method="get" class="fw-search-box">
-                <!-- Bundesland / Stadt -->
-                <div class="fw-search-field">
-                    <span class="fw-field-icon">📍</span>
-                    <label>Bundesland / Stadt</label>
-                    <select name="fw_city">
-                        <option value="">Ganz Deutschland</option>
-                        <?php foreach ( $bundeslaender as $code => $land ) : ?>
-                            <option value="<?php echo esc_attr( $land['slug'] ); ?>"><?php echo esc_html( $land['name'] ); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Leistung / Fachbereich -->
-                <div class="fw-search-field">
-                    <span class="fw-field-icon">🔧</span>
-                    <label>Leistung / Service</label>
-                    <select name="fw_service">
-                        <option value="">Alle Leistungen</option>
-                        <?php foreach ( $categories as $slug => $cat ) : ?>
-                            <option value="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $cat['name'] ); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Automarke -->
-                <div class="fw-search-field">
-                    <span class="fw-field-icon">🚗</span>
-                    <label>Fahrzeugmarke</label>
-                    <select name="fw_brand">
-                        <option value="">Alle Automarken</option>
-                        <?php foreach ( $brands as $slug => $name ) : ?>
-                            <option value="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $name ); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="fw-btn fw-btn-accent fw-btn-lg">
-                    🔍 Suchen
-                </button>
-            </form>
-
-            <div class="fw-hero-popular">
-                <span>Beliebte Städte:</span>
-                <a href="<?php echo esc_url( home_url( '/stadt/berlin/' ) ); ?>">Berlin</a>
-                <a href="<?php echo esc_url( home_url( '/stadt/hamburg/' ) ); ?>">Hamburg</a>
-                <a href="<?php echo esc_url( home_url( '/stadt/muenchen/' ) ); ?>">München</a>
-                <a href="<?php echo esc_url( home_url( '/stadt/koeln/' ) ); ?>">Köln</a>
-                <a href="<?php echo esc_url( home_url( '/stadt/frankfurt-am-main/' ) ); ?>">Frankfurt</a>
-                <a href="<?php echo esc_url( home_url( '/stadt/stuttgart/' ) ); ?>">Stuttgart</a>
+            <div class="fw-mascot-art fw-hero-mascot" aria-hidden="true">
+                <img src="<?php echo esc_url( findewerkstatt_brand_asset_url( 'mascot_welcome' ) ); ?>" alt="" width="1024" height="1024" fetchpriority="high">
             </div>
         </div>
-    </div>
+        <form action="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" method="get" class="fw-search-box">
+            <input type="hidden" name="post_type" value="mechanic">
+            <?php findewerkstatt_render_location_picker( 'home', array(), true ); ?>
+            <div class="fw-search-field"><span class="fw-field-icon" aria-hidden="true">🔧</span><label for="home-service"><?php echo esc_html( findewerkstatt_t( 'Leistung' ) ); ?></label><select id="home-service" name="fw_service"><option value=""><?php echo esc_html( findewerkstatt_t( 'Alle Leistungen' ) ); ?></option><?php foreach ( $services as $slug => $service ) : ?><option value="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( findewerkstatt_t( $service['name'] ) ); ?></option><?php endforeach; ?></select></div>
+            <div class="fw-search-field"><span class="fw-field-icon" aria-hidden="true">🚗</span><label for="home-brand"><?php echo esc_html( findewerkstatt_t( 'Fahrzeugmarke' ) ); ?></label><select id="home-brand" name="fw_brand"><option value=""><?php echo esc_html( findewerkstatt_t( 'Alle Marken' ) ); ?></option><?php foreach ( $brands as $slug => $brand ) : ?><option value="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $brand ); ?></option><?php endforeach; ?></select></div>
+            <button type="submit" class="fw-btn fw-btn-accent fw-btn-lg"><?php echo esc_html( findewerkstatt_t( 'Werkstatt finden' ) ); ?></button>
+        </form>
+        <div class="fw-hero-popular"><span><?php echo esc_html( findewerkstatt_t( 'Städte entdecken:' ) ); ?></span><?php foreach ( array( 'berlin' => 'Berlin', 'hamburg' => 'Hamburg', 'muenchen' => 'München', 'koeln' => 'Köln', 'frankfurt-am-main' => 'Frankfurt am Main', 'stuttgart' => 'Stuttgart' ) as $slug => $name ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $slug, 'mechanic_city' ) ); ?>"><?php echo esc_html( $name ); ?></a><?php endforeach; ?></div>
+    </div></div>
 </section>
-
-<!-- 2. KATEGORIEN & FACHBEREICHE -->
-<section class="fw-section">
-    <div class="fw-container">
-        <div class="fw-section-header">
-            <div class="fw-section-tag">Kompetente Hilfe</div>
-            <h2>Kfz-Leistungen & Fachbereiche</h2>
-            <p>Vom schnellen Reifenwechsel bis zur komplexen Getriebeinstandsetzung — wählen Sie die passende Kategorie für Ihr Anliegen.</p>
-        </div>
-
-        <div class="fw-categories-grid">
-            <?php foreach ( $categories as $slug => $cat ) : ?>
-                <a href="<?php echo esc_url( home_url( '/service/' . $slug . '/' ) ); ?>" class="fw-cat-card">
-                    <div class="fw-cat-icon">⚙️</div>
-                    <div class="fw-cat-info">
-                        <h3><?php echo esc_html( $cat['name'] ); ?></h3>
-                        <p><?php echo esc_html( wp_trim_words( $cat['desc'], 8 ) ); ?></p>
-                    </div>
-                </a>
-            <?php endforeach; ?>
-        </div>
+<section class="fw-section" id="leistungen"><div class="fw-container">
+    <div class="fw-section-header"><div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Für Ihr Fahrzeug' ) ); ?></div><h2><?php echo esc_html( findewerkstatt_t( 'Leistungen und Fachbereiche' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Von der Wartung bis zur Reparatur: Finden Sie einen Betrieb für Ihr Anliegen.' ) ); ?></p></div>
+    <div class="fw-categories-grid"><?php foreach ( $services as $slug => $service ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $slug, 'service_type' ) ); ?>" class="fw-cat-card"><div class="fw-cat-icon" aria-hidden="true">🔧</div><div class="fw-cat-info"><h3><?php echo esc_html( findewerkstatt_t( $service['name'] ) ); ?></h3><p><?php echo esc_html( wp_trim_words( findewerkstatt_t( $service['desc'] ), 12 ) ); ?></p></div></a><?php endforeach; ?></div>
+</div></section>
+<section class="fw-section fw-section-muted"><div class="fw-container">
+    <div class="fw-section-header"><div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Das Verzeichnis wächst' ) ); ?></div><h2><?php echo esc_html( findewerkstatt_t( 'Neue Werkstatteinträge' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Entdecken Sie die zuletzt veröffentlichten Betriebe.' ) ); ?></p></div>
+    <?php $new_workshops = new WP_Query( array( 'post_type' => 'mechanic', 'post_status' => 'publish', 'posts_per_page' => 6, 'no_found_rows' => true ) ); ?>
+    <?php if ( $new_workshops->have_posts() ) : ?><div class="fw-workshops-grid"><?php while ( $new_workshops->have_posts() ) : $new_workshops->the_post(); get_template_part( 'template-parts/workshop-card' ); endwhile; ?></div><?php else : ?><div class="fw-empty-state"><h3><?php echo esc_html( findewerkstatt_t( 'Hier ist Platz für Ihre Werkstatt.' ) ); ?></h3><p><?php echo esc_html( findewerkstatt_t( 'Unser Verzeichnis wird aufgebaut. Tragen Sie Ihren Betrieb kostenlos ein und helfen Sie Autofahrern, Sie zu finden.' ) ); ?></p><a class="fw-btn fw-btn-primary" href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Werkstatt eintragen' ) ); ?></a></div><?php endif; wp_reset_postdata(); ?>
+    <div class="fw-section-action"><a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-primary"><?php echo esc_html( findewerkstatt_t( 'Alle Werkstätten ansehen →' ) ); ?></a></div>
+</div></section>
+<section class="fw-section" id="bundeslaender"><div class="fw-container">
+    <div class="fw-section-header"><div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Regional suchen' ) ); ?></div><h2><?php echo esc_html( findewerkstatt_t( 'Werkstätten nach Bundesland' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Wählen Sie Ihr Bundesland und entdecken Sie Städte und Betriebe in Ihrer Region.' ) ); ?></p></div>
+    <div class="fw-bundeslaender-grid"><?php foreach ( $states as $state ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $state['slug'], 'mechanic_city' ) ); ?>" class="fw-land-card"><span class="fw-land-name"><?php echo esc_html( $state['name'] ); ?></span><span aria-hidden="true">→</span></a><?php endforeach; ?></div>
+</div></section>
+<section class="fw-section fw-section-white"><div class="fw-container">
+    <div class="fw-section-header">
+        <div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Einfach & Transparent' ) ); ?></div>
+        <h2><?php echo esc_html( findewerkstatt_t( 'So finden Sie Ihre Werkstatt' ) ); ?></h2>
+        <p><?php echo esc_html( findewerkstatt_t( 'In nur drei Schritten zur passenden Reparatur oder Inspektion' ) ); ?></p>
     </div>
-</section>
-
-<!-- 3. GEPRÜFTE WERKSTÄTTEN (FEATURED) -->
-<section class="fw-section" style="background:#f1f5f9;">
-    <div class="fw-container">
-        <div class="fw-section-header">
-            <div class="fw-section-tag">Qualitätsgeprüft</div>
-            <h2>Empfohlene Kfz-Meisterbetriebe</h2>
-            <p>Von Kunden top-bewertete Werkstätten mit geprüften Zertifikaten und modernster Diagnoseausstattung.</p>
+    <div class="fw-benefits-grid">
+        <div class="fw-box">
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:rgba(5,41,93,0.08); font-size:20px; margin-bottom:16px;">🔍</div>
+            <h3><?php echo esc_html( findewerkstatt_t( '1. Passenden Betrieb suchen' ) ); ?></h3>
+            <p><?php echo esc_html( findewerkstatt_t( 'Filtern Sie das Verzeichnis nach Stadt, Leistung und Fahrzeugmarke.' ) ); ?></p>
         </div>
-
-        <div class="fw-workshops-grid">
-            <?php
-            $featured_query = new WP_Query( array(
-                'post_type'      => 'mechanic',
-                'posts_per_page' => 6,
-                'post_status'    => 'publish',
-            ) );
-
-            if ( $featured_query->have_posts() ) :
-                while ( $featured_query->have_posts() ) : $featured_query->the_post();
-                    $post_id   = get_the_ID();
-                    $phone     = get_post_meta( $post_id, '_mechanic_phone', true );
-                    $address   = get_post_meta( $post_id, '_mechanic_address', true );
-                    $plz       = get_post_meta( $post_id, '_mechanic_plz', true );
-                    $rating    = get_post_meta( $post_id, '_mechanic_rating_avg', true ) ?: '4.9';
-                    $count     = get_post_meta( $post_id, '_mechanic_rating_count', true ) ?: '18';
-                    
-                    $city_terms = wp_get_post_terms( $post_id, 'mechanic_city' );
-                    $city_name  = ( $city_terms && ! is_wp_error( $city_terms ) ) ? $city_terms[0]->name : '';
-                    $services   = wp_get_post_terms( $post_id, 'service_type' );
-                    ?>
-                    <div class="fw-workshop-card">
-                        <div class="fw-card-top">
-                            <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'medium', array( 'class' => 'fw-card-img' ) ); ?>
-                            <?php else : ?>
-                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="<?php the_title_attribute(); ?>" class="fw-card-img">
-                            <?php endif; ?>
-                            <div class="fw-card-badges">
-                                <?php echo findewerkstatt_render_badges( $post_id ); ?>
-                            </div>
-                            <?php echo findewerkstatt_get_open_status(); ?>
-                        </div>
-
-                        <div class="fw-card-body">
-                            <?php echo findewerkstatt_render_stars( $rating, $count ); ?>
-
-                            <h3>
-                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                            </h3>
-
-                            <div class="fw-card-address">
-                                <span>📍</span>
-                                <span><?php echo esc_html( trim( "{$address}, {$plz} {$city_name}", ', ' ) ); ?></span>
-                            </div>
-
-                            <?php if ( ! empty( $services ) && ! is_wp_error( $services ) ) : ?>
-                                <div class="fw-card-services">
-                                    <?php foreach ( array_slice( $services, 0, 3 ) as $st ) : ?>
-                                        <span class="fw-badge fw-badge-service"><?php echo esc_html( $st->name ); ?></span>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="fw-card-actions">
-                                <?php if ( $phone ) : ?>
-                                    <a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $phone ) ); ?>" class="fw-btn fw-btn-phone fw-btn-sm">
-                                        📞 Anrufen
-                                    </a>
-                                <?php endif; ?>
-                                <a href="<?php the_permalink(); ?>" class="fw-btn fw-btn-outline fw-btn-sm">
-                                    Details ansehen →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endwhile;
-                wp_reset_postdata();
-            endif;
-            ?>
+        <div class="fw-box">
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:rgba(251,96,6,0.12); font-size:20px; margin-bottom:16px;">⭐</div>
+            <h3><?php echo esc_html( findewerkstatt_t( '2. Profil ansehen' ) ); ?></h3>
+            <p><?php echo esc_html( findewerkstatt_t( 'Informieren Sie sich über die angegebenen Leistungen, Kontaktdaten und Öffnungszeiten.' ) ); ?></p>
         </div>
-
-        <div style="text-align:center; margin-top:36px;">
-            <a href="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>" class="fw-btn fw-btn-primary fw-btn-lg">
-                Alle Kfz-Werkstätten in Deutschland ansehen →
-            </a>
+        <div class="fw-box">
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:rgba(16,185,129,0.12); font-size:20px; margin-bottom:16px;">📞</div>
+            <h3><?php echo esc_html( findewerkstatt_t( '3. Direkt Kontakt aufnehmen' ) ); ?></h3>
+            <p><?php echo esc_html( findewerkstatt_t( 'Fragen Sie direkt beim Betrieb nach einem Termin oder Kostenvoranschlag. Die Suche im Verzeichnis ist kostenlos.' ) ); ?></p>
         </div>
     </div>
-</section>
-
-<!-- 4. 16 BUNDESLÄNDER DIRECTORY -->
-<section class="fw-section" id="bundeslaender">
-    <div class="fw-container">
-        <div class="fw-section-header">
-            <div class="fw-section-tag">Bundesweit</div>
-            <h2>Werkstätten nach Bundesland</h2>
-            <p>Finden Sie zertifizierte Autowerkstätten und Notdienste direkt in Ihrem Bundesland.</p>
-        </div>
-
-        <div class="fw-bundeslaender-grid">
-            <?php foreach ( $bundeslaender as $code => $land ) : ?>
-                <a href="<?php echo esc_url( home_url( '/stadt/' . $land['slug'] . '/' ) ); ?>" class="fw-land-card">
-                    <span class="fw-land-name"><?php echo esc_html( $land['name'] ); ?></span>
-                    <span class="fw-land-badge"><?php echo esc_html( $land['capital'] ); ?></span>
-                </a>
-            <?php endforeach; ?>
-        </div>
+</div></section>
+<section class="fw-section fw-owner-cta"><div class="fw-container"><div class="fw-owner-layout">
+    <div class="fw-owner-copy">
+        <div class="fw-hero-badge" style="background:rgba(251,96,6,0.15); border-color:rgba(251,96,6,0.3); color:#fed7aa; margin-bottom:14px;">🛡️ Für Werkstattinhaber</div>
+        <h2><?php echo esc_html( findewerkstatt_t( 'Sie betreiben eine Kfz-Werkstatt?' ) ); ?></h2>
+        <p><?php echo esc_html( findewerkstatt_t( 'Stellen Sie Ihre Leistungen vor und machen Sie Ihren Betrieb für Autofahrer in Ihrer Region sichtbar. Gewinnen Sie täglich neue Kunden direkt aus Ihrer Stadt.' ) ); ?></p>
+        <a href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>" class="fw-btn fw-btn-accent fw-btn-lg"><?php echo esc_html( findewerkstatt_t( 'Werkstatt kostenlos eintragen →' ) ); ?></a>
     </div>
-</section>
-
-<!-- 5. VORTEILE (WARUM FINDEWERKSTATT.DE) -->
-<section class="fw-section" style="background:#ffffff; border-top:1px solid var(--fw-border); border-bottom:1px solid var(--fw-border);">
-    <div class="fw-container">
-        <div class="fw-section-header">
-            <div class="fw-section-tag">Ihre Vorteile</div>
-            <h2>Warum Autofahrer FindeWerkstatt.de vertrauen</h2>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
-            <div class="fw-box" style="margin:0; text-align:center;">
-                <div style="font-size:36px; margin-bottom:14px;">🛡️</div>
-                <h3 style="font-size:18px; margin-bottom:10px;">100% Geprüfte Betriebe</h3>
-                <p style="font-size:14.5px; color:var(--fw-text-muted);">
-                    Wir prüfen Handwerkskammer-Zugehörigkeiten und Zertifikate, damit Sie Ihr Auto nur in vertrauenswürdige Hände geben.
-                </p>
-            </div>
-
-            <div class="fw-box" style="margin:0; text-align:center;">
-                <div style="font-size:36px; margin-bottom:14px;">⏱️</div>
-                <h3 style="font-size:18px; margin-bottom:10px;">Direkter Kontakt ohne Vermittlungsgebühr</h3>
-                <p style="font-size:14.5px; color:var(--fw-text-muted);">
-                    Rufen Sie die Werkstatt direkt an oder schreiben Sie per WhatsApp. Keine teuren Vermittlungsaufschläge oder versteckten Kosten.
-                </p>
-            </div>
-
-            <div class="fw-box" style="margin:0; text-align:center;">
-                <div style="font-size:36px; margin-bottom:14px;">🚨</div>
-                <h3 style="font-size:18px; margin-bottom:10px;">24h Notdienst & Pannenhilfe</h3>
-                <p style="font-size:14.5px; color:var(--fw-text-muted);">
-                    Panne auf der Autobahn oder nachts? Finden Sie sofort verfügbare Abschleppdienste in ganz Deutschland.
-                </p>
-            </div>
-        </div>
+    <div class="fw-mascot-art fw-owner-mascot" aria-hidden="true">
+        <img src="<?php echo esc_url( findewerkstatt_brand_asset_url( 'mascot_workshop' ) ); ?>" alt="" width="480" height="480" loading="lazy" decoding="async">
     </div>
-</section>
-
-<!-- 6. WERKSTATTINHABER CTA -->
-<section class="fw-section" style="background:var(--fw-primary); color:#ffffff; text-align:center;">
-    <div class="fw-container">
-        <div style="max-width:700px; margin:0 auto;">
-            <h2 style="font-size:32px; font-weight:900; margin-bottom:16px;">Sind Sie Kfz-Werkstattinhaber?</h2>
-            <p style="font-size:17px; color:#cbd5e1; margin-bottom:30px; line-height:1.5;">
-                Präsentieren Sie Ihren Betrieb Autofahrern in Ihrer Region. Erhalten Sie qualifizierte Neukundenanfragen und stärken Sie Ihren lokalen Ruf.
-            </p>
-            <a href="<?php echo esc_url( home_url( '/werkstatt-anmelden/' ) ); ?>" class="fw-btn fw-btn-accent fw-btn-lg">
-                Betrieb jetzt kostenlos eintragen →
-            </a>
-        </div>
-    </div>
-</section>
-
-<?php
-get_footer();
+</div></div></section>
+</main>
+<?php get_footer(); ?>

@@ -1,121 +1,20 @@
 <?php
-/**
- * FindeWerkstatt.de — Suchergebnisse (Search Template)
- * 
- * @package FindeWerkstatt
- * @version 2.0.0
- */
-
 get_header();
-
-$search_query = get_search_query();
+global $wp_query;
+$search_term = get_search_query( false );
 ?>
-
-<div class="fw-container" style="padding-top:30px; padding-bottom:60px;">
-    <!-- Breadcrumbs -->
-    <nav class="fw-breadcrumbs" aria-label="Brotkrümelnavigation">
-        <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
-        <span>›</span>
-        <span>Suche</span>
-    </nav>
-
-    <!-- Header -->
-    <div style="margin-bottom:24px;">
-        <h1 style="font-size:32px; font-weight:900; color:var(--fw-primary); margin-bottom:8px;">
-            Suchergebnisse für „<?php echo esc_html( $search_query ); ?>“
-        </h1>
-        <p style="color:var(--fw-text-muted); font-size:16px;">
-            <?php echo (int) $wp_query->found_posts; ?> passende Einträge gefunden
-        </p>
-    </div>
-
-    <!-- Werkstätten Grid -->
+<main id="main-content" class="fw-container fw-page-content">
+    <div class="fw-page-heading"><h1><?php echo esc_html( findewerkstatt_t( 'Werkstattsuche' ) ); ?></h1><p><?php echo esc_html( '' !== trim( $search_term ) ? sprintf( findewerkstatt_t( 'Suchergebnisse für „%s“' ), $search_term ) : findewerkstatt_t( 'Suchen Sie nach einem Werkstattnamen oder einem Suchbegriff.' ) ); ?></p></div>
+    <form role="search" action="<?php echo esc_url( home_url( '/' ) ); ?>" method="get" class="fw-search-inline" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Werkstätten nach Namen suchen' ) ); ?>">
+        <div class="fw-form-field"><label for="workshop-search"><?php echo esc_html( findewerkstatt_t( 'Werkstattname oder Suchbegriff' ) ); ?></label><input id="workshop-search" type="search" name="s" value="<?php echo esc_attr( $search_term ); ?>" placeholder="<?php echo esc_attr( findewerkstatt_t( 'Werkstattname oder Suchbegriff' ) ); ?>" enterkeyhint="search"></div>
+        <input type="hidden" name="post_type" value="mechanic">
+        <?php findewerkstatt_render_workshop_language_filter( isset( $_GET['fw_spoken'] ) && is_string( $_GET['fw_spoken'] ) ? sanitize_key( wp_unslash( $_GET['fw_spoken'] ) ) : '' ); ?>
+        <button class="fw-btn fw-btn-primary" type="submit"><?php echo esc_html( findewerkstatt_t( 'Suchen' ) ); ?></button>
+    </form>
     <?php if ( have_posts() ) : ?>
-        <div class="fw-workshops-grid">
-            <?php while ( have_posts() ) : the_post();
-                $post_id    = get_the_ID();
-                $phone      = get_post_meta( $post_id, '_mechanic_phone', true );
-                $address    = get_post_meta( $post_id, '_mechanic_address', true );
-                $plz        = get_post_meta( $post_id, '_mechanic_plz', true );
-                $rating_avg = get_post_meta( $post_id, '_mechanic_rating_avg', true ) ?: '4.9';
-                $rating_cnt = get_post_meta( $post_id, '_mechanic_rating_count', true ) ?: '18';
-                
-                $city_terms = wp_get_post_terms( $post_id, 'mechanic_city' );
-                $city_name  = ( $city_terms && ! is_wp_error( $city_terms ) ) ? $city_terms[0]->name : '';
-                $services   = wp_get_post_terms( $post_id, 'service_type' );
-                ?>
-                <div class="fw-workshop-card">
-                    <div class="fw-card-top">
-                        <?php if ( has_post_thumbnail() ) : ?>
-                            <?php the_post_thumbnail( 'medium', array( 'class' => 'fw-card-img' ) ); ?>
-                        <?php else : ?>
-                            <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="<?php the_title_attribute(); ?>" class="fw-card-img">
-                        <?php endif; ?>
-                        <div class="fw-card-badges">
-                            <?php echo findewerkstatt_render_badges( $post_id ); ?>
-                        </div>
-                        <?php echo findewerkstatt_get_open_status(); ?>
-                    </div>
-
-                    <div class="fw-card-body">
-                        <?php echo findewerkstatt_render_stars( $rating_avg, $rating_cnt ); ?>
-
-                        <h3>
-                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                        </h3>
-
-                        <div class="fw-card-address">
-                            <span>📍</span>
-                            <span><?php echo esc_html( trim( "{$address}, {$plz} {$city_name}", ', ' ) ); ?></span>
-                        </div>
-
-                        <?php if ( ! empty( $services ) && ! is_wp_error( $services ) ) : ?>
-                            <div class="fw-card-services">
-                                <?php foreach ( array_slice( $services, 0, 3 ) as $st ) : ?>
-                                    <span class="fw-badge fw-badge-service"><?php echo esc_html( $st->name ); ?></span>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="fw-card-actions">
-                            <?php if ( $phone ) : ?>
-                                <a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $phone ) ); ?>" class="fw-btn fw-btn-phone fw-btn-sm">
-                                    📞 Anrufen
-                                </a>
-                            <?php endif; ?>
-                            <a href="<?php the_permalink(); ?>" class="fw-btn fw-btn-outline fw-btn-sm">
-                                Details ansehen →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            <?php endwhile; ?>
-        </div>
-
-        <!-- Pagination -->
-        <div style="margin-top:40px; text-align:center;">
-            <?php
-            the_posts_pagination( array(
-                'mid_size'  => 2,
-                'prev_text' => '← Vorherige',
-                'next_text' => 'Nächste →',
-            ) );
-            ?>
-        </div>
-
-    <?php else : ?>
-        <div style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius-lg); padding:48px; text-align:center;">
-            <div style="font-size:48px; margin-bottom:12px;">🔍</div>
-            <h2 style="font-size:22px; margin-bottom:8px;">Keine Treffer für „<?php echo esc_html( $search_query ); ?>“</h2>
-            <p style="color:var(--fw-text-muted); margin-bottom:20px;">
-                Probieren Sie einen anderen Suchbegriff oder stöbern Sie im bundesweiten Werkstattverzeichnis.
-            </p>
-            <a href="<?php echo esc_url( home_url( '/werkstaetten/' ) ); ?>" class="fw-btn fw-btn-primary">
-                Alle Werkstätten ansehen
-            </a>
-        </div>
-    <?php endif; ?>
-</div>
-
-<?php
-get_footer();
+        <p class="fw-result-count"><?php echo esc_html( number_format_i18n( $wp_query->found_posts ) ); ?> <?php echo $wp_query->found_posts === 1 ? findewerkstatt_t( 'Werkstatt gefunden' ) : findewerkstatt_t( 'Werkstätten gefunden' ); ?></p>
+        <div class="fw-workshops-grid"><?php while ( have_posts() ) : the_post(); get_template_part( 'template-parts/workshop-card' ); endwhile; ?></div>
+        <div class="fw-pagination"><?php the_posts_pagination( array( 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ), 'screen_reader_text' => findewerkstatt_t( 'Weitere Ergebnisse' ) ) ); ?></div>
+    <?php else : ?><div class="fw-empty-state"><h2><?php echo esc_html( findewerkstatt_t( 'Keine passenden Werkstätten gefunden' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Versuchen Sie einen anderen Suchbegriff oder wählen Sie im Werkstattverzeichnis zuerst das Bundesland und anschließend Ihre Stadt. Leistung und Fahrzeugmarke können Sie zusätzlich filtern.' ) ); ?></p><a class="fw-btn fw-btn-primary" href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Zum Werkstattverzeichnis' ) ); ?></a></div><?php endif; ?>
+</main>
+<?php get_footer(); ?>

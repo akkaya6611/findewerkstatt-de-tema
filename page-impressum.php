@@ -1,55 +1,32 @@
 <?php
-/**
- * Template Name: Impressum
- * 
- * FindeWerkstatt.de — Impressum gem. § 5 DDG
- * 
- * @package FindeWerkstatt
- * @version 2.0.0
- */
-
+/** Template Name: Impressum */
+$details = findewerkstatt_get_site_details();
 get_header();
 ?>
+<main id="main-content" class="fw-container fw-page-content">
+<article class="fw-box fw-form-wrap-wide">
+    <h1><?php echo esc_html( findewerkstatt_t( 'Impressum' ) ); ?></h1>
+    <?php get_template_part( 'template-parts/legal-navigation' ); ?>
+    <div class="fw-prose">
+        <h2><?php echo esc_html( findewerkstatt_t( 'Betreiber und Kontakt' ) ); ?></h2>
+        <p><strong><?php echo esc_html( $details['name'] ); ?></strong><br><?php echo nl2br( esc_html( $details['address'] ) ); ?></p>
+        <p>E-Mail: <a href="mailto:<?php echo esc_attr( $details['email'] ); ?>"><?php echo esc_html( $details['email'] ); ?></a><?php if ( $details['phone'] ) : ?><br><?php echo esc_html( findewerkstatt_t( 'Telefon:' ) ); ?> <?php echo esc_html( $details['phone'] ); ?><?php endif; ?><br><a href="<?php echo esc_url( findewerkstatt_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kontaktformular für Anfragen und Hinweise' ) ); ?></a></p>
+        <?php if ( $details['register'] ) : ?><h2><?php echo esc_html( findewerkstatt_t( 'Registerangaben' ) ); ?></h2><p><?php echo esc_html( $details['register'] ); ?></p><?php endif; ?>
+        <?php if ( $details['vat'] ) : ?><h2><?php echo esc_html( findewerkstatt_t( 'Steuerliche Identifikationsnummer' ) ); ?></h2><p><?php echo esc_html( $details['vat'] ); ?></p><?php endif; ?>
 
-<div class="fw-container" style="padding-top:40px; padding-bottom:70px;">
-    <article class="fw-box" style="max-width:860px; margin:0 auto;">
-        <h1 style="font-size:32px; font-weight:900; color:var(--fw-primary); margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--fw-border);">
-            Impressum
-        </h1>
+        <h2><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt.de als Werkstattverzeichnis' ) ); ?></h2>
+        <p><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt.de listet Kfz-Werkstätten, Autoservices und Pannendienste in Deutschland. Die Suche nach Bundesland, Stadt und Ortsteil hilft Ihnen, einen Betrieb in Ihrer Nähe zu finden und direkt zu kontaktieren.' ) ); ?></p>
+        <p><?php echo esc_html( findewerkstatt_t( 'Reparaturen, Prüfungen, Abschleppleistungen und Termine vereinbaren Sie mit dem jeweiligen Betrieb. Der Betreiber dieses Verzeichnisses erbringt diese Leistungen nicht selbst und ist nicht Vertragspartner eines Werkstattauftrags.' ) ); ?></p>
 
-        <div style="font-size:15px; line-height:1.8; color:#334155;">
-            <p><strong>Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz):</strong></p>
+        <h2><?php echo esc_html( findewerkstatt_t( 'Betriebsangaben, Bilder und externe Links' ) ); ?></h2>
+        <p><?php echo esc_html( findewerkstatt_t( 'Die übernommenen Betriebsangaben stammen ursprünglich aus öffentlich zugänglichen Unternehmenseinträgen bei Google Maps und wurden über das bisherige Verzeichnis übernommen. Weitere Angaben stammen aus eigenen Anmeldungen der Betriebe. Bitte bestätigen Sie aktuelle Kontaktdaten, Öffnungszeiten, Leistungen und Preise vor einer Beauftragung beim Betrieb. Als „Symbolbild“ gekennzeichnete Motive zeigen nicht die jeweilige Werkstatt.' ) ); ?></p>
+        <p><strong><?php echo esc_html( findewerkstatt_t( 'Löschung auf Anfrage:' ) ); ?></strong> <?php echo esc_html( findewerkstatt_t( 'Betriebsinhaber und hierzu berechtigte Personen können die Entfernung ihres Eintrags und die Löschung der zugehörigen Betriebsdaten aus unserer aktiven Datenbank beantragen. Senden Sie uns dafür den Betriebsnamen, den Ort und nach Möglichkeit die Profiladresse über das Kontaktformular oder per E-Mail. Nach Prüfung Ihrer Berechtigung entfernen wir den Eintrag und löschen die Daten, soweit keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Einzelheiten erläutert unsere' ) ); ?> <a href="<?php echo esc_url( findewerkstatt_page_url( 'datenschutz' ) ); ?>#bestehende-firmendaten"><?php echo esc_html( findewerkstatt_t( 'Datenschutzerklärung' ) ); ?></a>.</p>
+        <p><?php echo esc_html( findewerkstatt_t( 'Verlinkte Betriebswebsites, Karten- und Kommunikationsdienste werden von ihren jeweiligen Anbietern betrieben. Wenn Sie einen fehlerhaften Eintrag oder einen möglicherweise rechtswidrigen Inhalt bemerken, nennen Sie uns bitte die betroffene Seite und den Grund über das Kontaktformular oder per E-Mail. Wir prüfen den Hinweis und veranlassen erforderliche Korrekturen.' ) ); ?></p>
 
-            <p style="margin:16px 0;">
-                FindeWerkstatt.de<br>
-                Online-Portal & Kfz-Verzeichnis Deutschland<br>
-                E-Mail: kontakt@findewerkstatt.de<br>
-                Webseite: https://findewerkstatt.de/
-            </p>
-
-            <h3 style="font-size:18px; margin:24px 0 8px; color:var(--fw-primary);">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</h3>
-            <p>
-                FindeWerkstatt.de Redaktionsteam<br>
-                E-Mail: redaktion@findewerkstatt.de
-            </p>
-
-            <h3 style="font-size:18px; margin:24px 0 8px; color:var(--fw-primary);">Haftung für Inhalte</h3>
-            <p>
-                Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
-            </p>
-
-            <h3 style="font-size:18px; margin:24px 0 8px; color:var(--fw-primary);">Haftung für Links</h3>
-            <p>
-                Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
-            </p>
-
-            <h3 style="font-size:18px; margin:24px 0 8px; color:var(--fw-primary);">Urheberrecht</h3>
-            <p>
-                Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
-            </p>
-        </div>
-    </article>
-</div>
-
-<?php
-get_footer();
+        <h2><?php echo esc_html( findewerkstatt_t( 'Verbraucherstreitbeilegung' ) ); ?></h2>
+        <p><?php echo esc_html( findewerkstatt_t( 'Wir nehmen nicht freiwillig an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teil. Etwaige gesetzliche Verpflichtungen bleiben unberührt. Für Beschwerden erreichen Sie uns über die oben genannten Kontaktmöglichkeiten.' ) ); ?></p>
+        <p><?php echo esc_html( findewerkstatt_t( 'Informationen zur Nutzung des Verzeichnisses finden Sie in unseren' ) ); ?> <a href="<?php echo esc_url( findewerkstatt_page_url( 'agb' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Nutzungsbedingungen' ) ); ?></a><?php echo esc_html( findewerkstatt_t( ', Informationen zur Datenverarbeitung in unserer' ) ); ?> <a href="<?php echo esc_url( findewerkstatt_page_url( 'datenschutz' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Datenschutzerklärung' ) ); ?></a>.</p>
+    </div>
+</article>
+</main>
+<?php get_footer(); ?>
