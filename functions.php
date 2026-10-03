@@ -40,6 +40,7 @@ require_once get_template_directory() . '/inc/location-picker.php';
 require_once get_template_directory() . '/inc/location-copy.php';
 require_once get_template_directory() . '/inc/location-content.php';
 require_once get_template_directory() . '/inc/import-compat.php';
+require_once get_template_directory() . '/inc/workshop-importer-admin.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
