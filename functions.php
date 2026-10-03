@@ -40,6 +40,7 @@ require_once get_template_directory() . '/inc/location-picker.php';
 require_once get_template_directory() . '/inc/location-copy.php';
 require_once get_template_directory() . '/inc/location-content.php';
 require_once get_template_directory() . '/inc/import-compat.php';
+require_once get_template_directory() . '/inc/workshop-importer-admin.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
@@ -57,17 +58,21 @@ add_action( 'after_setup_theme', 'findewerkstatt_setup' );
 
 // 3. Styles & Scripts einbinden
 function findewerkstatt_scripts() {
-    $ver = wp_get_theme()->get( 'Version' ) ?: '3.2.0';
+    $theme_dir = get_template_directory();
+    $style_ver = file_exists( $theme_dir . '/style.css' ) ? (string) filemtime( $theme_dir . '/style.css' ) : '2.1.0';
+    $header_ver = file_exists( $theme_dir . '/assets/css/header.css' ) ? (string) filemtime( $theme_dir . '/assets/css/header.css' ) : $style_ver;
+    $membership_ver = file_exists( $theme_dir . '/assets/css/membership.css' ) ? (string) filemtime( $theme_dir . '/assets/css/membership.css' ) : $style_ver;
+    $js_ver = file_exists( $theme_dir . '/assets/js/main.js' ) ? (string) filemtime( $theme_dir . '/assets/js/main.js' ) : $style_ver;
 
-    wp_enqueue_style( 'findewerkstatt-main', get_stylesheet_uri(), array(), $ver );
-    wp_enqueue_style( 'findewerkstatt-header', get_template_directory_uri() . '/assets/css/header.css', array( 'findewerkstatt-main' ), $ver );
+    wp_enqueue_style( 'findewerkstatt-main', get_stylesheet_uri(), array(), $style_ver );
+    wp_enqueue_style( 'findewerkstatt-header', get_template_directory_uri() . '/assets/css/header.css', array( 'findewerkstatt-main' ), $header_ver );
     if ( is_page( array( 'pakete', 'mein-konto', 'werkstatt-anmelden' ) ) || is_page_template( array( 'page-pakete.php', 'page-mein-konto.php', 'page-werkstatt-anmelden.php' ) ) ) {
-        wp_enqueue_style( 'findewerkstatt-membership', get_template_directory_uri() . '/assets/css/membership.css', array( 'findewerkstatt-main', 'findewerkstatt-header' ), $ver );
+        wp_enqueue_style( 'findewerkstatt-membership', get_template_directory_uri() . '/assets/css/membership.css', array( 'findewerkstatt-main', 'findewerkstatt-header' ), $membership_ver );
     }
 
     // Theme JS
-    if ( file_exists( get_template_directory() . '/assets/js/main.js' ) ) {
-        wp_enqueue_script( 'findewerkstatt-main', get_template_directory_uri() . '/assets/js/main.js', array(), $ver, true );
+    if ( file_exists( $theme_dir . '/assets/js/main.js' ) ) {
+        wp_enqueue_script( 'findewerkstatt-main', get_template_directory_uri() . '/assets/js/main.js', array(), $js_ver, true );
     }
 
 }

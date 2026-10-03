@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /** Workshop profile without invented reviews or business facts. */
 get_header();
 while ( have_posts() ) : the_post();
@@ -36,15 +36,20 @@ $profile_image = $profile_image_id ? wp_get_attachment_image( $profile_image_id,
         <div class="fw-single-title-row"><div><h1><?php echo esc_html( $title ); ?></h1><?php echo findewerkstatt_render_stars( $rating['rating'], $rating['count'] ); ?><p class="fw-card-address"><span aria-hidden="true">📍</span><?php echo esc_html( trim( $address . ', ' . $plz . ' ' . $address_city, ', ' ) ?: findewerkstatt_t( 'Standort nicht angegeben' ) ); ?></p>
             <?php get_template_part( 'template-parts/workshop-location', null, array( 'context' => $city_context ) ); ?>
         </div><div class="fw-profile-actions">
-            <?php if ( $phone ) : ?><a class="fw-btn fw-btn-phone" href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo esc_html( findewerkstatt_t( 'Jetzt anrufen' ) ); ?></a><?php endif; ?>
-            <?php if ( $whatsapp_url ) : ?><a class="fw-btn fw-btn-whatsapp" href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( findewerkstatt_t( 'Per WhatsApp anfragen' ) ); ?></a><?php endif; ?>
+            <?php if ( $phone ) : ?><a class="fw-btn fw-btn-phone fw-btn-card-action" href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo findewerkstatt_icon('phone', 20); ?> <?php echo esc_html( findewerkstatt_t( 'Jetzt anrufen' ) ); ?></a><?php endif; ?>
+            <?php if ( $whatsapp_url ) : ?><a class="fw-btn fw-btn-whatsapp fw-btn-card-action" href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo findewerkstatt_icon('whatsapp', 20); ?> <?php echo esc_html( findewerkstatt_t( 'Per WhatsApp anfragen' ) ); ?></a><?php endif; ?>
             <?php if ( $maps_url ) : ?><a class="fw-btn fw-btn-outline" href="<?php echo esc_url( $maps_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( findewerkstatt_t( 'Route planen' ) ); ?></a><?php endif; ?>
         </div></div>
     </div>
     <div class="fw-single-layout"><div>
-        <figure class="fw-profile-image<?php echo $profile_image ? '' : ' fw-profile-image-symbol'; ?>">
+        <?php
+        $single_real_photo = get_post_meta( $id, '_mechanic_is_real_photo', true ) === 'yes' ? get_post_meta( $id, '_mechanic_google_photo_url', true ) : '';
+        ?>
+        <figure class="fw-profile-image<?php echo ( $profile_image || $single_real_photo ) ? '' : ' fw-profile-image-symbol'; ?>">
             <?php if ( $profile_image ) : ?>
                 <?php echo $profile_image; ?>
+            <?php elseif ( $single_real_photo ) : ?>
+                <img class="fw-profile-image-img" src="<?php echo esc_url( $single_real_photo ); ?>" alt="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Foto von %s' ), wp_strip_all_tags( $title ) ) ); ?>" width="450" height="300" loading="eager" decoding="async" style="object-fit:cover;">
             <?php else : ?>
                 <img class="fw-profile-image-img" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="<?php echo esc_attr( findewerkstatt_t( 'Symbolbild: Arbeiten an einem Motor' ) ); ?>" width="450" height="300" loading="eager" decoding="async">
                 <figcaption><?php echo esc_html( findewerkstatt_t( 'Symbolbild' ) ); ?></figcaption>

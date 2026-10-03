@@ -34,8 +34,8 @@ get_header();
                 <h1 id="fw-registration-heading"><?php echo esc_html( findewerkstatt_t( 'Ihre Werkstatt eintragen' ) ); ?></h1>
                 <p><?php echo esc_html( findewerkstatt_t( 'Machen Sie Ihren Betrieb für Autofahrer in Ihrer Region sichtbar. Mit Ihrem Werkstattkonto reichen Sie Kontaktdaten und Leistungen ein. Wir prüfen jeden Eintrag vor der Veröffentlichung.' ) ); ?></p>
             </div>
-            <div class="fw-mascot-art fw-registration-mascot" aria-hidden="true">
-                <img src="<?php echo esc_url( findewerkstatt_brand_asset_url( 'mascot_workshop' ) ); ?>" alt="" width="1024" height="1024" decoding="async">
+            <div class="fw-mascot-art fw-registration-mascot" aria-hidden="true" style="flex: 0 0 160px; max-width: 170px;">
+                <img src="<?php echo esc_url( findewerkstatt_brand_asset_url( 'mascot_workshop' ) ); ?>" alt="" width="180" height="180" style="max-height: 190px; width: auto; max-width: 170px; object-fit: contain; display: block;" decoding="async">
             </div>
         </div>
         <?php if ( $notice ) : ?>

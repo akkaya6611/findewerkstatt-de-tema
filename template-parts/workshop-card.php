@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /** Workshop card with stored business facts. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 $card_id = get_the_ID();
@@ -18,8 +18,13 @@ $card_languages = findewerkstatt_workshop_language_labels( $card_id );
 ?>
 <article class="fw-workshop-card">
     <a class="fw-card-top" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s – Werkstattprofil ansehen' ), get_the_title() ) ); ?>">
-        <?php if ( has_post_thumbnail() ) : ?>
+        <?php 
+        $card_photo = get_post_meta( $card_id, '_mechanic_google_photo_url', true );
+        $card_is_real = get_post_meta( $card_id, '_mechanic_is_real_photo', true ) === 'yes';
+        if ( has_post_thumbnail() ) : ?>
             <?php the_post_thumbnail( 'medium_large', array( 'class' => 'fw-card-img', 'loading' => 'lazy' ) ); ?>
+        <?php elseif ( $card_is_real && $card_photo ) : ?>
+            <img src="<?php echo esc_url( $card_photo ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" class="fw-card-img" width="640" height="320" loading="lazy" style="object-fit:cover;">
         <?php else : ?>
             <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="" class="fw-card-img" width="640" height="320" loading="lazy">
         <?php endif; ?>
@@ -40,8 +45,8 @@ $card_languages = findewerkstatt_workshop_language_labels( $card_id );
         <?php endif; ?>
         <?php if ( $card_languages ) : ?><p class="fw-card-languages"><strong><?php echo esc_html( findewerkstatt_t( 'Gesprochene Sprachen' ) ); ?>:</strong> <?php echo esc_html( implode( ', ', $card_languages ) ); ?></p><?php endif; ?>
         <div class="fw-card-actions<?php echo $card_phone && $card_whatsapp_url ? ' fw-card-actions-three' : ''; ?>">
-            <?php if ( $card_phone ) : ?><a href="tel:<?php echo esc_attr( $card_phone ); ?>" class="fw-btn fw-btn-phone fw-btn-sm"><?php echo esc_html( findewerkstatt_t( 'Anrufen' ) ); ?></a><?php endif; ?>
-            <?php if ( $card_whatsapp_url ) : ?><a href="<?php echo esc_url( $card_whatsapp_url ); ?>" class="fw-btn fw-btn-whatsapp fw-btn-sm" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( 'WhatsApp-Anfrage an %s' ), get_the_title() ) ); ?>" target="_blank" rel="noopener noreferrer">WhatsApp</a><?php endif; ?>
+            <?php if ( $card_phone ) : ?><a href="tel:<?php echo esc_attr( $card_phone ); ?>" class="fw-btn fw-btn-phone fw-btn-sm fw-btn-card-action"><?php echo findewerkstatt_icon('phone', 16); ?> <?php echo esc_html( findewerkstatt_t( 'Anrufen' ) ); ?></a><?php endif; ?>
+            <?php if ( $card_whatsapp_url ) : ?><a href="<?php echo esc_url( $card_whatsapp_url ); ?>" class="fw-btn fw-btn-whatsapp fw-btn-sm" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( 'WhatsApp-Anfrage an %s' ), get_the_title() ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo findewerkstatt_icon('whatsapp', 16); ?> WhatsApp</a><?php endif; ?>
             <a href="<?php the_permalink(); ?>" class="fw-btn fw-btn-outline fw-btn-sm"><?php echo esc_html( findewerkstatt_t( 'Profil ansehen →' ) ); ?></a>
         </div>
     </div>

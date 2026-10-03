@@ -4,7 +4,7 @@ Theme URI: https://findewerkstatt.de/
 Author: FindeWerkstatt Team
 Author URI: https://findewerkstatt.de/
 Description: Modernes, ultraschnelles Portal für Kfz-Werkstätten, 24h Abschleppdienste, TÜV/AU und Autoreparatur in ganz Deutschland. 100% DSGVO-konform, mobiloptimiert und mit strukturierten Schema.org-Daten.
-Version: 2.0.0
+Version: 2.1.0
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
@@ -1281,16 +1281,15 @@ img {
   color: var(--fw-primary);
 }
 
-.fw-form-field input[type="text"],
-.fw-form-field input[type="email"],
-.fw-form-field input[type="tel"],
-.fw-form-field input[type="password"],
-.fw-form-field input[type="search"],
+.fw-form-field input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
 .fw-form-field select,
 .fw-form-field textarea {
   width: 100%;
-  padding: 11px 14px;
+  display: block;
+  box-sizing: border-box;
+  padding: 12px 14px;
   font-size: 14.5px;
+  line-height: 1.5;
   color: var(--fw-text-main);
   background: #ffffff;
   border: 1px solid var(--fw-border);
@@ -1333,10 +1332,18 @@ img {
   accent-color: var(--fw-accent);
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
 }
 
 .fw-form-honeypot {
   display: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Form Notices */
@@ -1447,4 +1454,26 @@ img {
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* Icon Buttons alignment */
+.fw-btn-card-action {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.fw-btn-card-action svg {
+  flex-shrink: 0;
+  display: inline-block;
+}
+.fw-btn-whatsapp {
+  background-color: #25D366;
+  color: #fff;
+  border: 1px solid #25D366;
+}
+.fw-btn-whatsapp:hover {
+  background-color: #128C7E;
+  border-color: #128C7E;
+  color: #fff;
 }
