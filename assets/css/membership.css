@@ -23,6 +23,24 @@
 .fw-member-auth-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
 .fw-member-auth-panel { min-width: 0; margin-bottom: 0; }
 .fw-member-panel-intro { color: #475569; margin: 0 0 22px; }
+.fw-box { background: #ffffff; border: 1px solid var(--fw-border, #e2e8f0); border-radius: var(--fw-radius-lg, 16px); padding: 32px 36px; box-shadow: 0 4px 20px rgba(5, 41, 93, 0.06); margin-bottom: 24px; }
+.fw-form-honeypot { display: none !important; position: absolute !important; left: -9999px !important; width: 0 !important; height: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+.fw-form { display: flex; flex-direction: column; gap: 4px; }
+.fw-form-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; width: 100%; box-sizing: border-box; }
+.fw-form-field label { font-size: 13.5px; font-weight: 700; color: var(--fw-primary, #05295d); display: block; margin: 0; }
+.fw-form-field input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+.fw-form-field select,
+.fw-form-field textarea { width: 100% !important; display: block !important; box-sizing: border-box !important; padding: 12px 14px !important; font-size: 14.5px !important; line-height: 1.5 !important; color: #101d35 !important; background: #ffffff !important; border: 1.5px solid #cbd5e1 !important; border-radius: 10px !important; transition: border-color .15s ease, box-shadow .15s ease !important; font-family: inherit !important; -webkit-appearance: none; appearance: none; }
+.fw-form-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px !important; }
+.fw-form-field input:focus, .fw-form-field select:focus, .fw-form-field textarea:focus { outline: none !important; border-color: #fb6006 !important; box-shadow: 0 0 0 3px rgba(251, 96, 6, 0.15) !important; }
+.fw-form-check { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: #475569; cursor: pointer; line-height: 1.5; margin: 12px 0 16px; }
+.fw-form-check input[type="checkbox"] { margin-top: 3px; accent-color: #fb6006; width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+.fw-form-help { font-size: 12.5px; color: #64748b; margin: -6px 0 14px; line-height: 1.5; }
+.fw-btn-block { width: 100% !important; display: block !important; text-align: center; }
+.fw-form-notice { padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; font-size: 14.5px; line-height: 1.5; }
+.fw-form-notice-error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+.fw-form-notice-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+.fw-form-notice-warning { background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; }
 .fw-member .fw-form-grid { gap: 16px; }
 .fw-member .fw-form-grid .fw-form-field { margin-bottom: 0; }
 .fw-member-form-link { margin-top: 18px; font-size: 14px; }
