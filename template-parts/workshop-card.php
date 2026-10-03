@@ -18,8 +18,13 @@ $card_languages = findewerkstatt_workshop_language_labels( $card_id );
 ?>
 <article class="fw-workshop-card">
     <a class="fw-card-top" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s – Werkstattprofil ansehen' ), get_the_title() ) ); ?>">
-        <?php if ( has_post_thumbnail() ) : ?>
+        <?php 
+        $card_photo = get_post_meta( $card_id, '_mechanic_google_photo_url', true );
+        $card_is_real = get_post_meta( $card_id, '_mechanic_is_real_photo', true ) === 'yes';
+        if ( has_post_thumbnail() ) : ?>
             <?php the_post_thumbnail( 'medium_large', array( 'class' => 'fw-card-img', 'loading' => 'lazy' ) ); ?>
+        <?php elseif ( $card_is_real && $card_photo ) : ?>
+            <img src="<?php echo esc_url( $card_photo ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" class="fw-card-img" width="640" height="320" loading="lazy" style="object-fit:cover;">
         <?php else : ?>
             <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="" class="fw-card-img" width="640" height="320" loading="lazy">
         <?php endif; ?>

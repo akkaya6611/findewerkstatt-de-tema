@@ -42,9 +42,14 @@ $profile_image = $profile_image_id ? wp_get_attachment_image( $profile_image_id,
         </div></div>
     </div>
     <div class="fw-single-layout"><div>
-        <figure class="fw-profile-image<?php echo $profile_image ? '' : ' fw-profile-image-symbol'; ?>">
+        <?php
+        $single_real_photo = get_post_meta( $id, '_mechanic_is_real_photo', true ) === 'yes' ? get_post_meta( $id, '_mechanic_google_photo_url', true ) : '';
+        ?>
+        <figure class="fw-profile-image<?php echo ( $profile_image || $single_real_photo ) ? '' : ' fw-profile-image-symbol'; ?>">
             <?php if ( $profile_image ) : ?>
                 <?php echo $profile_image; ?>
+            <?php elseif ( $single_real_photo ) : ?>
+                <img class="fw-profile-image-img" src="<?php echo esc_url( $single_real_photo ); ?>" alt="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Foto von %s' ), wp_strip_all_tags( $title ) ) ); ?>" width="450" height="300" loading="eager" decoding="async" style="object-fit:cover;">
             <?php else : ?>
                 <img class="fw-profile-image-img" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/placeholder-mechanic.webp' ); ?>" alt="<?php echo esc_attr( findewerkstatt_t( 'Symbolbild: Arbeiten an einem Motor' ) ); ?>" width="450" height="300" loading="eager" decoding="async">
                 <figcaption><?php echo esc_html( findewerkstatt_t( 'Symbolbild' ) ); ?></figcaption>
