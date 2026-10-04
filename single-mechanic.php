@@ -7,7 +7,6 @@ $title = get_the_title();
 $phone = findewerkstatt_normalize_phone( get_post_meta( $id, '_mechanic_phone', true ) );
 $whatsapp_url = findewerkstatt_get_whatsapp_url( get_post_meta( $id, '_mechanic_whatsapp', true ), $title, $phone );
 $email = get_post_meta( $id, '_mechanic_email_public', true ) === 'yes' ? get_post_meta( $id, '_mechanic_email', true ) : '';
-$website = findewerkstatt_get_website_url( get_post_meta( $id, '_mechanic_website', true ) );
 $address = get_post_meta( $id, '_mechanic_address', true );
 $plz = get_post_meta( $id, '_mechanic_plz', true );
 $city = findewerkstatt_get_city_term( $id );
@@ -243,17 +242,6 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                                     <div class="fw-contact-info-content">
                                         <span class="fw-contact-label"><?php echo esc_html( findewerkstatt_t( 'E-Mail' ) ); ?></span>
                                         <a class="fw-contact-value fw-contact-link" href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ( $website ) : ?>
-                                <div class="fw-contact-info-row">
-                                    <div class="fw-contact-info-icon" aria-hidden="true">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                                    </div>
-                                    <div class="fw-contact-info-content">
-                                        <span class="fw-contact-label"><?php echo esc_html( findewerkstatt_t( 'Website' ) ); ?></span>
-                                        <a class="fw-contact-value fw-contact-link" href="<?php echo esc_url( $website ); ?>" target="_blank" rel="nofollow noopener noreferrer"><?php echo esc_html( wp_parse_url( $website, PHP_URL_HOST ) ); ?> ↗</a>
                                     </div>
                                 </div>
                             <?php endif; ?>
