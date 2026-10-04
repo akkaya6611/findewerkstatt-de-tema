@@ -54,6 +54,25 @@ get_header();
                     <label class="fw-form-check"><input type="checkbox" name="remember" value="1" <?php checked( 'login' === $notice_kind && ! empty( $values['remember'] ) ); ?>><span><?php echo esc_html( findewerkstatt_t( 'Angemeldet bleiben' ) ); ?></span></label>
                     <button type="submit" class="fw-btn fw-btn-primary fw-btn-block"><?php echo esc_html( findewerkstatt_t( 'Anmelden' ) ); ?></button>
                     <p class="fw-member-form-link"><a href="<?php echo esc_url( wp_lostpassword_url( $account_url ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Passwort vergessen?' ) ); ?></a></p>
+                    <div class="fw-member-resend-wrapper" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed #cbd5e1;">
+                        <details <?php if ( in_array( $notice_kind, array( 'resend_verification', 'signup_pending' ), true ) ) echo 'open'; ?>>
+                            <summary style="font-size: 13px; color: var(--fw-primary, #0284c7); cursor: pointer; font-weight: 500;">
+                                <?php echo esc_html( findewerkstatt_t( 'Bestätigungs-E-Mail nicht erhalten? Erneut senden' ) ); ?>
+                            </summary>
+                            <div style="margin-top: 10px;">
+                                <div class="fw-form-field" style="margin-bottom: 8px;">
+                                    <label for="fw-resend-email" style="font-size: 12px;"><?php echo esc_html( findewerkstatt_t( 'Ihre E-Mail-Adresse' ) ); ?></label>
+                                    <input id="fw-resend-email" type="email" name="resend_email_display" value="<?php echo esc_attr( $values['email'] ?? '' ); ?>" placeholder="name@beispiel.de" style="padding: 7px 10px; font-size: 13px;" oninput="document.getElementById('fw-resend-hidden-email').value=this.value;">
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </form>
+                <form id="fw-resend-verification-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: -6px;"><?php findewerkstatt_language_field(); ?>
+                    <input type="hidden" name="action" value="fw_member_resend_verification">
+                    <?php wp_nonce_field( 'fw_member_resend_verification', 'fw_member_nonce' ); ?>
+                    <input type="hidden" id="fw-resend-hidden-email" name="email" value="<?php echo esc_attr( $values['email'] ?? '' ); ?>">
+                    <button type="submit" class="fw-btn fw-btn-outline fw-btn-sm fw-btn-block"><?php echo esc_html( findewerkstatt_t( 'Bestätigungslink erneut anfordern' ) ); ?></button>
                 </form>
             </section>
             <section id="registrieren" class="fw-box fw-member-auth-panel" aria-labelledby="fw-member-signup-heading">

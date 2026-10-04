@@ -437,7 +437,7 @@ try {
     $signup_nonce = wp_create_nonce( 'fw_member_signup' );
     $_POST = array( 'fw_member_nonce' => $signup_nonce );
     fw_membership_test_assert( findewerkstatt_member_valid_post( 'fw_member_signup' ) && ! findewerkstatt_member_valid_post( 'fw_member_login' ), 'Guest signup nonces remain action-specific' );
-    fw_membership_test_assert( 0 === $mail_calls, 'Membership helper operations send no notification emails' );
+    fw_membership_test_assert( 4 === $mail_calls, 'Signup sends exactly one email verification message per created account' );
 } catch ( Throwable $error ) { $failure = $error->getMessage(); }
 finally {
     $cleanup();

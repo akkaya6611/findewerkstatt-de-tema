@@ -201,8 +201,84 @@ function findewerkstatt_member_password_field( $key ) {
 }
 
 function findewerkstatt_member_valid_post( $action ) {
-    if ( ! is_user_logged_in() && in_array( $action, array( 'fw_member_signup', 'fw_member_login' ), true ) && ( ! is_string( $_COOKIE['fw_member_guest'] ?? null ) || ! preg_match( '/^[a-f0-9]{64}$/', $_COOKIE['fw_member_guest'] ) ) ) { return false; }
+    if ( ! is_user_logged_in() && in_array( $action, array( 'fw_member_signup', 'fw_member_login', 'fw_member_resend_verification' ), true ) && ( ! is_string( $_COOKIE['fw_member_guest'] ?? null ) || ! preg_match( '/^[a-f0-9]{64}$/', $_COOKIE['fw_member_guest'] ) ) ) { return false; }
     return 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' ) && wp_verify_nonce( findewerkstatt_form_text( 'fw_member_nonce', 100 ), $action );
+}
+
+function findewerkstatt_member_is_email_verified( $user_id = 0 ) {
+    $user_id = $user_id ? absint( $user_id ) : get_current_user_id();
+    if ( ! $user_id ) { return false; }
+    if ( user_can( $user_id, 'manage_options' ) ) { return true; }
+    $status = get_user_meta( $user_id, '_fw_email_verified', true );
+    if ( '' === $status ) { return true; }
+    return 'yes' === $status;
+}
+
+function findewerkstatt_member_send_verification_email( $user_id, $language = '' ) {
+    $user = get_userdata( absint( $user_id ) );
+    if ( ! $user || ! is_email( $user->user_email ) ) { return false; }
+    $language = $language ?: ( get_user_meta( $user_id, '_fw_member_language', true ) ?: ( function_exists( 'findewerkstatt_language' ) ? findewerkstatt_language() : 'de' ) );
+    $token = wp_generate_password( 48, false, false );
+    update_user_meta( $user_id, '_fw_email_verification_token', $token );
+    update_user_meta( $user_id, '_fw_email_verification_expires', time() + 48 * HOUR_IN_SECONDS );
+    update_user_meta( $user_id, '_fw_member_language', $language );
+
+    $verify_url = add_query_arg( array( 'fw_verify_email' => $token ), findewerkstatt_page_url( 'mein-konto' ) );
+    if ( function_exists( 'findewerkstatt_localize_url' ) ) {
+        $verify_url = findewerkstatt_localize_url( $verify_url, $language );
+    }
+
+    $name = $user->display_name ?: $user->user_email;
+
+    switch ( $language ) {
+        case 'tr':
+            $subject = '[FindeWerkstatt] E-posta adresinizi onaylayın';
+            $body  = "Merhaba " . $name . ",\n\n";
+            $body .= "FindeWerkstatt.de platformuna kaydolduğunuz için teşekkür ederiz.\n\n";
+            $body .= "Hesabınızı etkinleştirmek ve işletmenizi yönetmeye başlamak için lütfen aşağıdaki onay bağlantısına tıklayın:\n";
+            $body .= $verify_url . "\n\n";
+            $body .= "Bu onay bağlantısı 48 saat boyunca geçerlidir.\n\n";
+            $body .= "Eğer bu hesabı siz oluşturmadıysanız, bu e-postayı dikkate almayabilirsiniz.\n\n";
+            $body .= "Saygılarımızla,\nFindeWerkstatt.de Ekibi\n" . home_url( '/' );
+            break;
+
+        case 'en':
+            $subject = '[FindeWerkstatt] Please verify your email address';
+            $body  = "Hello " . $name . ",\n\n";
+            $body .= "Thank you for registering at FindeWerkstatt.de.\n\n";
+            $body .= "Please click the link below to verify your email address and activate your account:\n";
+            $body .= $verify_url . "\n\n";
+            $body .= "This verification link is valid for 48 hours.\n\n";
+            $body .= "If you did not create this account, you can safely ignore this email.\n\n";
+            $body .= "Best regards,\nYour FindeWerkstatt.de Team\n" . home_url( '/' );
+            break;
+
+        case 'ru':
+            $subject = '[FindeWerkstatt] Подтвердите ваш адрес электронной почты';
+            $body  = "Здравствуйте, " . $name . "!\n\n";
+            $body .= "Спасибо за регистрацию на сайте FindeWerkstatt.de.\n\n";
+            $body .= "Пожалуйста, перейдите по ссылке ниже, чтобы подтвердить ваш адрес электронной почты и активировать аккаунт:\n";
+            $body .= $verify_url . "\n\n";
+            $body .= "Ссылка действительна в течение 48 часов.\n\n";
+            $body .= "Если вы не регистрировались на сайте, просто проигнорируйте это сообщение.\n\n";
+            $body .= "С уважением,\nКоманда FindeWerkstatt.de\n" . home_url( '/' );
+            break;
+
+        case 'de':
+        default:
+            $subject = '[FindeWerkstatt] Bitte bestätigen Sie Ihre E-Mail-Adresse';
+            $body  = "Hallo " . $name . ",\n\n";
+            $body .= "vielen Dank für Ihre Registrierung bei FindeWerkstatt.de.\n\n";
+            $body .= "Bitte klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu bestätigen und Ihr Konto zu aktivieren:\n";
+            $body .= $verify_url . "\n\n";
+            $body .= "Dieser Link ist 48 Stunden gültig.\n\n";
+            $body .= "Falls Sie dieses Konto nicht erstellt haben, können Sie diese E-Mail einfach ignorieren.\n\n";
+            $body .= "Mit freundlichen Grüßen,\nIhr FindeWerkstatt.de Team\n" . home_url( '/' );
+            break;
+    }
+
+    $headers = array( 'Content-Type: text/plain; charset=UTF-8' );
+    return (bool) wp_mail( $user->user_email, $subject, $body, $headers );
 }
 
 function findewerkstatt_member_signup_submit() {
@@ -246,12 +322,15 @@ function findewerkstatt_member_signup_submit() {
     update_user_meta( $user_id, '_fw_member_terms_acknowledged_at', current_time( 'mysql', true ) );
     update_user_meta( $user_id, '_fw_member_privacy_acknowledged_at', current_time( 'mysql', true ) );
     update_user_meta( $user_id, '_fw_member_terms_version', wp_get_theme()->get( 'Version' ) );
-    wp_set_current_user( $user_id );
-    wp_set_auth_cookie( $user_id, false, is_ssl() );
-    do_action( 'wp_login', get_userdata( $user_id )->user_login, get_userdata( $user_id ) );
+
+    // Mandatory Email Verification
+    update_user_meta( $user_id, '_fw_email_verified', 'no' );
+    $lang = function_exists( 'findewerkstatt_language' ) ? findewerkstatt_language() : 'de';
+    update_user_meta( $user_id, '_fw_member_language', $lang );
+    findewerkstatt_member_send_verification_email( $user_id, $lang );
+
     findewerkstatt_form_complete( $claim, 'member_signup' );
-    // Account registration is independent of listing packages, including legacy POST fields.
-    findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Ihr Konto wurde erstellt. Sie können jetzt Ihren Betrieb eintragen und dabei ein Paket auswählen.' ), array(), array(), 'signup' );
+    findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Ihr Konto wurde erstellt! Wir haben Ihnen eine Bestätigungs-E-Mail gesendet. Bitte klicken Sie auf den Link in der E-Mail, um Ihr Konto zu aktivieren.' ), array( 'email' => $values['email'] ), array(), 'signup_pending' );
 }
 add_action( 'admin_post_nopriv_fw_member_signup', 'findewerkstatt_member_signup_submit' );
 add_action( 'admin_post_fw_member_signup', 'findewerkstatt_member_signup_submit' );
@@ -266,11 +345,83 @@ function findewerkstatt_member_login_submit() {
     $user = wp_signon( array( 'user_login' => $values['email'], 'user_password' => $password, 'remember' => $values['remember'] ), is_ssl() );
     unset( $password );
     if ( is_wp_error( $user ) ) { findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Die Anmeldung ist fehlgeschlagen. Bitte prüfen Sie E-Mail-Adresse und Passwort.' ), $values, array(), 'login' ); }
+
+    // Check mandatory email verification status (exempt administrators)
+    if ( ! user_can( $user, 'manage_options' ) ) {
+        if ( ! findewerkstatt_member_is_email_verified( $user->ID ) ) {
+            wp_logout();
+            findewerkstatt_member_redirect( 'warning', findewerkstatt_t( 'Ihre E-Mail-Adresse wurde noch nicht bestätigt. Bitte prüfen Sie Ihren Posteingang oder fordern Sie einen neuen Bestätigungslink an.' ), array( 'email' => $values['email'] ), array(), 'resend_verification' );
+        }
+    }
+
     wp_set_current_user( $user->ID );
     findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Sie sind jetzt angemeldet.' ), array(), array(), 'login' );
 }
 add_action( 'admin_post_nopriv_fw_member_login', 'findewerkstatt_member_login_submit' );
 add_action( 'admin_post_fw_member_login', 'findewerkstatt_member_login_submit' );
+
+/** Verify token when verification link is clicked. */
+function findewerkstatt_member_handle_verification() {
+    if ( empty( $_GET['fw_verify_email'] ) || ! is_string( $_GET['fw_verify_email'] ) ) { return; }
+    $token = sanitize_text_field( wp_unslash( $_GET['fw_verify_email'] ) );
+    if ( ! preg_match( '/^[a-zA-Z0-9]{48}$/', $token ) ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Der Bestätigungslink ist ungültig oder abgelaufen.' ), array(), array(), 'login' );
+    }
+
+    $users = get_users( array(
+        'meta_key'   => '_fw_email_verification_token',
+        'meta_value' => $token,
+        'number'     => 1,
+    ) );
+
+    if ( empty( $users ) ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Der Bestätigungslink ist ungültig oder wurde bereits verwendet.' ), array(), array(), 'login' );
+    }
+
+    $user = $users[0];
+    $expires = (int) get_user_meta( $user->ID, '_fw_email_verification_expires', true );
+    if ( ! $expires || time() > $expires ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Der Bestätigungslink ist abgelaufen. Bitte fordern Sie eine neue Bestätigungs-E-Mail an.' ), array( 'email' => $user->user_email ), array(), 'resend_verification' );
+    }
+
+    update_user_meta( $user->ID, '_fw_email_verified', 'yes' );
+    update_user_meta( $user->ID, '_fw_email_verified_at', current_time( 'mysql', true ) );
+    delete_user_meta( $user->ID, '_fw_email_verification_token' );
+    delete_user_meta( $user->ID, '_fw_email_verification_expires' );
+
+    wp_set_current_user( $user->ID );
+    wp_set_auth_cookie( $user->ID, false, is_ssl() );
+    do_action( 'wp_login', $user->user_login, $user );
+
+    findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Ihre E-Mail-Adresse wurde erfolgreich bestätigt! Ihr Konto ist jetzt aktiviert.' ), array(), array(), 'account' );
+}
+add_action( 'template_redirect', 'findewerkstatt_member_handle_verification', 5 );
+
+/** Resend verification email upon request. */
+function findewerkstatt_member_resend_verification_submit() {
+    $email = findewerkstatt_form_text( 'email', 254 );
+    $values = array( 'email' => $email );
+    if ( is_user_logged_in() ) { findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Sie sind bereits angemeldet.' ), array(), array(), 'login' ); }
+    if ( ! findewerkstatt_member_valid_post( 'fw_member_resend_verification' ) ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Bitte laden Sie die Seite neu und versuchen Sie es erneut.' ), $values, array(), 'login' );
+    }
+    if ( ! findewerkstatt_form_rate_allowed( 'resend_verification', 5 ) ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Zu viele Anfragen. Bitte versuchen Sie es in einer Stunde erneut.' ), $values, array(), 'login' );
+    }
+    if ( ! is_email( $email ) ) {
+        findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Bitte geben Sie eine gültige E-Mail-Adresse an.' ), $values, array(), 'login' );
+    }
+
+    $user = get_user_by( 'email', $email );
+    if ( $user && 'no' === get_user_meta( $user->ID, '_fw_email_verified', true ) ) {
+        $lang = function_exists( 'findewerkstatt_language' ) ? findewerkstatt_language() : 'de';
+        findewerkstatt_member_send_verification_email( $user->ID, $lang );
+    }
+
+    findewerkstatt_member_redirect( 'success', findewerkstatt_t( 'Falls ein unbestätigtes Konto mit dieser E-Mail-Adresse existiert, haben wir Ihnen einen neuen Bestätigungslink gesendet.' ), $values, array(), 'login' );
+}
+add_action( 'admin_post_nopriv_fw_member_resend_verification', 'findewerkstatt_member_resend_verification_submit' );
+add_action( 'admin_post_fw_member_resend_verification', 'findewerkstatt_member_resend_verification_submit' );
 
 function findewerkstatt_member_logout_submit() {
     if ( ! findewerkstatt_member_valid_post( 'fw_member_logout' ) || ! is_user_logged_in() ) { findewerkstatt_member_redirect( 'error', findewerkstatt_t( 'Bitte laden Sie die Seite neu und versuchen Sie es erneut.' ), array(), array(), 'logout' ); }
