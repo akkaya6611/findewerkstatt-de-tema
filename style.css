@@ -552,6 +552,24 @@ img {
   color: var(--fw-text-muted);
 }
 
+.fw-section-action {
+  text-align: center;
+  margin-top: 36px;
+}
+
+.fw-section-action .fw-btn {
+  padding: 13px 32px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(5, 41, 93, 0.14);
+}
+
+.fw-section-action .fw-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(5, 41, 93, 0.22);
+}
+
 /* ========================================================
    CATEGORIES GRID
    ======================================================== */
@@ -2642,6 +2660,13 @@ a.fw-workshop-location-item:hover {
   }
   .fw-footer-copyright {
     justify-content: center;
+  }
+  .fw-section-action {
+    margin-top: 24px;
+  }
+  .fw-section-action .fw-btn {
+    width: 100%;
+    max-width: 340px;
   }
 }
 
