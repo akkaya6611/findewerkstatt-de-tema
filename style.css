@@ -775,21 +775,47 @@ img {
   pointer-events: none;
 }
 
-.fw-card-top .fw-card-status,
-.fw-card-status-wrap .fw-card-status {
+.fw-card-status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #ffffff;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.fw-card-status.is-open {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.fw-card-status.is-open .fw-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+}
+
+.fw-card-status.is-closed {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.fw-card-status.is-closed .fw-status-dot {
+  background: #ef4444;
+}
+
+.fw-card-status.is-unknown {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.fw-card-status.is-unknown .fw-status-dot {
+  background: #94a3b8;
 }
 
 .fw-card-status .fw-status-dot {
@@ -797,15 +823,20 @@ img {
   height: 7px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
-.fw-card-status.is-open .fw-status-dot {
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-}
-
-.fw-card-status.is-closed .fw-status-dot {
-  background: #ef4444;
+/* Card image overlay override: frosted glass on dark photo */
+.fw-card-top .fw-card-status,
+.fw-card-status-wrap .fw-card-status {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .fw-card-body {
@@ -1140,7 +1171,8 @@ img {
   margin-bottom: 16px;
 }
 
-.fw-profile-badges .fw-card-status {
+.fw-profile-badges .fw-card-status,
+.fw-contact-hub-status .fw-card-status {
   position: static !important;
   bottom: auto;
   right: auto;
@@ -1151,7 +1183,6 @@ img {
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
-  color: #ffffff;
 }
 
 .fw-single-title-row {

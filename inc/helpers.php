@@ -198,7 +198,7 @@ function findewerkstatt_get_open_status( $post_id = null, $wrap = true ) {
         'unknown'   => 'Öffnungszeiten nicht angegeben',
     );
     if ( ! $wrap ) {
-        $dot_class = in_array( $state, array( 'open', 'emergency' ), true ) ? 'is-open' : 'is-closed';
+        $dot_class = in_array( $state, array( 'open', 'emergency' ), true ) ? 'is-open' : ( 'unknown' === $state ? 'is-unknown' : 'is-closed' );
         return '<span class="fw-card-status ' . esc_attr( $dot_class ) . '"><span class="fw-status-dot"></span><span>' . esc_html( findewerkstatt_t( $labels[ $state ] ) ) . '</span></span>';
     }
     $color = in_array( $state, array( 'open', 'emergency' ), true ) ? '#047857' : '#475569';
