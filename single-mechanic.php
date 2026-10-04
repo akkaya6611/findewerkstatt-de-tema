@@ -164,13 +164,9 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                 <div class="fw-faq-item"><button type="button" class="fw-faq-question"><span><?php echo esc_html( findewerkstatt_t( 'Welche Zahlungsmöglichkeiten gibt es?' ) ); ?></span><span class="fw-faq-icon" aria-hidden="true">+</span></button><div class="fw-faq-answer"><p><?php echo esc_html( findewerkstatt_t( 'Erkundigen Sie sich direkt beim Betrieb nach den akzeptierten Zahlungsmöglichkeiten.' ) ); ?></p></div></div>
             </section>
 
-            <!-- Reviews Section -->
-            <?php if ( $rating['rating'] !== null && $rating['count'] > 0 ) : ?>
-                <section class="fw-box">
-                    <h2><?php echo esc_html( findewerkstatt_t( 'Bewertung des Betriebs' ) ); ?></h2>
-                    <?php echo findewerkstatt_render_stars( $rating['rating'], $rating['count'] ); ?>
-                    <p><?php echo esc_html( findewerkstatt_t( 'Bewertungen dienen der Orientierung. Leistungen und Kosten besprechen Sie bitte direkt mit dem Betrieb.' ) ); ?></p>
-                </section>
+            <!-- Reviews & Customer Feedback Section -->
+            <?php if ( function_exists( 'findewerkstatt_render_workshop_reviews' ) ) : ?>
+                <?php findewerkstatt_render_workshop_reviews( $id ); ?>
             <?php endif; ?>
 
             <!-- PRIMARY CONTACT & BOOKING HUB (Moved below content and ads) -->
@@ -274,6 +270,11 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                     <p class="fw-muted"><?php echo esc_html( findewerkstatt_t( 'Bitte bestätigen Sie Leistungen, Kontaktdaten und Öffnungszeiten direkt beim Betrieb.' ) ); ?> <a class="fw-report-link" href="<?php echo esc_url( findewerkstatt_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Fehler melden' ) ); ?></a></p>
                 </div>
             </section>
+
+            <!-- Quick Quote & Appointment Inquiry Box -->
+            <?php if ( function_exists( 'findewerkstatt_render_quote_inquiry_form' ) ) : ?>
+                <?php findewerkstatt_render_quote_inquiry_form( $id ); ?>
+            <?php endif; ?>
         </div>
 
         <!-- Sticky Sidebar with High CTR Ad Unit & Quick Navigation -->
@@ -281,13 +282,18 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             <!-- Sticky Sidebar Ad Unit (Google AdSense / Direct Sponsor) -->
             <?php if ( function_exists( 'findewerkstatt_render_ad' ) ) { echo findewerkstatt_render_ad( 'sidebar_sticky' ); } ?>
 
-            <!-- Quick Jump to Contact card in sidebar -->
+            <!-- Quick Jump to Contact & Inquiry card in sidebar -->
             <div class="fw-sidebar-contact-card fw-box">
                 <h3><?php echo esc_html( findewerkstatt_t( 'Kontakt & Termine' ) ); ?></h3>
-                <p class="fw-sidebar-contact-desc"><?php echo esc_html( findewerkstatt_t( 'Alle Kontaktdaten, Rufnummern und Öffnungszeiten finden Sie am Ende des Profils.' ) ); ?></p>
-                <a href="#fw-kontakt-termin" class="fw-btn fw-btn-primary fw-btn-block">
-                    <span><?php echo esc_html( findewerkstatt_t( 'Zu den Kontaktdaten' ) ); ?> &darr;</span>
-                </a>
+                <p class="fw-sidebar-contact-desc"><?php echo esc_html( findewerkstatt_t( 'Direkt anrufen, per WhatsApp anfragen oder unverbindlichen Kostenvoranschlag einholen.' ) ); ?></p>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <a href="#fw-inquiry-box" class="fw-btn fw-btn-primary fw-btn-block">
+                        <span><?php echo esc_html( findewerkstatt_t( 'Kostenvoranschlag anfragen' ) ); ?> &darr;</span>
+                    </a>
+                    <a href="#fw-kontakt-termin" class="fw-btn fw-btn-outline fw-btn-block">
+                        <span><?php echo esc_html( findewerkstatt_t( 'Zu den Kontaktdaten' ) ); ?> &darr;</span>
+                    </a>
+                </div>
             </div>
 
             <?php if ( ! get_post_meta( $id, '_fw_owner_user_id', true ) ) : ?>

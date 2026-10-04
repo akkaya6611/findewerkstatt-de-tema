@@ -122,4 +122,42 @@ document.addEventListener('DOMContentLoaded', function () {
             if (icon) icon.textContent = open ? '−' : '+';
         });
     });
+
+    // Geolocation "In meiner Nähe" Button-Handler
+    document.querySelectorAll('.fw-btn-near-me').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (!navigator.geolocation) {
+                alert(translate('Standortabfrage wird von Ihrem Browser leider nicht unterstützt.'));
+                return;
+            }
+
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<span aria-hidden="true">⏳</span> <span>' + translate('Standort wird ermittelt...') + '</span>';
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    const baseUrl = button.dataset.archiveUrl || window.location.pathname;
+                    const url = new URL(baseUrl, window.location.origin);
+                    url.searchParams.set('fw_lat', lat);
+                    url.searchParams.set('fw_lng', lng);
+                    window.location.href = url.toString();
+                },
+                function (error) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                    let msg = translate('Standort konnte nicht ermittelt werden.');
+                    if (error.code === error.PERMISSION_DENIED) {
+                        msg = translate('Standortfreigabe wurde verweigert. Bitte erlauben Sie den Standortzugriff in Ihrem Browser oder wählen Sie Ihre Stadt manuell.');
+                    }
+                    alert(msg);
+                },
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+            );
+        });
+    });
 });
+

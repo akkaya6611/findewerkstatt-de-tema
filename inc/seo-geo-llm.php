@@ -60,6 +60,11 @@ function findewerkstatt_get_seo_geo_llm_settings() {
         'opengraph_enabled'         => 'yes',
         'twitter_cards_enabled'     => 'yes',
         'default_social_image'      => '',
+
+        // DSGVO / GDPR Cookie-Banner & Web Analytics
+        'cookie_banner_enabled'     => 'yes',
+        'analytics_ga4_id'          => '',
+        'analytics_meta_pixel_id'   => '',
     );
 
     $saved = get_option( 'findewerkstatt_seo_geo_llm_settings', array() );
@@ -112,6 +117,9 @@ function findewerkstatt_save_seo_geo_llm_settings( $input ) {
     $clean['opengraph_enabled']     = ! empty( $input['opengraph_enabled'] ) ? 'yes' : 'no';
     $clean['twitter_cards_enabled'] = ! empty( $input['twitter_cards_enabled'] ) ? 'yes' : 'no';
     $clean['default_social_image']  = esc_url_raw( $input['default_social_image'] ?? '' );
+    $clean['cookie_banner_enabled'] = ! empty( $input['cookie_banner_enabled'] ) ? 'yes' : 'no';
+    $clean['analytics_ga4_id']        = sanitize_text_field( $input['analytics_ga4_id'] ?? '' );
+    $clean['analytics_meta_pixel_id'] = sanitize_text_field( $input['analytics_meta_pixel_id'] ?? '' );
 
     update_option( 'findewerkstatt_seo_geo_llm_settings', $clean );
     return $clean;
@@ -664,6 +672,40 @@ function findewerkstatt_render_seo_geo_llm_page() {
                             <td>
                                 <input type="url" name="fw_seo[default_social_image]" value="<?php echo esc_attr( $settings['default_social_image'] ); ?>" class="large-text" placeholder="https://findewerkstatt.de/wp-content/.../share.png">
                                 <p class="description">İlanda özel fotoğraf bulunmadığında sosyal medyada paylaşılırken gösterilecek varsayılan görsel adresi.</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <h4 style="font-size:16px; color:#0f172a; margin-top:28px; border-top:1px solid #e2e8f0; padding-top:20px;">
+                        🍪 DSGVO / TTDSG Çerez İzin Paneli & Web Analitik (Google & Meta)
+                    </h4>
+                    <p style="color:#64748b; font-size:13.5px;">
+                        Almanya ve AB veri koruma standartlarına uygun (DSGVO/TTDSG) hafif çerez onay bildirimini ve onay sonrası çalışan izleme kodlarını yapılandırın.
+                    </p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">DSGVO Çerez İzin Bildirimi</th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="fw_seo[cookie_banner_enabled]" value="yes" <?php checked( 'yes', $settings['cookie_banner_enabled'] ); ?>>
+                                    <strong>Ziyaretçilere modern alt çerez onay kutusunu (Cookie Banner) göster</strong>
+                                </label>
+                                <p class="description">Kullanıcı "Alle akzeptieren" demeden pazarlama/analiz çerezleri yüklenmez. Seçim localStorage'da saklanır.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Google Analytics 4 (GA4) Ölçüm Kimliği</th>
+                            <td>
+                                <input type="text" name="fw_seo[analytics_ga4_id]" value="<?php echo esc_attr( $settings['analytics_ga4_id'] ); ?>" class="regular-text" placeholder="G-XXXXXXXXXX">
+                                <p class="description">Örn: <code>G-ABC123XYZ</code>. Kullanıcı onay verdiğinde otomatik ve asenkron yüklenir.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Meta Pixel ID (Facebook Ads)</th>
+                            <td>
+                                <input type="text" name="fw_seo[analytics_meta_pixel_id]" value="<?php echo esc_attr( $settings['analytics_meta_pixel_id'] ); ?>" class="regular-text" placeholder="123456789012345">
+                                <p class="description">Facebook / Instagram reklam performansı takibi için Meta Pixel ID.</p>
                             </td>
                         </tr>
                     </table>

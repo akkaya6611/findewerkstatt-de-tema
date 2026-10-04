@@ -131,6 +131,7 @@ class FindeWerkstatt_Meta_Boxes {
     }
 
     public static function render_badges_box( $post ) {
+        $is_featured = get_post_meta( $post->ID, '_mechanic_is_featured', true );
         $is_verified = get_post_meta( $post->ID, '_mechanic_is_verified', true );
         $is_master   = get_post_meta( $post->ID, '_mechanic_is_master', true );
         $is_24h      = get_post_meta( $post->ID, '_mechanic_emergency_24h', true );
@@ -139,6 +140,12 @@ class FindeWerkstatt_Meta_Boxes {
         $rating_cnt  = $rating['count'];
         ?>
         <input type="hidden" name="fw_badges_box_present" value="1">
+        <div style="margin-bottom:12px; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:8px 10px;">
+            <label style="display:flex; align-items:center; gap:8px; font-weight:700; color:#b45309; cursor:pointer;">
+                <input type="checkbox" name="_mechanic_is_featured" value="yes" <?php checked( $is_featured, 'yes' ); ?>>
+                <span>⭐ TOP EMPFEHLUNG (Hervorgehoben)</span>
+            </label>
+        </div>
         <div style="margin-bottom:12px;">
             <label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer;">
                 <input type="checkbox" name="_mechanic_is_verified" value="yes" <?php checked( $is_verified, 'yes' ); ?>>
@@ -228,7 +235,7 @@ class FindeWerkstatt_Meta_Boxes {
 
         // Checkboxes
         if ( isset( $_POST['fw_badges_box_present'] ) && '1' === $_POST['fw_badges_box_present'] ) {
-            $checkboxes = array( '_mechanic_is_verified', '_mechanic_is_master', '_mechanic_emergency_24h' );
+            $checkboxes = array( '_mechanic_is_featured', '_mechanic_is_verified', '_mechanic_is_master', '_mechanic_emergency_24h' );
             foreach ( $checkboxes as $cb ) {
                 $val = isset( $_POST[ $cb ] ) && $_POST[ $cb ] === 'yes' ? 'yes' : 'no';
                 update_post_meta( $post_id, $cb, $val );

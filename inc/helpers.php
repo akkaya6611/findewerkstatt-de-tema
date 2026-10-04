@@ -74,12 +74,16 @@ function findewerkstatt_render_stars( $rating = null, $count = 0 ) {
 }
 
 function findewerkstatt_render_badges( $post_id ) {
+    $output = '';
+    if ( function_exists( 'findewerkstatt_render_featured_badge' ) ) {
+        $output .= findewerkstatt_render_featured_badge( $post_id );
+    }
+
     $badges = array(
         '_mechanic_is_verified'   => array( 'fw-badge-verified', 'shield-check', 'Geprüfter Partner' ),
         '_mechanic_is_master'     => array( 'fw-badge-meister', 'trophy', 'Meisterbetrieb' ),
         '_mechanic_emergency_24h' => array( 'fw-badge-urgent', 'notdienst', '24h Notdienst' ),
     );
-    $output = '';
     foreach ( $badges as $key => $badge ) {
         if ( 'yes' === get_post_meta( $post_id, $key, true ) ) {
             $icon_svg = function_exists( 'findewerkstatt_icon' ) ? findewerkstatt_icon( $badge[1], 12 ) : '';
@@ -504,4 +508,25 @@ function findewerkstatt_pagination( $args = array(), $query = null ) {
         $wp_query = $original_wp_query;
     }
 }
+
+/**
+ * Berechnet die Luftlinien-Entfernung zwischen zwei GPS-Koordinaten in Kilometern (Haversine-Formel).
+ *
+ * @param float $lat1
+ * @param float $lon1
+ * @param float $lat2
+ * @param float $lon2
+ * @return float Distanz in km (gerundet auf 1 Nachkommastelle)
+ */
+function findewerkstatt_calculate_distance( $lat1, $lon1, $lat2, $lon2 ) {
+    $earth_radius = 6371; // km
+    $dLat = deg2rad( (float) $lat2 - (float) $lat1 );
+    $dLon = deg2rad( (float) $lon2 - (float) $lon1 );
+    $a = sin( $dLat / 2 ) * sin( $dLat / 2 ) +
+         cos( deg2rad( (float) $lat1 ) ) * cos( deg2rad( (float) $lat2 ) ) *
+         sin( $dLon / 2 ) * sin( $dLon / 2 );
+    $c = 2 * atan2( sqrt( $a ), sqrt( 1 - $a ) );
+    return round( $earth_radius * $c, 1 );
+}
+
 

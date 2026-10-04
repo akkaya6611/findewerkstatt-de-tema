@@ -43,6 +43,10 @@ require_once get_template_directory() . '/inc/location-content.php';
 require_once get_template_directory() . '/inc/import-compat.php';
 require_once get_template_directory() . '/inc/workshop-importer-admin.php';
 require_once get_template_directory() . '/inc/ad-manager.php';
+require_once get_template_directory() . '/inc/cookie-consent.php';
+require_once get_template_directory() . '/inc/featured-workshops.php';
+require_once get_template_directory() . '/inc/quote-inquiry.php';
+require_once get_template_directory() . '/inc/workshop-reviews.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {

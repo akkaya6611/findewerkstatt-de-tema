@@ -60,3 +60,45 @@ function findewerkstatt_resolve_location_filter( $input ) {
     $result['valid'] = true;
     return $result;
 }
+
+/**
+ * Bei übergebenen GPS-Koordinaten (fw_lat, fw_lng) Hauptabfrage nach berechneter Entfernung sortieren.
+ */
+function findewerkstatt_distance_query_clauses( $clauses, $query ) {
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return $clauses;
+    }
+    if ( ! isset( $_GET['fw_lat'], $_GET['fw_lng'] ) || ! is_numeric( $_GET['fw_lat'] ) || ! is_numeric( $_GET['fw_lng'] ) ) {
+        return $clauses;
+    }
+
+    $lat = (float) $_GET['fw_lat'];
+    $lng = (float) $_GET['fw_lng'];
+
+    if ( abs( $lat ) > 90 || abs( $lng ) > 180 ) {
+        return $clauses;
+    }
+
+    global $wpdb;
+
+    if ( ! empty( $wpdb ) && isset( $wpdb->postmeta, $wpdb->posts ) ) {
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_lat ON ({$wpdb->posts}.ID = pm_lat.post_id AND pm_lat.meta_key = '_mechanic_latitude') ";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_lng ON ({$wpdb->posts}.ID = pm_lng.post_id AND pm_lng.meta_key = '_mechanic_longitude') ";
+
+        $haversine = sprintf(
+            "(6371 * acos(LEAST(1.0, GREATEST(-1.0, cos(radians(%f)) * cos(radians(CAST(pm_lat.meta_value AS DECIMAL(10,6)))) * cos(radians(CAST(pm_lng.meta_value AS DECIMAL(10,6))) - radians(%f)) + sin(radians(%f)) * sin(radians(CAST(pm_lat.meta_value AS DECIMAL(10,6))))))))",
+            $lat,
+            $lng,
+            $lat
+        );
+
+        $clauses['orderby'] = " CASE WHEN pm_lat.meta_value IS NULL OR pm_lat.meta_value = '' THEN 1 ELSE 0 END ASC, {$haversine} ASC ";
+    }
+
+    return $clauses;
+}
+if ( function_exists( 'add_filter' ) ) {
+    add_filter( 'posts_clauses', 'findewerkstatt_distance_query_clauses', 20, 2 );
+}
+
+

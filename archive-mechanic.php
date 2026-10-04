@@ -15,18 +15,28 @@ if ( is_tax( 'mechanic_district' ) ) {
     $district = get_queried_object();
     if ( $district instanceof WP_Term ) { $location_phrase = sprintf( findewerkstatt_t( 'im Stadtteil %s' ), $district->name ); }
 }
+$is_gps_search = ( isset( $_GET['fw_lat'] ) && is_numeric( $_GET['fw_lat'] ) && isset( $_GET['fw_lng'] ) && is_numeric( $_GET['fw_lng'] ) );
+if ( $is_gps_search ) {
+    $location_phrase = findewerkstatt_t( 'in Ihrer Nähe (GPS)' );
+}
 ?>
 <main id="main-content" class="fw-container fw-page-content">
     <nav class="fw-breadcrumbs" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Brotkrümelnavigation' ) ); ?>"><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Startseite' ) ); ?></a><span aria-hidden="true">›</span><span><?php echo esc_html( findewerkstatt_t( 'Werkstätten' ) ); ?></span></nav>
     <div class="fw-page-heading"><h1><?php echo esc_html( sprintf( findewerkstatt_t( 'Kfz-Werkstätten %s' ), $location_phrase ) ); ?></h1><p><?php echo esc_html( findewerkstatt_t( 'Wählen Sie Bundesland und Ort sowie die gewünschte Leistung oder Fahrzeugmarke.' ) ); ?></p></div>
-    <?php if ( ! $location_filter['valid'] ) : ?><p class="fw-form-notice fw-form-notice-error" role="alert"><?php echo esc_html( findewerkstatt_t( 'Bitte prüfen Sie Ihre Ortsauswahl. Die Stadt muss zum ausgewählten Bundesland gehören.' ) ); ?></p><?php endif; ?>
+    <?php if ( ! $location_filter['valid'] && ! $is_gps_search && ( ! empty( $_GET['fw_state'] ) || ! empty( $_GET['fw_city'] ) ) ) : ?><p class="fw-form-notice fw-form-notice-error" role="alert"><?php echo esc_html( findewerkstatt_t( 'Bitte prüfen Sie Ihre Ortsauswahl. Die Stadt muss zum ausgewählten Bundesland gehören.' ) ); ?></p><?php endif; ?>
     <form action="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" method="get" class="fw-filter-form fw-box">
         <input type="hidden" name="post_type" value="mechanic">
         <?php findewerkstatt_render_location_picker( 'filter', $location_filter ); ?>
         <div class="fw-form-field"><label for="filter-service"><?php echo esc_html( findewerkstatt_t( 'Leistung' ) ); ?></label><select id="filter-service" name="fw_service"><option value=""><?php echo esc_html( findewerkstatt_t( 'Alle Leistungen' ) ); ?></option><?php foreach ( $services as $slug => $service ) : ?><option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $filters['fw_service'], $slug ); ?>><?php echo esc_html( findewerkstatt_t( $service['name'] ) ); ?></option><?php endforeach; ?></select></div>
         <div class="fw-form-field"><label for="filter-brand"><?php echo esc_html( findewerkstatt_t( 'Fahrzeugmarke' ) ); ?></label><select id="filter-brand" name="fw_brand"><option value=""><?php echo esc_html( findewerkstatt_t( 'Alle Marken' ) ); ?></option><?php foreach ( $brands as $slug => $brand ) : ?><option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $filters['fw_brand'], $slug ); ?>><?php echo esc_html( $brand ); ?></option><?php endforeach; ?></select></div>
         <?php findewerkstatt_render_workshop_language_filter( isset( $_GET['fw_spoken'] ) && is_string( $_GET['fw_spoken'] ) ? sanitize_key( wp_unslash( $_GET['fw_spoken'] ) ) : '' ); ?>
-        <button type="submit" class="fw-btn fw-btn-primary"><?php echo esc_html( findewerkstatt_t( 'Suchen' ) ); ?></button>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button type="submit" class="fw-btn fw-btn-primary"><?php echo esc_html( findewerkstatt_t( 'Suchen' ) ); ?></button>
+            <button type="button" class="fw-btn fw-btn-outline fw-btn-near-me" data-archive-url="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Werkstätten in meiner Nähe per GPS finden' ) ); ?>">
+                <span aria-hidden="true">📍</span>
+                <span><?php echo esc_html( findewerkstatt_t( 'In meiner Nähe' ) ); ?></span>
+            </button>
+        </div>
     </form>
     <?php if ( have_posts() ) : ?>
         <p class="fw-result-count"><?php echo esc_html( number_format_i18n( $wp_query->found_posts ) ); ?> <?php echo $wp_query->found_posts === 1 ? findewerkstatt_t( 'Werkstatt gefunden' ) : findewerkstatt_t( 'Werkstätten gefunden' ); ?></p>

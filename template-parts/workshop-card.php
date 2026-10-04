@@ -17,8 +17,18 @@ $card_services = wp_get_post_terms( $card_id, 'service_type' );
 $card_languages = findewerkstatt_workshop_language_labels( $card_id );
 $card_badges = findewerkstatt_render_badges( $card_id );
 $card_display_address = findewerkstatt_clean_address( $card_address, get_the_title(), $card_plz, $card_city_name );
+$card_is_featured = function_exists( 'findewerkstatt_is_featured' ) && findewerkstatt_is_featured( $card_id );
+
+$user_lat = isset( $_GET['fw_lat'] ) && is_numeric( $_GET['fw_lat'] ) ? (float) $_GET['fw_lat'] : null;
+$user_lng = isset( $_GET['fw_lng'] ) && is_numeric( $_GET['fw_lng'] ) ? (float) $_GET['fw_lng'] : null;
+$card_lat = get_post_meta( $card_id, '_mechanic_latitude', true );
+$card_lng = get_post_meta( $card_id, '_mechanic_longitude', true );
+$card_distance = null;
+if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_numeric( $card_lng ) && function_exists( 'findewerkstatt_calculate_distance' ) ) {
+    $card_distance = findewerkstatt_calculate_distance( $user_lat, $user_lng, (float) $card_lat, (float) $card_lng );
+}
 ?>
-<article class="fw-workshop-card">
+<article class="fw-workshop-card <?php echo $card_is_featured ? 'fw-card-featured' : ''; ?>">
     <div class="fw-card-top">
         <a href="<?php the_permalink(); ?>" class="fw-card-img-link" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s – Werkstattprofil ansehen' ), get_the_title() ) ); ?>">
             <?php 
@@ -65,6 +75,12 @@ $card_display_address = findewerkstatt_clean_address( $card_address, get_the_tit
                 <div class="fw-card-city-tag">
                     <?php echo findewerkstatt_icon( 'pin', 11, 'fw-card-city-pin' ); ?>
                     <span><?php echo esc_html( $card_city_name ); ?></span>
+                </div>
+            <?php endif; ?>
+            <?php if ( null !== $card_distance ) : ?>
+                <div class="fw-card-city-tag" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; font-weight:700;">
+                    <span>📍</span>
+                    <span><?php echo esc_html( $card_distance ); ?> km</span>
                 </div>
             <?php endif; ?>
         </div>
