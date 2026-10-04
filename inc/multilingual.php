@@ -48,7 +48,7 @@ function findewerkstatt_localize_url( $url, $language = '' ) {
     if ( $url !== $home && ! str_starts_with( $url, $home . '/' ) && ! str_starts_with( $url, $home . '?' ) && ! str_starts_with( $url, $home . '#' ) ) { return $url; }
     $suffix = substr( $url, strlen( $home ) );
     $suffix = preg_replace( '#^/(?:tr|en|ru)(?=/|\?|\#|$)#', '', $suffix );
-    if ( preg_match( '#^/(?:wp-admin|wp-content|wp-includes|wp-json)(?:/|$)|^/(?:wp-login\.php|wp-cron\.php|wp-sitemap[^/]*\.xml|robots\.txt|ads\.txt|llms\.txt)(?:[?\#]|$)#', $suffix ) ) { return $home . $suffix; }
+    if ( preg_match( '#^/(?:wp-admin|wp-content|wp-includes|wp-json)(?:/|$)|^/(?:wp-login\.php|wp-cron\.php|wp-sitemap[^/]*\.xml|sitemap\.xml|robots\.txt|ads\.txt|llms\.txt|llms-full\.txt)(?:[?\#]|$)#', $suffix ) ) { return $home . $suffix; }
     if ( '' === $suffix || '?' === substr( $suffix, 0, 1 ) || '#' === substr( $suffix, 0, 1 ) ) { $suffix = '/' . $suffix; }
     return $home . ( 'de' === $language ? '' : '/' . $language ) . $suffix;
 }

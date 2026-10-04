@@ -20,6 +20,7 @@ require_once get_template_directory() . '/inc/germany-geo-hierarchy.php';
 require_once get_template_directory() . '/inc/post-types-taxonomies.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/schema-seo.php';
+require_once get_template_directory() . '/inc/seo-geo-llm.php';
 require_once get_template_directory() . '/inc/helpers.php';
 require_once get_template_directory() . '/inc/site-settings.php';
 require_once get_template_directory() . '/inc/branding.php';
