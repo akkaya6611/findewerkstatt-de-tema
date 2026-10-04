@@ -124,30 +124,29 @@ function findewerkstatt_custom_login_styles() {
     ?>
     <style type="text/css">
         body.login {
-            background: linear-gradient(135deg, #05295d 0%, #0a192f 100%) !important;
-            color: #f8fafc !important;
+            background: #f8fafc !important;
+            background-image: radial-gradient(at 50% 0%, #ffffff 0%, #f1f5f9 100%) !important;
+            color: #1e293b !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
-            position: relative !important;
-            padding: 20px 0 !important;
+            padding: 40px 16px !important;
+            margin: 0 !important;
         }
 
-        /* Logo & Brand Heading */
+        /* Container & Logo */
         #login {
             width: 100% !important;
-            max-width: 430px !important;
-            padding: 24px !important;
-            position: relative !important;
-            z-index: 1 !important;
+            max-width: 400px !important;
+            padding: 0 !important;
             margin: auto !important;
         }
 
         #login h1 {
-            margin-bottom: 22px !important;
+            margin-bottom: 8px !important;
             text-align: center !important;
         }
 
@@ -157,107 +156,152 @@ function findewerkstatt_custom_login_styles() {
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
                 background-position: center !important;
-                width: 280px !important;
-                height: 72px !important;
+                width: 240px !important;
+                height: 50px !important;
             <?php endif; ?>
+            display: block !important;
             margin: 0 auto !important;
-            filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35)) !important;
+            text-indent: -9999px !important;
+            overflow: hidden !important;
+        }
+
+        .fw-login-portal-tag {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .fw-login-portal-tag::before,
+        .fw-login-portal-tag::after {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 1px;
+            background: #cbd5e1;
         }
 
         /* Form Card */
         .login form {
             background: #ffffff !important;
-            border-radius: 20px !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45) !important;
-            padding: 34px 30px !important;
+            border-radius: 16px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+            padding: 32px 28px !important;
+            margin-top: 0 !important;
         }
 
-        .login form .input {
-            background: #f8fafc !important;
-            border: 1.5px solid #cbd5e1 !important;
-            border-radius: 10px !important;
-            padding: 10px 14px !important;
-            font-size: 15px !important;
-            color: #0f172a !important;
-            transition: all 0.2s ease !important;
-            box-shadow: none !important;
-        }
-
-        .login form .input:focus {
-            border-color: #fb6006 !important;
-            background: #ffffff !important;
-            box-shadow: 0 0 0 3.5px rgba(251, 96, 6, 0.22) !important;
-            outline: none !important;
+        .login form p {
+            margin-bottom: 18px !important;
         }
 
         .login label {
             font-size: 13.5px !important;
             font-weight: 600 !important;
-            color: #1e293b !important;
+            color: #334155 !important;
             margin-bottom: 6px !important;
+            display: block !important;
+        }
+
+        .login form .input {
+            background: #f8fafc !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            padding: 10px 14px !important;
+            font-size: 14.5px !important;
+            color: #0f172a !important;
+            transition: all 0.2s ease !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+        }
+
+        .login form .input:focus {
+            border-color: #05295d !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 0 3px rgba(5, 41, 93, 0.12) !important;
+            outline: none !important;
         }
 
         /* Primary Submit Button */
         .wp-core-ui .button-primary {
-            background: #fb6006 !important;
+            background: #05295d !important;
             border: none !important;
             color: #ffffff !important;
             font-size: 15px !important;
-            font-weight: 700 !important;
-            border-radius: 10px !important;
-            height: 46px !important;
-            line-height: 46px !important;
-            padding: 0 24px !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            height: 44px !important;
+            line-height: 44px !important;
+            padding: 0 20px !important;
             width: 100% !important;
-            margin-top: 18px !important;
+            margin-top: 12px !important;
             cursor: pointer !important;
-            box-shadow: 0 4px 16px rgba(251, 96, 6, 0.35) !important;
-            transition: transform 0.15s ease, background 0.15s ease !important;
+            box-shadow: 0 4px 12px rgba(5, 41, 93, 0.18) !important;
+            transition: all 0.15s ease !important;
             text-shadow: none !important;
         }
 
         .wp-core-ui .button-primary:hover,
         .wp-core-ui .button-primary:focus {
-            background: #e05300 !important;
+            background: #0b3d85 !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 6px 20px rgba(251, 96, 6, 0.45) !important;
+            box-shadow: 0 6px 16px rgba(5, 41, 93, 0.25) !important;
         }
 
-        /* Checkbox & Forget Me Not */
+        /* Remember Me */
         .forgetmenot {
-            margin-top: 8px !important;
+            margin-top: 6px !important;
+            margin-bottom: 0 !important;
         }
+
         .forgetmenot label {
             font-weight: 500 !important;
             color: #64748b !important;
             font-size: 13px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            cursor: pointer !important;
         }
 
         /* Alerts & Notices */
         .login #login_error,
         .login .message,
         .login .success {
-            border-radius: 12px !important;
-            border-left: 4px solid #fb6006 !important;
+            border-radius: 10px !important;
+            border-left: 4px solid #ef4444 !important;
             background: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            border-top: 1px solid #f1f5f9 !important;
+            border-right: 1px solid #f1f5f9 !important;
+            border-bottom: 1px solid #f1f5f9 !important;
             color: #0f172a !important;
             font-size: 13.5px !important;
-            padding: 14px 18px !important;
+            padding: 12px 16px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .login .message {
+            border-left-color: #05295d !important;
         }
 
         /* Bottom Links */
         .login #nav,
         .login #backtoblog {
             text-align: center !important;
-            padding: 6px 0 !important;
-            margin: 12px 0 0 !important;
+            padding: 4px 0 !important;
+            margin: 10px 0 0 !important;
         }
 
         .login #nav a,
         .login #backtoblog a {
-            color: #94a3b8 !important;
+            color: #64748b !important;
             font-size: 13px !important;
             font-weight: 500 !important;
             transition: color 0.15s ease !important;
@@ -266,7 +310,7 @@ function findewerkstatt_custom_login_styles() {
 
         .login #nav a:hover,
         .login #backtoblog a:hover {
-            color: #ffffff !important;
+            color: #05295d !important;
             text-decoration: underline !important;
         }
 
@@ -275,15 +319,16 @@ function findewerkstatt_custom_login_styles() {
             margin-top: 24px;
             text-align: center;
             font-size: 12px;
-            color: #64748b;
+            color: #94a3b8;
         }
         .fw-login-footer a {
-            color: #94a3b8;
+            color: #64748b;
             text-decoration: none;
             margin: 0 6px;
+            transition: color 0.15s ease;
         }
         .fw-login-footer a:hover {
-            color: #ffffff;
+            color: #05295d;
             text-decoration: underline;
         }
 
@@ -293,17 +338,30 @@ function findewerkstatt_custom_login_styles() {
             text-align: center !important;
         }
         .language-switcher select {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            border-radius: 8px !important;
-            padding: 4px 8px !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 5px 10px !important;
+            font-size: 12.5px !important;
         }
     </style>
     <?php
 }
 if ( function_exists( 'add_action' ) ) {
     add_action( 'login_head', 'findewerkstatt_custom_login_styles' );
+}
+
+/**
+ * Subtitle / Badge unter dem Logo
+ */
+if ( function_exists( 'add_filter' ) ) {
+    add_filter( 'login_message', function( $message ) {
+        if ( empty( $message ) ) {
+            return '<div class="fw-login-portal-tag">Partner- &amp; Administrationsbereich</div>';
+        }
+        return $message;
+    } );
 }
 
 /**
@@ -316,7 +374,7 @@ function findewerkstatt_login_footer_links() {
     <div class="fw-login-footer">
         <a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank">Datenschutzerklärung</a> • 
         <a href="<?php echo esc_url( $imprint_url ); ?>" target="_blank">Impressum</a>
-        <div style="margin-top:8px; opacity:0.8;">&copy; <?php echo esc_html( date( 'Y' ) ); ?> FindeWerkstatt.de — Alle Rechte vorbehalten.</div>
+        <div style="margin-top:8px; opacity:0.85;">&copy; <?php echo esc_html( date( 'Y' ) ); ?> FindeWerkstatt.de — Alle Rechte vorbehalten.</div>
     </div>
     <?php
 }
