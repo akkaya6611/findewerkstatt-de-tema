@@ -56,47 +56,41 @@ function findewerkstatt_render_featured_badge( $post_id = 0 ) {
 }
 
 /**
- * Hauptabfrage modifizieren: Hervorgehobene Werkstätten nach oben sortieren.
- * Greift in Archiv- und Taxonomie-Seiten (Stadt, Marke, Service).
+ * Hauptabfrage modifizieren: Hervorgehobene Werkstätten nach oben sortieren,
+ * ohne normale (nicht-hervorgehobene) Einträge aus der Abfrage auszuschließen.
  */
-function findewerkstatt_prioritize_featured_listings( $query ) {
+function findewerkstatt_prioritize_featured_clauses( $clauses, $query ) {
     if ( is_admin() || ! $query->is_main_query() ) {
-        return;
+        return $clauses;
     }
 
-    // Nur bei Mechanic-Archiven oder entsprechenden Taxonomien
     $is_mechanic_query = (
         $query->is_post_type_archive( 'mechanic' ) ||
-        $query->is_tax( array( 'city', 'service_type', 'car_brand' ) )
+        $query->is_tax( array( 'mechanic_city', 'service_type', 'car_brand', 'mechanic_district' ) )
     );
 
     if ( ! $is_mechanic_query ) {
-        return;
+        return $clauses;
     }
 
-    // Wenn keine spezielle Sortierung wie Distanz gewählt ist, Featured priorisieren
-    if ( ! isset( $_GET['orderby'] ) || empty( $_GET['orderby'] ) ) {
-        $meta_query = $query->get( 'meta_query' );
-        if ( ! is_array( $meta_query ) ) {
-            $meta_query = array();
+    // Wenn keine spezielle manuelle Sortierung aktiv ist
+    if ( empty( $_GET['orderby'] ) && empty( $_GET['fw_lat'] ) ) {
+        global $wpdb;
+        if ( ! empty( $wpdb ) && isset( $wpdb->postmeta, $wpdb->posts ) ) {
+            if ( strpos( $clauses['join'], 'pm_feat' ) === false ) {
+                $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_feat ON ({$wpdb->posts}.ID = pm_feat.post_id AND pm_feat.meta_key = '_mechanic_is_featured') ";
+            }
+            $feat_order = " (CASE WHEN pm_feat.meta_value = 'yes' THEN 1 ELSE 0 END) DESC ";
+            $clauses['orderby'] = $feat_order . ( ! empty( $clauses['orderby'] ) ? ', ' . $clauses['orderby'] : '' );
         }
-
-        $meta_query['relation'] = 'AND';
-        $meta_query['featured_clause'] = array(
-            'key'     => '_mechanic_is_featured',
-            'compare' => 'EXISTS',
-        );
-
-        $query->set( 'meta_query', $meta_query );
-        $query->set( 'orderby', array(
-            'featured_clause' => 'DESC',
-            'date'            => 'DESC',
-        ) );
     }
+
+    return $clauses;
 }
 
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'pre_get_posts', 'findewerkstatt_prioritize_featured_listings', 15 );
+if ( function_exists( 'add_filter' ) ) {
+    add_filter( 'posts_clauses', 'findewerkstatt_prioritize_featured_clauses', 15, 2 );
 }
+
 
 
