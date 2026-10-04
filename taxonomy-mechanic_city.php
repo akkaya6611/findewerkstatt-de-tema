@@ -86,7 +86,7 @@ get_header();
             </div>
         <?php endif; ?>
         <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
-        <div class="fw-pagination"><?php the_posts_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_location_translate( '← Zurück' ), 'next_text' => findewerkstatt_location_translate( 'Weiter →' ), 'screen_reader_text' => findewerkstatt_location_translate( 'Weitere Werkstätten' ) ) ); ?></div>
+        <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_location_translate( '← Zurück' ), 'next_text' => findewerkstatt_location_translate( 'Weiter →' ), 'screen_reader_text' => findewerkstatt_location_translate( 'Weitere Werkstätten' ) ) ); ?>
     <?php else : ?>
         <div class="fw-empty-state">
             <h3><?php echo esc_html( sprintf( findewerkstatt_location_translate( 'Noch keine Werkstätten %s eingetragen' ), $location_phrase ) ); ?></h3>
