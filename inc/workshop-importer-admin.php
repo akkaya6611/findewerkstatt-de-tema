@@ -193,12 +193,16 @@ class FindeWerkstatt_Workshop_Importer {
     }
 
     public static function enqueue_admin_assets( $hook ) {
-        if ( 'mechanic_page_findewerkstatt-import' !== $hook ) {
+        if ( 'mechanic_page_findewerkstatt-import' !== $hook && 'admin_page_findewerkstatt-import' !== $hook && ( ! isset( $_GET['page'] ) || 'findewerkstatt-import' !== $_GET['page'] ) ) {
             return;
         }
 
         wp_enqueue_style( 'findewerkstatt-importer-admin', false );
-        wp_add_inline_style( 'findewerkstatt-importer-admin', '
+        wp_add_inline_style( 'findewerkstatt-importer-admin', self::get_admin_css() );
+    }
+
+    public static function get_admin_css() {
+        return '
             .fw-import-wrap { max-width: 1000px; margin: 20px 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
             .fw-import-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 28px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; }
             .fw-import-header h1 { margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 10px; }
@@ -241,7 +245,7 @@ class FindeWerkstatt_Workshop_Importer {
             .fw-template-table th, .fw-template-table td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; }
             .fw-template-table th { background: #f1f5f9; font-weight: 600; color: #334155; }
             .fw-template-table code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-        ' );
+        ';
     }
 
     public static function render_admin_page() {
@@ -251,6 +255,7 @@ class FindeWerkstatt_Workshop_Importer {
 
         $total_mechanics = wp_count_posts( 'mechanic' )->publish;
         ?>
+        <style><?php echo self::get_admin_css(); ?></style>
         <div class="wrap fw-import-wrap">
             <div class="fw-import-header">
                 <h1>
@@ -271,7 +276,7 @@ class FindeWerkstatt_Workshop_Importer {
                     <input type="file" id="fw-file-input" accept=".xlsx, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/csv">
                 </div>
 
-                <div class="fw-selected-file" id="fw-selected-file">
+                <div class="fw-selected-file" id="fw-selected-file" style="display:none;">
                     <span id="fw-selected-filename">📄 datei.xlsx</span>
                     <button type="button" class="button-link" id="fw-remove-file" style="color:#ef4444;"><?php esc_html_e( 'Entfernen', 'findewerkstatt' ); ?></button>
                 </div>
@@ -296,7 +301,7 @@ class FindeWerkstatt_Workshop_Importer {
                 </button>
 
                 <!-- Live Progress UI -->
-                <div class="fw-progress-wrap" id="fw-progress-wrap">
+                <div class="fw-progress-wrap" id="fw-progress-wrap" style="display:none;">
                     <div class="fw-progress-stats">
                         <span id="fw-status-text"><?php esc_html_e( 'Wird vorbereitet...', 'findewerkstatt' ); ?></span>
                         <span class="fw-stat-badge fw-stat-inserted" id="fw-badge-inserted">Neu: 0</span>
@@ -971,24 +976,49 @@ class FindeWerkstatt_Workshop_Importer {
         }
 
         // service_type
-        $primary_service = get_term_by( 'slug', 'reifenservice-raederwechsel', 'service_type' );
         $service_terms = array();
-        if ( $primary_service ) {
-            $service_terms[] = (int) $primary_service->term_id;
+        $name_lower = mb_strtolower( $name, 'UTF-8' );
+        $cat_lower  = mb_strtolower( $category . ' ' . ( $data['search_cat'] ?? '' ), 'UTF-8' );
+        $full_haystack = $name_lower . ' ' . $cat_lower;
+
+        // 1. TÜV / HU & AU
+        if ( preg_match( '/\b(tüv|tuev|dekra|küs|kues|gtü|gtue|fsp|prüfstelle|pruefstelle|hu\b|au\b|hauptuntersuchung)\b/i', $full_haystack ) ) {
+            $tuev = get_term_by( 'slug', 'tuev-hu-au', 'service_type' );
+            if ( $tuev ) $service_terms[] = (int) $tuev->term_id;
         }
-        $cat_slug = sanitize_title( $category );
-        $cat_map = array(
-            'karosseriewerkstatt' => 'karosserie-lackiererei',
-            'fahrzeuglackiererei' => 'karosserie-lackiererei',
-            'autoglaswerkstatt'   => 'autoglas-scheibenreparatur',
-            'autowerkstatt'       => 'kfz-werkstatt',
-        );
-        if ( isset( $cat_map[ $cat_slug ] ) ) {
-            $sec = get_term_by( 'slug', $cat_map[ $cat_slug ], 'service_type' );
-            if ( $sec ) {
-                $service_terms[] = (int) $sec->term_id;
-            }
+
+        // 2. Abschleppdienst & Pannenhilfe
+        if ( preg_match( '/\b(abschlepp|pannenhilfe|abschleppdienst|bergungsdienst|24h|notdienst|pannendienst)\b/i', $full_haystack ) ) {
+            $abschlepp = get_term_by( 'slug', 'abschleppdienst-pannenhilfe', 'service_type' );
+            if ( $abschlepp ) $service_terms[] = (int) $abschlepp->term_id;
         }
+
+        // 3. Karosserie & Lackiererei
+        if ( preg_match( '/\b(karosserie|lack|lackiererei|unfallinstandsetzung|beulendoktor)\b/i', $full_haystack ) ) {
+            $kaross = get_term_by( 'slug', 'karosserie-lackiererei', 'service_type' );
+            if ( $kaross ) $service_terms[] = (int) $kaross->term_id;
+        }
+
+        // 4. Autoglas & Scheiben
+        if ( preg_match( '/\b(glas|autoglas|carglass|scheiben|scheibenreparatur)\b/i', $full_haystack ) ) {
+            $glas = get_term_by( 'slug', 'autoglas-scheibenreparatur', 'service_type' );
+            if ( $glas ) $service_terms[] = (int) $glas->term_id;
+        }
+
+        // 5. Freie Werkstatt & Kfz-Werkstatt
+        if ( preg_match( '/\b(freie werkstatt|autowerkstatt|meisterbetrieb|kfz-service|autoservice|kfz-reparatur|kfz-werkstatt)\b/i', $full_haystack ) ) {
+            $freie = get_term_by( 'slug', 'freie-werkstatt', 'service_type' );
+            if ( $freie ) $service_terms[] = (int) $freie->term_id;
+            $kfz = get_term_by( 'slug', 'kfz-werkstatt', 'service_type' );
+            if ( $kfz ) $service_terms[] = (int) $kfz->term_id;
+        }
+
+        // 6. Reifenservice & Räderwechsel
+        if ( preg_match( '/\b(reifen|räder|raeder|reifenservice|pneu|räderwechsel)\b/i', $full_haystack ) || empty( $service_terms ) ) {
+            $reifen = get_term_by( 'slug', 'reifenservice-raederwechsel', 'service_type' );
+            if ( $reifen ) $service_terms[] = (int) $reifen->term_id;
+        }
+
         if ( ! empty( $service_terms ) ) {
             wp_set_object_terms( $post_id, array_unique( $service_terms ), 'service_type', false );
         }
