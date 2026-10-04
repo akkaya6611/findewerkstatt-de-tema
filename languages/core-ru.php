@@ -94,4 +94,5 @@ return array(
     'Bestätigungs-E-Mail nicht erhalten? Erneut senden' => 'Не получили письмо с подтверждением? Отправить снова',
     'Bestätigungslink erneut anfordern' => 'Запросить ссылку подтверждения повторно',
     'Ihre E-Mail-Adresse' => 'Ваш адрес электронной почты',
+    'Webdesign & Entwicklung' => 'Веб-дизайн и разработка',
 );

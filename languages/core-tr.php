@@ -94,4 +94,5 @@ return array(
     'Bestätigungs-E-Mail nicht erhalten? Erneut senden' => 'Onay e-postasını almadınız mı? Yeniden gönder',
     'Bestätigungslink erneut anfordern' => 'Onay bağlantısını tekrar iste',
     'Ihre E-Mail-Adresse' => 'E-posta adresiniz',
+    'Webdesign & Entwicklung' => 'Tasarım & Yazılım',
 );

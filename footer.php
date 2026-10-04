@@ -63,8 +63,10 @@
         </div>
 
         <div class="fw-footer-bottom">
-            <div>
-                &copy; <?php echo date( 'Y' ); ?> FindeWerkstatt.de — <?php echo esc_html( findewerkstatt_t( 'Alle Rechte vorbehalten.' ) ); ?>
+            <div class="fw-footer-copyright">
+                <span>&copy; <?php echo date( 'Y' ); ?> FindeWerkstatt.de — <?php echo esc_html( findewerkstatt_t( 'Alle Rechte vorbehalten.' ) ); ?></span>
+                <span class="fw-footer-credit-sep">|</span>
+                <span class="fw-footer-credit"><?php echo esc_html( findewerkstatt_t( 'Webdesign & Entwicklung' ) ); ?>: <a href="https://misteknoloji360.com.tr/" target="_blank" rel="noopener">MİS Teknoloji</a></span>
             </div>
             <div class="fw-footer-bottom-links">
                 <?php if ( function_exists( 'findewerkstatt_languages' ) ) : ?>

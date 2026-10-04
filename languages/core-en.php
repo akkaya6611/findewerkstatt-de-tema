@@ -94,4 +94,5 @@ return array(
     'Bestätigungs-E-Mail nicht erhalten? Erneut senden' => 'Didn’t receive confirmation email? Resend',
     'Bestätigungslink erneut anfordern' => 'Request confirmation link again',
     'Ihre E-Mail-Adresse' => 'Your email address',
+    'Webdesign & Entwicklung' => 'Web Design & Development',
 );

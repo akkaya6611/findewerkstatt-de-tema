@@ -2081,6 +2081,30 @@ a.fw-workshop-location-item:hover {
   color: #ffffff;
 }
 
+.fw-footer-copyright {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #94a3b8;
+}
+
+.fw-footer-credit a {
+  color: #fb6006;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.fw-footer-credit a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.fw-footer-credit-sep {
+  color: #475569;
+}
+
 /* ========================================================
    BENEFITS & PROCESS GRID ("So finden Sie Ihre Werkstatt")
    ======================================================== */
@@ -2615,6 +2639,9 @@ a.fw-workshop-location-item:hover {
   .fw-footer-bottom {
     flex-direction: column;
     text-align: center;
+  }
+  .fw-footer-copyright {
+    justify-content: center;
   }
 }
 
