@@ -48,7 +48,8 @@
 .fw-account-menu { position: relative; flex: 0 0 auto; }
 .fw-account-menu-toggle { display: inline-flex; align-items: center; gap: 9px; min-height: 48px; padding: 5px 10px 5px 5px; border: 1px solid #e2e8f0; border-radius: 12px; color: #203b70; background: #fff; cursor: pointer; list-style: none; font-size: 14px; font-weight: 650; white-space: nowrap; }
 .fw-account-menu-toggle::-webkit-details-marker { display: none; }
-.fw-account-menu-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #eef3fb; color: #203b70; }
+.fw-account-menu-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #eef3fb; color: #203b70; font-weight: 700; flex-shrink: 0; }
+.fw-account-menu-avatar svg { width: 18px; height: 18px; flex: 0 0 auto; }
 .fw-account-menu-toggle:hover, .fw-account-menu[open] .fw-account-menu-toggle { border-color: #fed7aa; background: #fff8f1; color: #a44105; }
 .fw-account-menu-toggle:hover .fw-account-menu-avatar, .fw-account-menu[open] .fw-account-menu-avatar { background: #ffeddb; color: #b44300; }
 .fw-account-menu-chevron { transition: transform .15s ease; }
@@ -250,12 +251,42 @@
   .fw-header .fw-header-cta {
     gap: 8px;
   }
-  .fw-header .fw-account-menu-toggle { padding: 0; width: 42px; height: 42px; min-height: 42px; justify-content: center; border-radius: 10px; }
-  .fw-header .fw-account-menu-avatar { width: 100%; height: 100%; background: transparent; }
-  .fw-header .fw-account-menu-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  .fw-header .fw-account-menu-chevron { display: none; }
+  .fw-header .fw-account-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+    border-radius: 10px;
+  }
+  .fw-header .fw-account-menu-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 9px;
+  }
+  .fw-header .fw-account-menu-avatar svg {
+    width: 20px;
+    height: 20px;
+    color: #203b70;
+  }
+  .fw-header .fw-account-menu-toggle:hover .fw-account-menu-avatar svg,
+  .fw-header .fw-account-menu[open] .fw-account-menu-avatar svg {
+    color: #a44105;
+  }
+  .fw-header .fw-account-menu-label {
+    display: none;
+  }
+  .fw-header .fw-account-menu-chevron {
+    display: none;
+  }
   .fw-header .fw-menu-toggle { width: 42px; height: 42px; }
-  .fw-header .fw-account-dropdown { width: min(260px, calc(100vw - 48px)); right: -50px; }
+  .fw-header .fw-account-dropdown { width: min(260px, calc(100vw - 40px)); right: -50px; }
   .fw-header .fw-nav-account { display: flex; }
   .fw-header .fw-nav-account .fw-nav-register {
     display: inline-flex;

@@ -81,9 +81,9 @@
                         $initial = mb_substr( $current_user->display_name ?: $current_user->user_login, 0, 1 );
                     ?>
                         <details class="fw-account-menu">
-                            <summary class="fw-account-menu-toggle" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Mein Konto' ) ); ?>">
+                            <summary class="fw-account-menu-toggle" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Mein Konto' ) ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Mein Konto' ) ); ?>">
                                 <span class="fw-account-menu-avatar"><?php echo esc_html( strtoupper( $initial ) ); ?></span>
-                                <span><?php echo esc_html( wp_trim_words( $current_user->display_name, 1, '' ) ); ?></span>
+                                <span class="fw-account-menu-label"><?php echo esc_html( wp_trim_words( $current_user->display_name, 1, '' ) ); ?></span>
                                 <svg class="fw-account-menu-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
                             </summary>
                             <div class="fw-account-dropdown">
@@ -114,11 +114,11 @@
                         </details>
                     <?php else : ?>
                         <details class="fw-account-menu">
-                            <summary class="fw-account-menu-toggle" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Kontozugang' ) ); ?>">
-                                <span class="fw-account-menu-avatar">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <summary class="fw-account-menu-toggle" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Kontozugang' ) ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Anmelden' ) ); ?>">
+                                <span class="fw-account-menu-avatar" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                 </span>
-                                <span><?php echo esc_html( findewerkstatt_t( 'Anmelden' ) ); ?></span>
+                                <span class="fw-account-menu-label"><?php echo esc_html( findewerkstatt_t( 'Anmelden' ) ); ?></span>
                                 <svg class="fw-account-menu-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
                             </summary>
                             <div class="fw-account-dropdown">
