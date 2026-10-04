@@ -32,7 +32,7 @@ if ( $is_gps_search ) {
         <?php findewerkstatt_render_workshop_language_filter( isset( $_GET['fw_spoken'] ) && is_string( $_GET['fw_spoken'] ) ? sanitize_key( wp_unslash( $_GET['fw_spoken'] ) ) : '' ); ?>
         <div style="display:flex; gap:8px; align-items:center;">
             <button type="submit" class="fw-btn fw-btn-primary"><?php echo esc_html( findewerkstatt_t( 'Suchen' ) ); ?></button>
-            <button type="button" class="fw-btn fw-btn-outline fw-btn-near-me" data-archive-url="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Werkstätten in meiner Nähe per GPS finden' ) ); ?>">
+            <button type="button" class="fw-btn fw-btn-near-me" data-archive-url="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Werkstätten in meiner Nähe per GPS finden' ) ); ?>">
                 <span aria-hidden="true">📍</span>
                 <span><?php echo esc_html( findewerkstatt_t( 'In meiner Nähe' ) ); ?></span>
             </button>
