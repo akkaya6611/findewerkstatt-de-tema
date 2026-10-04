@@ -111,6 +111,41 @@ add_filter( 'wp_date', static function ( $date ) {
     return strtr( $date, array_combine( $names, array_map( 'findewerkstatt_t', $names ) ) );
 } );
 
+/** Translate standard boilerplate sentences generated for workshop profiles. */
+add_filter( 'the_content', static function ( $content ) {
+    if ( 'de' === findewerkstatt_language() ) {
+        return $content;
+    }
+    $phrases = array(
+        'Leistungsüberblick &#038; Werkstattservice',
+        'Leistungsüberblick &amp; Werkstattservice',
+        'Leistungsüberblick & Werkstattservice',
+        'Fachgerechter Rad- und Reifenwechsel für Pkw und Transporter',
+        'Reifenmontage, Demontage und dynamisches Auswuchten',
+        'Prüfung und Programmierung von Reifendruckkontrollsystemen (RDKS)',
+        'Prüfung der Profiltiefe und des Reifenalters nach Herstellervorgaben',
+        'Zertifizierter Kfz-Meisterbetrieb mit höchstem Qualitätsanspruch',
+        '24h Notdienst & Soforthilfe bei Reifenpannen',
+        'ist Ihr kompetenter Fachbetrieb für professionellen Reifenservice und Kfz-Dienstleistungen in',
+        'Ob saisonaler Reifenwechsel (Sommer- und Winterräder), präzises Auswuchten, fachgerechte Montage oder Einlagerung – bei',
+        'profitieren Autofahrer von modernster Werkstatttechnik, schneller Terminvergabe und zuverlässigem Service.',
+        'Vereinbaren Sie Ihren nächsten Servicetermin direkt telefonisch oder besuchen Sie den Betrieb in',
+        'im Stadtteil',
+    );
+    $translations = array();
+    foreach ( $phrases as $phrase ) {
+        $lookup = str_replace( array( '&amp;', '&#038;' ), '&', $phrase );
+        $trans  = findewerkstatt_t( $lookup );
+        if ( $trans && $trans !== $lookup ) {
+            $translations[ $phrase ] = $trans;
+        }
+    }
+    if ( ! empty( $translations ) ) {
+        $content = strtr( $content, $translations );
+    }
+    return $content;
+}, 20 );
+
 /** Reuse core sitemap queries, including existing private/empty-directory exclusions. */
 add_action( 'wp_sitemaps_init', static function ( $server ) {
     $server->registry->add_provider( 'languages', new class( $server->registry ) extends WP_Sitemaps_Provider {

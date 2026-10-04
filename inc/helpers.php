@@ -131,6 +131,29 @@ function findewerkstatt_parse_hours( $hours ) {
     return $ranges;
 }
 
+/** Format opening hours for display, translating status and removing German-specific unit in other languages. */
+function findewerkstatt_format_display_hours( $hours ) {
+    if ( ! is_scalar( $hours ) ) {
+        return findewerkstatt_t( 'Nicht angegeben' );
+    }
+    $hours = trim( (string) $hours );
+    if ( '' === $hours ) {
+        return findewerkstatt_t( 'Nicht angegeben' );
+    }
+    if ( preg_match( '/^(?:geschlossen|ruhetag|closed|-)\s*[.!]?$/iu', $hours ) ) {
+        return findewerkstatt_t( 'Geschlossen' );
+    }
+    if ( preg_match( '/^(?:24\s*(?:h|stunden)(?:\s+(?:geöffnet|notdienst))?|rund\s+um\s+die\s+uhr)\s*[.!]?$/iu', $hours ) ) {
+        return findewerkstatt_t( '24h geöffnet' );
+    }
+    $lang = function_exists( 'findewerkstatt_language' ) ? findewerkstatt_language() : 'de';
+    if ( 'de' !== $lang ) {
+        $formatted = preg_replace( '/\s*uhr\b/iu', '', $hours );
+        return trim( (string) $formatted );
+    }
+    return $hours;
+}
+
 /** Getrennt vom HTML, damit Pausen, Tageswechsel und Zeitzonen geprüft werden können. */
 function findewerkstatt_get_open_state( $post_id, $now = null ) {
     if ( ! $post_id ) {

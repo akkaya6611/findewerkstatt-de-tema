@@ -254,7 +254,7 @@ function findewerkstatt_render_ad( $slot_key, $custom_args = array() ) {
             <?php elseif ( 'sidebar_sticky' === $slot_key ) : ?>
                 <div class="fw-ad-slot fw-ad-slot-rectangle">
                     <div class="fw-ad-placeholder fw-ad-placeholder-sidebar">
-                        <div class="fw-ad-tag">SPONSOR</div>
+                        <div class="fw-ad-tag"><?php echo esc_html( findewerkstatt_t( 'SPONSOR' ) ); ?></div>
                         <h4><?php echo esc_html( findewerkstatt_t( 'Günstige Ersatzteile & Reifen' ) ); ?></h4>
                         <p><?php echo esc_html( findewerkstatt_t( 'Bis zu 30% sparen bei unseren Partnern für Kfz-Teile und Autozubehör.' ) ); ?></p>
                         <a href="<?php echo esc_url( $contact_url ); ?>" class="fw-btn fw-btn-primary fw-btn-sm fw-ad-btn"><?php echo esc_html( findewerkstatt_t( 'Angebote ansehen' ) ); ?> &rarr;</a>
@@ -264,7 +264,7 @@ function findewerkstatt_render_ad( $slot_key, $custom_args = array() ) {
                 <div class="fw-ad-slot fw-ad-slot-feed" style="grid-column: 1 / -1; margin: 10px 0 16px;">
                     <div class="fw-ad-slot-leaderboard">
                         <div class="fw-ad-placeholder">
-                            <div class="fw-ad-tag">PARTNER</div>
+                            <div class="fw-ad-tag"><?php echo esc_html( findewerkstatt_t( 'PARTNER' ) ); ?></div>
                             <div class="fw-ad-info">
                                 <strong><?php echo esc_html( findewerkstatt_t( 'Kfz-Betrieb eintragen & Neukunden gewinnen' ) ); ?></strong>
                                 <p><?php echo esc_html( findewerkstatt_t( 'Präsentieren Sie Ihre Werkstatt regionalen Autofahrern in ganz Deutschland.' ) ); ?></p>
@@ -276,7 +276,7 @@ function findewerkstatt_render_ad( $slot_key, $custom_args = array() ) {
             <?php else : ?>
                 <div class="fw-ad-slot fw-ad-slot-leaderboard">
                     <div class="fw-ad-placeholder">
-                        <div class="fw-ad-tag">ANZEIGE</div>
+                        <div class="fw-ad-tag"><?php echo esc_html( findewerkstatt_t( 'Anzeige' ) ); ?></div>
                         <div class="fw-ad-info">
                             <strong><?php echo esc_html( findewerkstatt_t( 'Kfz-Versicherungen & Inspektionsangebote vergleichen' ) ); ?></strong>
                             <p><?php echo esc_html( findewerkstatt_t( 'Finden Sie günstige Tarife und Gutscheine in Ihrer Nähe.' ) ); ?></p>

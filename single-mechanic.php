@@ -260,7 +260,7 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                                         $val = get_post_meta( $id, '_mechanic_hours_' . $key, true ); ?>
                                         <tr>
                                             <th scope="row"><?php echo esc_html( findewerkstatt_t( $label ) ); ?></th>
-                                            <td class="<?php echo $val ? 'fw-hours-set' : 'fw-hours-unset'; ?>"><?php echo esc_html( $val ?: findewerkstatt_t( 'Nicht angegeben' ) ); ?></td>
+                                            <td class="<?php echo $val ? 'fw-hours-set' : 'fw-hours-unset'; ?>"><?php echo esc_html( findewerkstatt_format_display_hours( $val ) ); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

@@ -79,6 +79,8 @@ expect_same( true, 0 === strpos( findewerkstatt_get_whatsapp_url( '0301234567', 
 expect_same( 'muenchen', findewerkstatt_get_city_term( 1 )->slug, 'Assigned city preferred over state' );
 expect_same( array( array( 480, 720 ), array( 780, 1080 ) ), findewerkstatt_parse_hours( '08:00–12:00 / 13:00–18:00 Uhr' ), 'Split intervals' );
 expect_same( array(), findewerkstatt_parse_hours( 'Geschlossen' ), 'Closed schedule' );
+expect_same( 'Geschlossen', findewerkstatt_format_display_hours( 'Geschlossen' ), 'Display hours closed format' );
+expect_same( 'Nicht angegeben', findewerkstatt_format_display_hours( '' ), 'Display hours empty format' );
 expect_same( null, findewerkstatt_parse_hours( '24:30–25:00' ), 'Invalid clock times' );
 expect_same( null, findewerkstatt_parse_hours( 'Nicht 24h geöffnet' ), 'Do not misread negated hours' );
 expect_same( array( array( 0, 1440 ) ), findewerkstatt_parse_hours( '24 Stunden geöffnet' ), 'All-day opening' );
