@@ -47,6 +47,7 @@ require_once get_template_directory() . '/inc/cookie-consent.php';
 require_once get_template_directory() . '/inc/featured-workshops.php';
 require_once get_template_directory() . '/inc/quote-inquiry.php';
 require_once get_template_directory() . '/inc/workshop-reviews.php';
+require_once get_template_directory() . '/inc/security-hardening.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
