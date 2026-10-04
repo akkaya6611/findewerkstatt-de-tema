@@ -36,6 +36,7 @@ get_header();
 
     <?php if ( have_posts() ) : ?>
         <p style="margin-bottom:16px;"><?php echo esc_html( sprintf( findewerkstatt_t( 1 === (int) $wp_query->found_posts ? '%s Werkstatt gefunden' : '%s Werkstätten gefunden' ), number_format_i18n( $wp_query->found_posts ) ) ); ?></p>
+        <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ) ) ); ?>
     <?php else : ?>
         <div class="fw-box" style="text-align:center;">

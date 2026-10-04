@@ -76,7 +76,7 @@ get_header();
                 <input type="hidden" name="action" value="fw_register_workshop">
                 <input type="hidden" name="fw_submission_token" value="<?php echo esc_attr( findewerkstatt_form_submission_token( 'registration' ) ); ?>">
                 <?php wp_nonce_field( 'fw_register_workshop', 'fw_register_nonce' ); ?>
-                <div class="fw-form-honeypot" aria-hidden="true">
+                <div class="fw-form-honeypot" style="display:none !important; visibility:hidden !important; position:absolute !important; left:-9999px !important; width:0 !important; height:0 !important; opacity:0 !important; pointer-events:none !important;" aria-hidden="true">
                     <label for="fw-register-company-website"><?php echo esc_html( findewerkstatt_t( 'Dieses Feld bitte leer lassen' ) ); ?></label>
                     <input id="fw-register-company-website" type="text" name="company_website" tabindex="-1" autocomplete="off">
                 </div>

@@ -83,7 +83,7 @@ get_header();
                     <?php if ( $claim_intent ) : ?><input type="hidden" name="return_workshop" value="<?php echo (int) $claim_intent; ?>"><?php endif; ?>
                     <input type="hidden" name="fw_submission_token" value="<?php echo esc_attr( findewerkstatt_form_submission_token( 'member_signup' ) ); ?>">
                     <?php wp_nonce_field( 'fw_member_signup', 'fw_member_nonce' ); ?>
-                    <div class="fw-form-honeypot" aria-hidden="true">
+                    <div class="fw-form-honeypot" style="display:none !important; visibility:hidden !important; position:absolute !important; left:-9999px !important; width:0 !important; height:0 !important; opacity:0 !important; pointer-events:none !important;" aria-hidden="true">
                         <label for="fw-member-company-website"><?php echo esc_html( findewerkstatt_t( 'Dieses Feld bitte leer lassen' ) ); ?></label>
                         <input id="fw-member-company-website" type="text" name="company_website" tabindex="-1" autocomplete="off">
                     </div>
