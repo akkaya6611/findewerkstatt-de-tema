@@ -118,11 +118,20 @@ if ( function_exists( 'add_filter' ) ) {
     } );
 }
 
+// Disable default WordPress login language dropdown
+if ( function_exists( 'add_filter' ) ) {
+    add_filter( 'login_display_language_dropdown', '__return_false' );
+}
+
 // Styling der Login-Seite
 function findewerkstatt_custom_login_styles() {
     $logo_url = function_exists( 'findewerkstatt_brand_asset_url' ) ? findewerkstatt_brand_asset_url( 'logo' ) : '';
     ?>
     <style type="text/css">
+        html {
+            background: #f8fafc !important;
+        }
+
         body.login {
             background: #f8fafc !important;
             background-image: radial-gradient(at 50% 0%, #ffffff 0%, #f1f5f9 100%) !important;
@@ -132,8 +141,9 @@ function findewerkstatt_custom_login_styles() {
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            justify-content: center !important;
-            padding: 40px 16px !important;
+            justify-content: flex-start !important;
+            padding: 48px 16px 36px !important;
+            box-sizing: border-box !important;
             margin: 0 !important;
         }
 
@@ -142,11 +152,12 @@ function findewerkstatt_custom_login_styles() {
             width: 100% !important;
             max-width: 400px !important;
             padding: 0 !important;
-            margin: auto !important;
+            margin: 0 auto !important;
         }
 
         #login h1 {
-            margin-bottom: 8px !important;
+            margin: 0 0 10px 0 !important;
+            padding: 0 !important;
             text-align: center !important;
         }
 
@@ -156,13 +167,14 @@ function findewerkstatt_custom_login_styles() {
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
                 background-position: center !important;
-                width: 240px !important;
-                height: 50px !important;
+                width: 250px !important;
+                height: 52px !important;
             <?php endif; ?>
             display: block !important;
             margin: 0 auto !important;
             text-indent: -9999px !important;
             overflow: hidden !important;
+            outline: none !important;
         }
 
         .fw-login-portal-tag {
@@ -170,37 +182,37 @@ function findewerkstatt_custom_login_styles() {
             font-size: 13px;
             font-weight: 500;
             color: #64748b;
-            margin: 0 0 24px 0;
+            margin: 0 0 22px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .fw-login-portal-tag::before,
         .fw-login-portal-tag::after {
             content: "";
             display: inline-block;
-            width: 24px;
+            width: 20px;
             height: 1px;
             background: #cbd5e1;
         }
 
         /* Form Card */
-        .login form {
+        #login #loginform {
             background: #ffffff !important;
             border-radius: 16px !important;
             border: 1px solid #e2e8f0 !important;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.07), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
             padding: 32px 28px !important;
-            margin-top: 0 !important;
+            margin: 0 !important;
         }
 
-        .login form p {
+        #login form p {
             margin-bottom: 18px !important;
         }
 
-        .login label {
+        #login label {
             font-size: 13.5px !important;
             font-weight: 600 !important;
             color: #334155 !important;
@@ -208,7 +220,7 @@ function findewerkstatt_custom_login_styles() {
             display: block !important;
         }
 
-        .login form .input {
+        #login .input {
             background: #f8fafc !important;
             border: 1.5px solid #cbd5e1 !important;
             border-radius: 8px !important;
@@ -221,7 +233,7 @@ function findewerkstatt_custom_login_styles() {
             width: 100% !important;
         }
 
-        .login form .input:focus {
+        #login .input:focus {
             border-color: #05295d !important;
             background: #ffffff !important;
             box-shadow: 0 0 0 3px rgba(5, 41, 93, 0.12) !important;
@@ -229,7 +241,7 @@ function findewerkstatt_custom_login_styles() {
         }
 
         /* Primary Submit Button */
-        .wp-core-ui .button-primary {
+        .wp-core-ui #login .button-primary {
             background: #05295d !important;
             border: none !important;
             color: #ffffff !important;
@@ -247,20 +259,20 @@ function findewerkstatt_custom_login_styles() {
             text-shadow: none !important;
         }
 
-        .wp-core-ui .button-primary:hover,
-        .wp-core-ui .button-primary:focus {
+        .wp-core-ui #login .button-primary:hover,
+        .wp-core-ui #login .button-primary:focus {
             background: #0b3d85 !important;
             transform: translateY(-1px) !important;
             box-shadow: 0 6px 16px rgba(5, 41, 93, 0.25) !important;
         }
 
         /* Remember Me */
-        .forgetmenot {
+        #login .forgetmenot {
             margin-top: 6px !important;
             margin-bottom: 0 !important;
         }
 
-        .forgetmenot label {
+        #login .forgetmenot label {
             font-weight: 500 !important;
             color: #64748b !important;
             font-size: 13px !important;
@@ -284,7 +296,7 @@ function findewerkstatt_custom_login_styles() {
             color: #0f172a !important;
             font-size: 13.5px !important;
             padding: 12px 16px !important;
-            margin-bottom: 20px !important;
+            margin-bottom: 18px !important;
         }
 
         .login .message {
@@ -292,15 +304,15 @@ function findewerkstatt_custom_login_styles() {
         }
 
         /* Bottom Links */
-        .login #nav,
-        .login #backtoblog {
+        #login #nav,
+        #login #backtoblog {
             text-align: center !important;
-            padding: 4px 0 !important;
-            margin: 10px 0 0 !important;
+            padding: 2px 0 !important;
+            margin: 12px 0 0 !important;
         }
 
-        .login #nav a,
-        .login #backtoblog a {
+        #login #nav a,
+        #login #backtoblog a {
             color: #64748b !important;
             font-size: 13px !important;
             font-weight: 500 !important;
@@ -308,15 +320,21 @@ function findewerkstatt_custom_login_styles() {
             text-decoration: none !important;
         }
 
-        .login #nav a:hover,
-        .login #backtoblog a:hover {
+        #login #nav a:hover,
+        #login #backtoblog a:hover {
             color: #05295d !important;
             text-decoration: underline !important;
         }
 
+        /* Hide unwanted default Language Switcher */
+        .language-switcher,
+        #language-switcher {
+            display: none !important;
+        }
+
         /* Footer */
         .fw-login-footer {
-            margin-top: 24px;
+            margin-top: 28px;
             text-align: center;
             font-size: 12px;
             color: #94a3b8;
@@ -330,20 +348,6 @@ function findewerkstatt_custom_login_styles() {
         .fw-login-footer a:hover {
             color: #05295d;
             text-decoration: underline;
-        }
-
-        /* Language Switcher */
-        .language-switcher {
-            margin-top: 16px !important;
-            text-align: center !important;
-        }
-        .language-switcher select {
-            background: #ffffff !important;
-            color: #475569 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-            padding: 5px 10px !important;
-            font-size: 12.5px !important;
         }
     </style>
     <?php
