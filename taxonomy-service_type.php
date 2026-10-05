@@ -49,6 +49,7 @@ get_header();
 
     <?php if ( have_posts() ) : ?>
         <p style="margin-bottom:16px;"><?php echo esc_html( sprintf( findewerkstatt_t( 1 === (int) $wp_query->found_posts ? '%s Werkstatt gefunden' : '%s Werkstätten gefunden' ), number_format_i18n( $wp_query->found_posts ) ) ); ?></p>
+        <?php if ( function_exists( 'findewerkstatt_render_live_filter_bar' ) ) { findewerkstatt_render_live_filter_bar(); } ?>
         <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ) ) ); ?>
     <?php else : ?>
@@ -58,6 +59,11 @@ get_header();
             <a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-outline"><?php echo esc_html( findewerkstatt_t( 'Alle Werkstätten durchsuchen' ) ); ?></a>
         </div>
     <?php endif; ?>
+
+    <?php if ( class_exists( 'FindeWerkstatt_FAQ_Manager' ) ) {
+        FindeWerkstatt_FAQ_Manager::render_cost_estimator();
+        FindeWerkstatt_FAQ_Manager::render_faq_section();
+    } ?>
 
     <div class="fw-box" style="margin-top:30px; text-align:center;">
         <h2><?php echo esc_html( findewerkstatt_t( 'Ihre Werkstatt fehlt im Verzeichnis?' ) ); ?></h2>

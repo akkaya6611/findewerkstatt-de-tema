@@ -86,6 +86,56 @@
     </div>
 </footer>
 
+<!-- PWA Service Worker & Install Prompt -->
+<div id="fw-pwa-banner" class="fw-pwa-prompt" style="display:none;">
+    <div class="fw-pwa-prompt-inner">
+        <div class="fw-pwa-icon">🚗</div>
+        <div class="fw-pwa-text">
+            <strong><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt als App nutzen' ) ); ?></strong>
+            <p><?php echo esc_html( findewerkstatt_t( 'Schneller Zugriff auf Werkstätten & Pannenhilfe direkt auf Ihrem Bildschirm.' ) ); ?></p>
+        </div>
+        <div class="fw-pwa-actions">
+            <button type="button" id="fw-pwa-install-btn" class="fw-btn fw-btn-primary fw-btn-sm"><?php echo esc_html( findewerkstatt_t( 'Installieren' ) ); ?></button>
+            <button type="button" id="fw-pwa-close-btn" class="fw-pwa-dismiss" aria-label="Schließen">✕</button>
+        </div>
+    </div>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('<?php echo esc_url( get_template_directory_uri() . '/assets/js/sw.js' ); ?>').catch(function(){});
+    });
+}
+let deferredPrompt = null;
+const pwaBanner = document.getElementById('fw-pwa-banner');
+const installBtn = document.getElementById('fw-pwa-install-btn');
+const closeBtn = document.getElementById('fw-pwa-close-btn');
+
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (localStorage.getItem('fw_pwa_dismissed') !== 'yes') {
+        pwaBanner.style.display = 'block';
+    }
+});
+
+if (installBtn) {
+    installBtn.addEventListener('click', async function() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        pwaBanner.style.display = 'none';
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+        pwaBanner.style.display = 'none';
+        localStorage.setItem('fw_pwa_dismissed', 'yes');
+    });
+}
+</script>
 <?php wp_footer(); ?>
 </body>
 </html>

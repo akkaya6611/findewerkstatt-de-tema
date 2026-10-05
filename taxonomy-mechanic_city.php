@@ -85,6 +85,7 @@ get_header();
                 </div>
             </div>
         <?php endif; ?>
+        <?php if ( function_exists( 'findewerkstatt_render_live_filter_bar' ) ) { findewerkstatt_render_live_filter_bar(); } ?>
         <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_location_translate( '← Zurück' ), 'next_text' => findewerkstatt_location_translate( 'Weiter →' ), 'screen_reader_text' => findewerkstatt_location_translate( 'Weitere Werkstätten' ) ) ); ?>
     <?php else : ?>

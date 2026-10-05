@@ -27,8 +27,24 @@ $card_distance = null;
 if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_numeric( $card_lng ) && function_exists( 'findewerkstatt_calculate_distance' ) ) {
     $card_distance = findewerkstatt_calculate_distance( $user_lat, $user_lng, (float) $card_lat, (float) $card_lng );
 }
+
+$card_maps_url = '';
+if ( is_numeric( $card_lat ) && is_numeric( $card_lng ) ) {
+    $card_maps_url = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $card_lat . ',' . $card_lng );
+} elseif ( ! empty( $card_display_address ) ) {
+    $card_maps_url = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $card_display_address );
+}
+
+$card_status_html = findewerkstatt_get_open_status( $card_id, false );
+$card_is_open = ( $card_status_html && false !== strpos( $card_status_html, 'fw-status-open' ) ) ? '1' : '0';
+$card_rating_val = ! empty( $card_rating['rating'] ) ? (float) $card_rating['rating'] : 0;
 ?>
-<article class="fw-workshop-card <?php echo $card_is_featured ? 'fw-card-featured' : ''; ?>">
+<article class="fw-workshop-card <?php echo $card_is_featured ? 'fw-card-featured' : ''; ?>"
+         data-open="<?php echo esc_attr( $card_is_open ); ?>"
+         data-rating="<?php echo esc_attr( $card_rating_val ); ?>"
+         data-whatsapp="<?php echo $card_whatsapp_url ? '1' : '0'; ?>"
+         data-featured="<?php echo $card_is_featured ? '1' : '0'; ?>"
+         data-route="<?php echo $card_maps_url ? '1' : '0'; ?>">
     <div class="fw-card-top">
         <a href="<?php the_permalink(); ?>" class="fw-card-img-link" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s – Werkstattprofil ansehen' ), get_the_title() ) ); ?>">
             <?php 
@@ -44,7 +60,12 @@ if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_n
             <div class="fw-card-img-overlay" aria-hidden="true"></div>
         </a>
         <div class="fw-card-badges">
-            <?php if ( $card_badges ) : ?>
+            <?php if ( $card_is_featured ) : ?>
+                <span class="fw-badge fw-badge-featured-gold">
+                    <span aria-hidden="true">👑</span>
+                    <span><?php echo esc_html( findewerkstatt_t( 'Geprüfter Meisterbetrieb' ) ); ?></span>
+                </span>
+            <?php elseif ( $card_badges ) : ?>
                 <?php echo $card_badges; ?>
             <?php else : ?>
                 <span class="fw-badge fw-badge-partner">
@@ -53,7 +74,6 @@ if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_n
                 </span>
             <?php endif; ?>
         </div>
-        <?php $card_status_html = findewerkstatt_get_open_status( $card_id, false ); ?>
         <?php if ( $card_status_html ) : ?>
             <div class="fw-card-status-wrap">
                 <?php echo $card_status_html; ?>
@@ -118,7 +138,7 @@ if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_n
         <?php endif; ?>
 
         <div class="fw-card-actions">
-            <?php if ( $card_phone || $card_whatsapp_url ) : ?>
+            <?php if ( $card_phone || $card_whatsapp_url || $card_maps_url ) : ?>
                 <div class="fw-card-quick-contact">
                     <?php if ( $card_phone ) : ?>
                         <a href="tel:<?php echo esc_attr( $card_phone ); ?>" class="fw-btn-card-action fw-btn-action-phone" title="<?php echo esc_attr( findewerkstatt_t( 'Jetzt anrufen' ) ); ?>">
@@ -130,6 +150,12 @@ if ( $user_lat !== null && $user_lng !== null && is_numeric( $card_lat ) && is_n
                         <a href="<?php echo esc_url( $card_whatsapp_url ); ?>" class="fw-btn-card-action fw-btn-action-wa" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( 'WhatsApp-Anfrage an %s' ), get_the_title() ) ); ?>" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                             <?php echo findewerkstatt_icon( 'whatsapp', 14 ); ?>
                             <span>WhatsApp</span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $card_maps_url ) : ?>
+                        <a href="<?php echo esc_url( $card_maps_url ); ?>" class="fw-btn-card-action fw-btn-action-route" aria-label="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Route zu %s planen' ), get_the_title() ) ); ?>" target="_blank" rel="noopener noreferrer" title="<?php echo esc_attr( findewerkstatt_t( 'Route planen' ) ); ?>">
+                            <?php echo findewerkstatt_icon( 'pin', 13 ); ?>
+                            <span><?php echo esc_html( findewerkstatt_t( 'Route' ) ); ?></span>
                         </a>
                     <?php endif; ?>
                 </div>

@@ -4,7 +4,7 @@ Theme URI: https://findewerkstatt.de/
 Author: FindeWerkstatt Team
 Author URI: https://findewerkstatt.de/
 Description: Modernes, ultraschnelles Portal für Kfz-Werkstätten, 24h Abschleppdienste, TÜV/AU und Autoreparatur in ganz Deutschland. 100% DSGVO-konform, mobiloptimiert und mit strukturierten Schema.org-Daten.
-Version: 3.3.1
+Version: 3.4.0
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
@@ -1154,6 +1154,28 @@ img {
   border-color: #25d366;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+}
+
+.fw-btn-action-route {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.fw-btn-action-route:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.fw-badge-featured-gold {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+  color: #92400e !important;
+  border: 1px solid #fde68a !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25) !important;
+  font-weight: 750 !important;
 }
 
 .fw-btn-card-main {
@@ -3157,4 +3179,298 @@ nav.navigation.pagination .page-numbers.dots {
   .fw-slider-dots { bottom: 8px; padding: 4px 8px; }
   .fw-banner-slider-section { padding: 16px 0 24px 0; }
 }
+
+/* ========================================================
+   LIVE FILTER BAR (INSTANT CLIENT FILTER)
+   ======================================================== */
+.fw-live-filter-bar {
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid var(--fw-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.fw-filter-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fw-filter-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fw-text, #0f172a);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.fw-filter-chips-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.fw-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.fw-filter-chip:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.fw-filter-chip.is-active {
+  background: var(--fw-primary, #05295d);
+  color: #ffffff;
+  border-color: var(--fw-primary, #05295d);
+  box-shadow: 0 2px 8px rgba(5, 41, 93, 0.25);
+}
+
+.fw-filter-counter {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fw-accent, #fb6006);
+  background: rgba(251, 96, 6, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* ========================================================
+   FAQ ACCORDION SECTION
+   ======================================================== */
+.fw-faq-section {
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid var(--fw-border, #e2e8f0);
+}
+
+.fw-faq-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fw-faq-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.fw-faq-item[open] {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.fw-faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fw-text, #0f172a);
+  cursor: pointer;
+  list-style: none;
+  background: #f8fafc;
+  transition: background 0.15s;
+}
+
+.fw-faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.fw-faq-question:hover {
+  background: #f1f5f9;
+}
+
+.fw-faq-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fw-accent, #fb6006);
+  transition: transform 0.2s ease;
+}
+
+.fw-faq-item[open] .fw-faq-arrow {
+  transform: rotate(45deg);
+}
+
+.fw-faq-answer {
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #475569;
+  border-top: 1px solid #f1f5f9;
+}
+
+.fw-faq-answer p {
+  margin: 0;
+}
+
+/* ========================================================
+   KOSTENSCHÄTZER (COST ESTIMATOR)
+   ======================================================== */
+.fw-cost-estimator-section {
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid var(--fw-border, #e2e8f0);
+}
+
+.fw-cost-table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.fw-cost-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fw-cost-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+  border-color: #cbd5e1;
+}
+
+.fw-cost-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fw-cost-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.fw-cost-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.fw-cost-details {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px dashed #f1f5f9;
+}
+
+.fw-cost-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: #05295d;
+}
+
+.fw-cost-time {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ========================================================
+   PWA INSTALL BANNER / PROMPT
+   ======================================================== */
+.fw-pwa-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  z-index: 99999;
+  animation: fwPwaSlideUp 0.3s ease-out;
+}
+
+@keyframes fwPwaSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.fw-pwa-prompt-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fw-pwa-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.fw-pwa-text {
+  flex: 1;
+}
+
+.fw-pwa-text strong {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.fw-pwa-text p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.fw-pwa-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fw-pwa-dismiss {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.fw-pwa-dismiss:hover {
+  color: #334155;
+}
+
 

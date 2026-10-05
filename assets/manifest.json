@@ -1,0 +1,24 @@
+{
+  "name": "FindeWerkstatt.de — Kfz-Werkstattverzeichnis",
+  "short_name": "FindeWerkstatt",
+  "description": "Deutschlands Kfz-Portal: Geprüfte Meisterbetriebe, TÜV/AU & 24h Pannenhilfe.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#05295d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

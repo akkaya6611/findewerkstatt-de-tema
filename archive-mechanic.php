@@ -40,10 +40,16 @@ if ( $is_gps_search ) {
     </form>
     <?php if ( have_posts() ) : ?>
         <p class="fw-result-count"><?php echo esc_html( number_format_i18n( $wp_query->found_posts ) ); ?> <?php echo $wp_query->found_posts === 1 ? findewerkstatt_t( 'Werkstatt gefunden' ) : findewerkstatt_t( 'Werkstätten gefunden' ); ?></p>
+        <?php if ( function_exists( 'findewerkstatt_render_live_filter_bar' ) ) { findewerkstatt_render_live_filter_bar(); } ?>
         <div class="fw-workshops-grid"><?php while ( have_posts() ) : the_post(); get_template_part( 'template-parts/workshop-card' ); endwhile; ?></div>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ), 'screen_reader_text' => findewerkstatt_t( 'Weitere Ergebnisse' ) ) ); ?>
     <?php else : ?>
         <div class="fw-empty-state"><h2><?php echo esc_html( findewerkstatt_t( 'Keine Werkstätten gefunden' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Für diese Auswahl sind noch keine Betriebe eingetragen. Ändern Sie die Filter oder tragen Sie Ihre eigene Werkstatt ein.' ) ); ?></p><div class="fw-empty-actions"><a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-primary"><?php echo esc_html( findewerkstatt_t( 'Filter zurücksetzen' ) ); ?></a><a href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>" class="fw-btn fw-btn-outline"><?php echo esc_html( findewerkstatt_t( 'Werkstatt eintragen' ) ); ?></a></div></div>
     <?php endif; ?>
+
+    <?php if ( class_exists( 'FindeWerkstatt_FAQ_Manager' ) ) {
+        FindeWerkstatt_FAQ_Manager::render_cost_estimator();
+        FindeWerkstatt_FAQ_Manager::render_faq_section();
+    } ?>
 </main>
 <?php get_footer(); ?>

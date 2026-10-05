@@ -13,6 +13,10 @@
     <link rel="profile" href="https://gmpg.org/xfn/11">
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon-32x32.png' ); ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/apple-touch-icon.png' ); ?>">
+    <link rel="manifest" href="<?php echo esc_url( get_template_directory_uri() . '/assets/manifest.json' ); ?>">
+    <meta name="theme-color" content="#05295d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
