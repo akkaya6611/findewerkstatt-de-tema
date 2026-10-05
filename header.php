@@ -50,6 +50,7 @@
                 <a href="<?php echo esc_url( home_url( '/service/tuev-hu-au/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'TÜV & HU' ) ); ?></a>
                 <a href="<?php echo esc_url( home_url( '/service/abschleppdienst-pannenhilfe/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( '24h Pannenhilfe' ) ); ?></a>
                 <a href="<?php echo esc_url( home_url( '/#bundeslaender' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Bundesländer' ) ); ?></a>
+                <a href="<?php echo esc_url( home_url( '/ratgeber/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Ratgeber' ) ); ?></a>
                 <a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'pakete' ) : home_url( '/pakete/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Pakete' ) ); ?></a>
                 <a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'kontakt' ) : home_url( '/kontakt/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kontakt' ) ); ?></a>
             </nav>

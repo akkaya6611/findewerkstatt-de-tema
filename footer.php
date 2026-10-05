@@ -53,6 +53,7 @@
                 <h4><?php echo esc_html( findewerkstatt_t( 'Informationen' ) ); ?></h4>
                 <ul>
                     <li><a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'werkstatt-anmelden' ) : home_url( '/werkstatt-anmelden/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Werkstatt eintragen' ) ); ?></a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/ratgeber/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kfz-Ratgeber & Tipps' ) ); ?></a></li>
                     <li><a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'pakete' ) : home_url( '/pakete/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Pakete' ) ); ?></a></li>
                     <li><a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'kontakt' ) : home_url( '/kontakt/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kontakt' ) ); ?></a></li>
                     <li><a href="<?php echo esc_url( function_exists( 'findewerkstatt_page_url' ) ? findewerkstatt_page_url( 'impressum' ) : home_url( '/impressum/' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Impressum' ) ); ?></a></li>

@@ -93,6 +93,76 @@ $brands = FindeWerkstatt_German_Data::get_car_brands();
     <div class="fw-bundeslaender-grid"><?php foreach ( $states as $state ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $state['slug'], 'mechanic_city' ) ); ?>" class="fw-land-card"><span class="fw-land-name"><?php echo esc_html( $state['name'] ); ?></span><span aria-hidden="true">→</span></a><?php endforeach; ?></div>
 </div></section>
 
+<!-- Ratgeber & Magazin Vorschau -->
+<?php
+$latest_posts = get_posts( array(
+    'post_type'      => 'post',
+    'post_status'    => 'publish',
+    'posts_per_page' => 3,
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+) );
+if ( ! empty( $latest_posts ) ) :
+?>
+<section class="fw-section fw-section-blog-preview" id="ratgeber">
+    <div class="fw-container">
+        <div class="fw-section-header">
+            <div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Ratgeber & Wissen' ) ); ?></div>
+            <h2><?php echo esc_html( findewerkstatt_t( 'Aktuelle Kfz-Ratgeber & Tipps' ) ); ?></h2>
+            <p><?php echo esc_html( findewerkstatt_t( 'Wertvolle Tipps zur Fahrzeugpflege, Kosten sparen bei Reparaturen und fundierte Werkstatt-Empfehlungen.' ) ); ?></p>
+        </div>
+
+        <div class="fw-blog-grid fw-home-blog-grid">
+            <?php foreach ( $latest_posts as $post_item ) : 
+                $post_id   = $post_item->ID;
+                $thumb_url = findewerkstatt_post_thumbnail_url( $post_id, 'medium_large' );
+                $reading_time = findewerkstatt_reading_time( $post_item->post_content );
+                $cats      = wp_get_post_categories( $post_id, array( 'fields' => 'all' ) );
+                $cat_name  = ! empty( $cats ) ? $cats[0]->name : findewerkstatt_t( 'Ratgeber' );
+                $excerpt   = $post_item->post_excerpt ?: wp_trim_words( strip_tags( $post_item->post_content ), 18, '...' );
+            ?>
+                <article class="fw-blog-card fw-box">
+                    <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="fw-blog-card-media" aria-hidden="true" tabindex="-1">
+                        <img src="<?php echo esc_url( $thumb_url ); ?>" 
+                             alt="<?php echo esc_attr( $post_item->post_title ); ?>" 
+                             class="fw-blog-card-img" 
+                             loading="lazy" 
+                             decoding="async">
+                        <span class="fw-blog-card-cat-badge"><?php echo esc_html( $cat_name ); ?></span>
+                    </a>
+                    <div class="fw-blog-card-body">
+                        <div class="fw-blog-card-meta">
+                            <span class="fw-blog-card-date">
+                                <time datetime="<?php echo esc_attr( get_the_date( 'c', $post_id ) ); ?>"><?php echo esc_html( get_the_date( '', $post_id ) ); ?></time>
+                            </span>
+                            <span class="fw-blog-card-reading-time"><?php echo esc_html( $reading_time ); ?></span>
+                        </div>
+                        <h3 class="fw-blog-card-title">
+                            <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php echo esc_html( $post_item->post_title ); ?></a>
+                        </h3>
+                        <p class="fw-blog-card-excerpt">
+                            <?php echo esc_html( $excerpt ); ?>
+                        </p>
+                        <div class="fw-blog-card-footer">
+                            <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="fw-blog-card-cta">
+                                <span><?php echo esc_html( findewerkstatt_t( 'Artikel lesen' ) ); ?></span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="fw-blog-preview-more" style="text-align:center; margin-top:32px;">
+            <a href="<?php echo esc_url( home_url( '/ratgeber/' ) ); ?>" class="fw-btn fw-btn-primary fw-btn-lg">
+                📚 <?php echo esc_html( findewerkstatt_t( 'Alle Ratgeber anzeigen' ) ); ?> &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- FAQ Section (Section 35 & 36) -->
 <section class="fw-section fw-section-faq" id="faq">
     <div class="fw-container">

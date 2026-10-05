@@ -53,6 +53,7 @@ require_once get_template_directory() . '/inc/faq-manager.php';
 require_once get_template_directory() . '/inc/live-filter.php';
 require_once get_template_directory() . '/inc/domain-guard.php';
 require_once get_template_directory() . '/inc/admin-workshops.php';
+require_once get_template_directory() . '/inc/blog-system.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
