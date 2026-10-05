@@ -3000,3 +3000,161 @@ nav.navigation.pagination .page-numbers.dots {
     font-size: 12.5px;
   }
 }
+
+/* ==========================================================================
+   Responsive Banner Slider & Service Hero Banners
+   ========================================================================== */
+.fw-banner-slider-section {
+  padding: 24px 0 36px 0;
+}
+
+.fw-banner-slider-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px -6px rgba(5, 41, 93, 0.12), 0 4px 10px -2px rgba(5, 41, 93, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #05295d;
+}
+
+.fw-banner-slider-track {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1024 / 384;
+  min-height: 180px;
+}
+
+.fw-banner-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+.fw-banner-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.fw-banner-slide-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+.fw-banner-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Slider Controls */
+.fw-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #05295d;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.fw-slider-btn:hover {
+  background: #ffffff;
+  color: #fb6006;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.fw-slider-prev {
+  left: 14px;
+}
+
+.fw-slider-next {
+  right: 14px;
+}
+
+/* Slider Indicator Dots */
+.fw-slider-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  background: rgba(5, 41, 93, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.fw-slider-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fw-slider-dot.is-active {
+  background: #fb6006;
+  width: 24px;
+  border-radius: 10px;
+}
+
+/* Service Hero Banner */
+.fw-service-hero-banner {
+  margin-bottom: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(5, 41, 93, 0.08), 0 4px 6px -2px rgba(5, 41, 93, 0.03);
+  border: 1px solid #e2e8f0;
+}
+
+.fw-service-hero-banner img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1024 / 384;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .fw-slider-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+  .fw-slider-prev { left: 8px; }
+  .fw-slider-next { right: 8px; }
+  .fw-slider-dots { bottom: 8px; padding: 4px 8px; }
+  .fw-banner-slider-section { padding: 16px 0 24px 0; }
+}
+

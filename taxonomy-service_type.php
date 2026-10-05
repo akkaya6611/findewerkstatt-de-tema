@@ -25,6 +25,19 @@ get_header();
         <?php endif; ?>
     </nav>
 
+    <?php 
+    $service_banner = ( $current_term && function_exists( 'findewerkstatt_get_service_banner' ) ) ? findewerkstatt_get_service_banner( $current_term->slug ) : null;
+    if ( $service_banner ) : ?>
+        <div class="fw-service-hero-banner">
+            <img src="<?php echo esc_url( $service_banner['url'] ); ?>" 
+                 alt="<?php echo esc_attr( $service_banner['alt'] ); ?>" 
+                 width="1024" 
+                 height="384" 
+                 loading="eager" 
+                 fetchpriority="high">
+        </div>
+    <?php endif; ?>
+
     <div class="fw-box fw-page-heading">
         <p class="fw-text-muted" style="margin-bottom:8px;"><?php echo esc_html( findewerkstatt_t( 'Werkstätten nach Leistung' ) ); ?></p>
         <h1><?php echo esc_html( $current_term ? findewerkstatt_directory_term_title( $current_term, $location ) : $term_name . ' ' . $location_phrase ); ?></h1>

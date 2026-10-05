@@ -34,6 +34,13 @@ $brands = FindeWerkstatt_German_Data::get_car_brands();
         <div class="fw-hero-popular"><span><?php echo esc_html( findewerkstatt_t( 'Städte entdecken:' ) ); ?></span><?php foreach ( array( 'berlin' => 'Berlin', 'hamburg' => 'Hamburg', 'muenchen' => 'München', 'koeln' => 'Köln', 'frankfurt-am-main' => 'Frankfurt am Main', 'stuttgart' => 'Stuttgart' ) as $slug => $name ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $slug, 'mechanic_city' ) ); ?>"><?php echo esc_html( $name ); ?></a><?php endforeach; ?></div>
     </div></div>
 </section>
+<?php if ( function_exists( 'findewerkstatt_render_banner_slider' ) ) : ?>
+<section class="fw-section fw-banner-slider-section">
+    <div class="fw-container">
+        <?php findewerkstatt_render_banner_slider(); ?>
+    </div>
+</section>
+<?php endif; ?>
 <section class="fw-section" id="leistungen"><div class="fw-container">
     <div class="fw-section-header"><div class="fw-section-tag"><?php echo esc_html( findewerkstatt_t( 'Für Ihr Fahrzeug' ) ); ?></div><h2><?php echo esc_html( findewerkstatt_t( 'Leistungen und Fachbereiche' ) ); ?></h2><p><?php echo esc_html( findewerkstatt_t( 'Von der Wartung bis zur Reparatur: Finden Sie einen Betrieb für Ihr Anliegen.' ) ); ?></p></div>
     <div class="fw-categories-grid"><?php foreach ( $services as $slug => $service ) : ?><a href="<?php echo esc_url( findewerkstatt_term_url( $slug, 'service_type' ) ); ?>" class="fw-cat-card"><div class="fw-cat-icon" aria-hidden="true">🔧</div><div class="fw-cat-info"><h3><?php echo esc_html( findewerkstatt_t( $service['name'] ) ); ?></h3><p><?php echo esc_html( wp_trim_words( findewerkstatt_t( $service['desc'] ), 12 ) ); ?></p></div></a><?php endforeach; ?></div>
