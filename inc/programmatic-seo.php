@@ -108,18 +108,10 @@ class FindeWerkstatt_Programmatic_SEO {
                 $parent_id = (int) $term->term_id;
             }
 
-            // Fallback for non-hierarchical single slug (e.g. /stadt/muenchen/ -> /stadt/bayern/muenchen/)
+            // Fallback for non-hierarchical single slug (e.g. /stadt/muenchen/ or /tr/stadt/muenchen/)
             if ( ! $path_valid && 1 === count( $parts ) ) {
                 $leaf_term = get_term_by( 'slug', sanitize_title( $parts[0] ), 'mechanic_city' );
                 if ( $leaf_term && ! is_wp_error( $leaf_term ) ) {
-                    $canonical_url = function_exists( 'get_term_link' ) ? get_term_link( $leaf_term ) : '';
-                    if ( $canonical_url && ! is_wp_error( $canonical_url ) && function_exists( 'wp_safe_redirect' ) ) {
-                        if ( $paged > 1 ) {
-                            $canonical_url = trailingslashit( $canonical_url ) . 'page/' . $paged . '/';
-                        }
-                        wp_safe_redirect( $canonical_url, 301 );
-                        exit;
-                    }
                     unset( $wp->query_vars['error'], $wp->query_vars['fw_pseo_state'], $wp->query_vars['fw_pseo_district'], $wp->query_vars['fw_pseo_location'], $wp->query_vars['post_type'] );
                     $wp->query_vars['mechanic_city'] = $leaf_term->slug;
                     $wp->query_vars['paged'] = $paged;
