@@ -22,11 +22,41 @@ $brands = wp_get_post_terms( $id, 'car_brand' );
 $spoken_languages = findewerkstatt_workshop_language_labels( $id );
 $maps_url = ( $address || $city ) ? findewerkstatt_get_maps_url( $title, trim( $address . ' ' . $plz ), $address_city ) : '';
 $profile_image_id = get_post_thumbnail_id( $id );
-$profile_image_attributes = array( 'class' => 'fw-profile-image-img', 'loading' => 'eager', 'decoding' => 'async' );
-if ( $profile_image_id && ! trim( (string) get_post_meta( $profile_image_id, '_wp_attachment_image_alt', true ) ) ) {
-    $profile_image_attributes['alt'] = sprintf( findewerkstatt_t( 'Bild zum Profil von %s' ), wp_strip_all_tags( html_entity_decode( $title, ENT_QUOTES, 'UTF-8' ) ) );
+$single_real_photo = get_post_meta( $id, '_mechanic_is_real_photo', true ) === 'yes' ? get_post_meta( $id, '_mechanic_google_photo_url', true ) : '';
+
+// Cover and Avatar logic (Facebook Style)
+$has_real_cover = false;
+if ( $single_real_photo ) {
+    $cover_photo_url = $single_real_photo;
+    $has_real_cover  = true;
+} elseif ( $profile_image_id ) {
+    $cover_photo_url = wp_get_attachment_image_url( $profile_image_id, 'full' );
+    $has_real_cover  = true;
+} else {
+    $cover_photo_url = get_template_directory_uri() . '/assets/images/banners/banner-werkstatt-diagnostic.jpg';
 }
-$profile_image = $profile_image_id ? wp_get_attachment_image( $profile_image_id, 'large', false, $profile_image_attributes ) : '';
+
+$avatar_url = '';
+if ( $profile_image_id ) {
+    $avatar_url = wp_get_attachment_image_url( $profile_image_id, 'medium' );
+} elseif ( $single_real_photo ) {
+    $avatar_url = $single_real_photo;
+}
+
+// Monogram Initials
+$clean_title = trim( wp_strip_all_tags( $title ) );
+$title_parts = preg_split( '/[\s\-_]+/', $clean_title );
+if ( count( $title_parts ) >= 2 ) {
+    $initials = mb_substr( $title_parts[0], 0, 1, 'UTF-8' ) . mb_substr( $title_parts[1], 0, 1, 'UTF-8' );
+} elseif ( mb_strlen( $clean_title ) >= 2 ) {
+    $initials = mb_substr( $clean_title, 0, 2, 'UTF-8' );
+} else {
+    $initials = 'FW';
+}
+$initials = mb_strtoupper( $initials, 'UTF-8' );
+
+$primary_category_name = ( $services && ! is_wp_error( $services ) && ! empty( $services[0] ) ) ? findewerkstatt_t( $services[0]->name ) : findewerkstatt_t( 'Kfz-Werkstatt & Autoservice' );
+$verification_info = findewerkstatt_get_verification_level( $id );
 $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $address_city );
 ?>
 <main id="main-content" class="fw-container fw-page-content">
@@ -42,49 +72,109 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
         <span aria-current="page"><?php echo esc_html( $title ); ?></span>
     </nav>
 
-    <!-- Workshop Hero Header (Clean, professional, without top contact exit) -->
-    <div class="fw-single-hero">
-        <div class="fw-profile-badges">
-            <?php echo findewerkstatt_render_badges( $id ); ?>
-            <?php echo findewerkstatt_get_open_status( $id, false ); ?>
+    <!-- Facebook-Style Profile Header Card -->
+    <div class="fw-fb-profile-card fw-single-hero">
+        <!-- Cover Banner -->
+        <div class="fw-fb-cover">
+            <img class="fw-fb-cover-img" src="<?php echo esc_url( $cover_photo_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" loading="eager" decoding="async">
+            <div class="fw-fb-cover-overlay"></div>
+            <?php if ( $has_real_cover ) : ?>
+                <span class="fw-fb-cover-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span><?php echo esc_html( findewerkstatt_t( 'Werkstatt-Foto' ) ); ?></span>
+                </span>
+            <?php endif; ?>
         </div>
-        <div class="fw-single-title-row">
-            <div class="fw-single-title-content">
-                <h1><?php echo esc_html( $title ); ?></h1>
-                <div class="fw-single-meta-row">
-                    <?php if ( ! empty( $rating['rating'] ) ) : ?>
-                        <div class="fw-profile-google-meta" title="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Google-Bewertung: %s von 5 Sternen' ), $rating['rating'] ) ); ?>">
-                            <span class="fw-google-badge">Google</span>
-                            <?php echo findewerkstatt_render_stars( $rating['rating'], $rating['count'] ); ?>
+
+        <!-- Profile Bar (Avatar + Info + Action Buttons) -->
+        <div class="fw-fb-bar">
+            <div class="fw-fb-bar-main">
+                <div class="fw-fb-avatar-and-info">
+                    <!-- Overlapping Avatar -->
+                    <div class="fw-fb-avatar-wrap">
+                        <div class="fw-fb-avatar">
+                            <?php if ( $avatar_url ) : ?>
+                                <img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="fw-fb-avatar-img" loading="eager">
+                            <?php else : ?>
+                                <div class="fw-fb-avatar-initials">
+                                    <span><?php echo esc_html( $initials ); ?></span>
+                                    <span class="fw-fb-avatar-icon" aria-hidden="true">🔧</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
-                    <p class="fw-card-address">
-                        <?php echo findewerkstatt_icon( 'pin', 16 ); ?>
-                        <span><?php echo esc_html( $clean_full_address ?: findewerkstatt_t( 'Standort nicht angegeben' ) ); ?></span>
-                    </p>
+                        <?php if ( 'verified' === $verification_info['level'] ) : ?>
+                            <span class="fw-fb-avatar-badge is-partner" title="<?php echo esc_attr( findewerkstatt_t( 'Geprüfter Partner' ) ); ?>" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Geprüfter Partner' ) ); ?>">✓</span>
+                        <?php elseif ( 'checked' === $verification_info['level'] ) : ?>
+                            <span class="fw-fb-avatar-badge is-checked" title="<?php echo esc_attr( findewerkstatt_t( 'Daten geprüft' ) ); ?>" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Daten geprüft' ) ); ?>">✓</span>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Profile Info -->
+                    <div class="fw-fb-info">
+                        <div class="fw-fb-title-row">
+                            <h1 class="fw-fb-title"><?php echo esc_html( $title ); ?></h1>
+                            <div class="fw-fb-badges">
+                                <?php echo findewerkstatt_render_badges( $id ); ?>
+                                <?php echo findewerkstatt_get_open_status( $id, false ); ?>
+                            </div>
+                        </div>
+
+                        <p class="fw-fb-tagline">
+                            <span class="fw-fb-category"><?php echo esc_html( $primary_category_name ); ?></span>
+                            <?php if ( $city_name ) : ?>
+                                <span class="fw-fb-bullet">&bull;</span>
+                                <span class="fw-fb-location"><?php echo esc_html( $city_name ); ?></span>
+                            <?php endif; ?>
+                        </p>
+
+                        <div class="fw-fb-meta-pills">
+                            <?php if ( ! empty( $rating['rating'] ) ) : ?>
+                                <div class="fw-fb-pill fw-fb-pill-google" title="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Google-Bewertung: %s von 5 Sternen' ), $rating['rating'] ) ); ?>">
+                                    <span class="fw-google-badge">Google</span>
+                                    <?php echo findewerkstatt_render_stars( $rating['rating'], $rating['count'] ); ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="fw-fb-pill fw-fb-pill-address">
+                                <?php echo findewerkstatt_icon( 'pin', 14 ); ?>
+                                <span><?php echo esc_html( $clean_full_address ?: findewerkstatt_t( 'Standort nicht angegeben' ) ); ?></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <?php get_template_part( 'template-parts/workshop-location', null, array( 'context' => $city_context ) ); ?>
-            </div>
-            <div class="fw-profile-hero-highlights">
-                <div class="fw-profile-top-actions">
-                    <a class="fw-btn fw-btn-accent fw-btn-contact-top" href="#fw-inquiry-box" data-event="offer_request">
+
+                <!-- Facebook Profile Actions -->
+                <div class="fw-fb-actions">
+                    <a class="fw-btn fw-btn-accent fw-fb-action-btn" href="#fw-inquiry-box" data-event="offer_request">
                         <span>⚡</span>
                         <span><?php echo esc_html( findewerkstatt_t( 'Angebot anfragen' ) ); ?></span>
                     </a>
-                    <a class="fw-btn fw-btn-outline fw-btn-contact-top" href="#fw-kontakt-termin" data-event="scroll_to_contact">
+                    <a class="fw-btn fw-btn-outline fw-fb-action-btn" href="#fw-kontakt-termin" data-event="scroll_to_contact">
                         <?php echo findewerkstatt_icon( 'phone', 15 ); ?>
-                        <span><?php echo esc_html( findewerkstatt_t( 'Kontakt & Öffnungszeiten' ) ); ?> &darr;</span>
+                        <span><?php echo esc_html( findewerkstatt_t( 'Kontakt & Zeiten' ) ); ?> &darr;</span>
                     </a>
-                    <a class="fw-btn fw-btn-subtle fw-btn-contact-top" href="#fw-profile-similar" data-event="scroll_to_similar">
+                    <a class="fw-btn fw-btn-subtle fw-fb-action-btn" href="#fw-profile-similar" data-event="scroll_to_similar" title="<?php echo esc_attr( findewerkstatt_t( 'Vergleichen' ) ); ?>">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         <span><?php echo esc_html( findewerkstatt_t( 'Vergleichen' ) ); ?> &darr;</span>
                     </a>
-                    <button type="button" class="fw-btn fw-btn-outline fw-btn-bookmark-single fw-card-bookmark-btn" data-id="<?php echo esc_attr( $id ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Merken' ) ); ?>">
+                    <button type="button" class="fw-btn fw-btn-outline fw-fb-action-btn fw-card-bookmark-btn" data-id="<?php echo esc_attr( $id ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Merken' ) ); ?>">
                         <span class="fw-bookmark-icon" aria-hidden="true">🔖</span>
                         <span><?php echo esc_html( findewerkstatt_t( 'Merken' ) ); ?></span>
                     </button>
                 </div>
             </div>
+
+            <!-- Facebook Navigation Tabs -->
+            <nav class="fw-fb-tabs" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Profil-Navigation' ) ); ?>">
+                <a href="#fw-fb-about" class="fw-fb-tab is-active"><?php echo esc_html( findewerkstatt_t( 'Übersicht' ) ); ?></a>
+                <a href="#fw-fb-services" class="fw-fb-tab"><?php echo esc_html( findewerkstatt_t( 'Leistungen' ) ); ?></a>
+                <?php if ( $brands && ! is_wp_error( $brands ) ) : ?>
+                    <a href="#fw-fb-brands" class="fw-fb-tab"><?php echo esc_html( findewerkstatt_t( 'Automarken' ) ); ?></a>
+                <?php endif; ?>
+                <a href="#fw-inquiry-box" class="fw-fb-tab fw-fb-tab-highlight">⚡ <?php echo esc_html( findewerkstatt_t( 'Angebot anfragen' ) ); ?></a>
+                <a href="#fw-fb-reviews" class="fw-fb-tab"><?php echo esc_html( findewerkstatt_t( 'Bewertungen' ) ); ?></a>
+                <a href="#fw-kontakt-termin" class="fw-fb-tab"><?php echo esc_html( findewerkstatt_t( 'Kontakt & Anfahrt' ) ); ?></a>
+            </nav>
         </div>
     </div>
 
@@ -109,7 +199,7 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             </figure>
 
             <!-- About Section -->
-            <section class="fw-box fw-profile-about">
+            <section id="fw-fb-about" class="fw-box fw-profile-about">
                 <h2>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                     <span><?php echo esc_html( findewerkstatt_t( 'Über den Betrieb' ) ); ?></span>
@@ -119,7 +209,7 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
 
             <!-- Services Section -->
             <?php if ( $services && ! is_wp_error( $services ) ) : ?>
-                <section class="fw-box fw-profile-services">
+                <section id="fw-fb-services" class="fw-box fw-profile-services">
                     <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                         <h2>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -154,7 +244,7 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
 
             <!-- Vehicle Brands Section -->
             <?php if ( $brands && ! is_wp_error( $brands ) ) : ?>
-                <section class="fw-box fw-profile-brands">
+                <section id="fw-fb-brands" class="fw-box fw-profile-brands">
                     <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                         <h2>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
@@ -209,26 +299,29 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                 <div class="fw-faq-item"><button type="button" class="fw-faq-question"><span><?php echo esc_html( findewerkstatt_t( 'Welche Zahlungsmöglichkeiten gibt es?' ) ); ?></span><span class="fw-faq-icon" aria-hidden="true">+</span></button><div class="fw-faq-answer"><p><?php echo esc_html( findewerkstatt_t( 'Erkundigen Sie sich direkt beim Betrieb nach den akzeptierten Zahlungsmöglichkeiten.' ) ); ?></p></div></div>
             </section>
 
-            <!-- Google Reviews Section -->
-            <?php if ( ! empty( $rating['rating'] ) ) : ?>
-                <section class="fw-box fw-profile-google-reviews">
-                    <div class="fw-google-reviews-header">
-                        <span class="fw-google-badge-large">Google</span>
-                        <h2><?php echo esc_html( findewerkstatt_t( 'Google Bewertung' ) ); ?></h2>
-                    </div>
-                    <div class="fw-google-reviews-body">
-                        <div class="fw-google-rating-score"><?php echo esc_html( number_format_i18n( (float) $rating['rating'], 1 ) ); ?> <span class="fw-google-rating-max">/ 5</span></div>
-                        <div class="fw-google-rating-stars"><?php echo findewerkstatt_render_stars( $rating['rating'] ); ?></div>
-                        <div class="fw-google-rating-count"><?php echo esc_html( sprintf( findewerkstatt_t( '%s Bewertungen' ), number_format_i18n( (int) $rating['count'] ) ) ); ?></div>
-                    </div>
-                    <p class="fw-muted fw-google-disclaimer"><?php echo esc_html( findewerkstatt_t( 'Öffentliche Bewertungen von Google Nutzern.' ) ); ?></p>
-                </section>
-            <?php endif; ?>
+            <!-- Reviews Anchor -->
+            <div id="fw-fb-reviews">
+                <!-- Google Reviews Section -->
+                <?php if ( ! empty( $rating['rating'] ) ) : ?>
+                    <section class="fw-box fw-profile-google-reviews">
+                        <div class="fw-google-reviews-header">
+                            <span class="fw-google-badge-large">Google</span>
+                            <h2><?php echo esc_html( findewerkstatt_t( 'Google Bewertung' ) ); ?></h2>
+                        </div>
+                        <div class="fw-google-reviews-body">
+                            <div class="fw-google-rating-score"><?php echo esc_html( number_format_i18n( (float) $rating['rating'], 1 ) ); ?> <span class="fw-google-rating-max">/ 5</span></div>
+                            <div class="fw-google-rating-stars"><?php echo findewerkstatt_render_stars( $rating['rating'] ); ?></div>
+                            <div class="fw-google-rating-count"><?php echo esc_html( sprintf( findewerkstatt_t( '%s Bewertungen' ), number_format_i18n( (int) $rating['count'] ) ) ); ?></div>
+                        </div>
+                        <p class="fw-muted fw-google-disclaimer"><?php echo esc_html( findewerkstatt_t( 'Öffentliche Bewertungen von Google Nutzern.' ) ); ?></p>
+                    </section>
+                <?php endif; ?>
 
-            <!-- Reviews & Customer Feedback Section -->
-            <?php if ( function_exists( 'findewerkstatt_render_workshop_reviews' ) ) : ?>
-                <?php findewerkstatt_render_workshop_reviews( $id ); ?>
-            <?php endif; ?>
+                <!-- Reviews & Customer Feedback Section -->
+                <?php if ( function_exists( 'findewerkstatt_render_workshop_reviews' ) ) : ?>
+                    <?php findewerkstatt_render_workshop_reviews( $id ); ?>
+                <?php endif; ?>
+            </div>
 
             <!-- PRIMARY CONTACT & BOOKING HUB (Moved below content and ads) -->
             <section id="fw-kontakt-termin" class="fw-box fw-profile-contact-hub" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Kontakt und Anfahrt' ) ); ?>">
@@ -467,8 +560,60 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             </section>
         </div>
 
-        <!-- Sticky Sidebar with High CTR Ad Unit & Quick Navigation -->
+        <!-- Sticky Sidebar with Facebook-Style Steckbrief & Ad Unit -->
         <aside class="fw-sidebar" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Seitenleiste' ) ); ?>">
+            <!-- Facebook-Style Steckbrief (Business Info Card) -->
+            <div class="fw-fb-steckbrief fw-box">
+                <div class="fw-fb-steckbrief-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <h3><?php echo esc_html( findewerkstatt_t( 'Steckbrief' ) ); ?></h3>
+                </div>
+                <div class="fw-fb-steckbrief-list">
+                    <div class="fw-fb-steckbrief-item">
+                        <span class="fw-fb-steckbrief-icon" aria-hidden="true">🏢</span>
+                        <div class="fw-fb-steckbrief-detail">
+                            <span class="fw-fb-steckbrief-label"><?php echo esc_html( findewerkstatt_t( 'Branche' ) ); ?></span>
+                            <span class="fw-fb-steckbrief-val"><?php echo esc_html( $primary_category_name ); ?></span>
+                        </div>
+                    </div>
+                    <div class="fw-fb-steckbrief-item">
+                        <span class="fw-fb-steckbrief-icon" aria-hidden="true">📍</span>
+                        <div class="fw-fb-steckbrief-detail">
+                            <span class="fw-fb-steckbrief-label"><?php echo esc_html( findewerkstatt_t( 'Adresse' ) ); ?></span>
+                            <span class="fw-fb-steckbrief-val"><?php echo esc_html( $clean_full_address ?: findewerkstatt_t( 'Nicht angegeben' ) ); ?></span>
+                        </div>
+                    </div>
+                    <div class="fw-fb-steckbrief-item">
+                        <span class="fw-fb-steckbrief-icon" aria-hidden="true">🕒</span>
+                        <div class="fw-fb-steckbrief-detail">
+                            <span class="fw-fb-steckbrief-label"><?php echo esc_html( findewerkstatt_t( 'Status' ) ); ?></span>
+                            <span class="fw-fb-steckbrief-val"><?php echo findewerkstatt_get_open_status( $id, false ); ?></span>
+                        </div>
+                    </div>
+                    <?php if ( ! empty( $spoken_languages ) ) : ?>
+                        <div class="fw-fb-steckbrief-item">
+                            <span class="fw-fb-steckbrief-icon" aria-hidden="true">🗣️</span>
+                            <div class="fw-fb-steckbrief-detail">
+                                <span class="fw-fb-steckbrief-label"><?php echo esc_html( findewerkstatt_t( 'Gesprochene Sprachen' ) ); ?></span>
+                                <span class="fw-fb-steckbrief-val"><?php echo esc_html( implode( ', ', $spoken_languages ) ); ?></span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <div class="fw-fb-steckbrief-item">
+                        <span class="fw-fb-steckbrief-icon" aria-hidden="true">🛡️</span>
+                        <div class="fw-fb-steckbrief-detail">
+                            <span class="fw-fb-steckbrief-label"><?php echo esc_html( findewerkstatt_t( 'Eintragsstatus' ) ); ?></span>
+                            <span class="fw-fb-steckbrief-val"><?php echo esc_html( $verification_info['label'] ); ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="fw-fb-steckbrief-footer">
+                    <a href="#fw-kontakt-termin" class="fw-btn fw-btn-outline fw-btn-block fw-btn-sm">
+                        <span><?php echo esc_html( findewerkstatt_t( 'Alle Kontaktdaten anzeigen' ) ); ?> &darr;</span>
+                    </a>
+                </div>
+            </div>
+
             <!-- Sticky Sidebar Ad Unit (Google AdSense / Direct Sponsor) -->
             <?php if ( function_exists( 'findewerkstatt_render_ad' ) ) { echo findewerkstatt_render_ad( 'sidebar_sticky' ); } ?>
 

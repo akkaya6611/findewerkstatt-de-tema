@@ -392,5 +392,14 @@ return array(
     'Zuletzt angesehen' => 'Son Görüntülenenler',
     'Details ansehen' => 'Detayları Gör',
     'Ähnliche Betriebe vergleichen' => 'Benzer işletmeleri karşılaştır',
+    'Steckbrief' => 'İşletme Bilgileri',
+    'Branche' => 'Sektör',
+    'Profil-Navigation' => 'Profil Menüsü',
+    'Übersicht' => 'Genel Bakış',
+    'Automarken' => 'Araç Markaları',
+    'Werkstatt-Foto' => 'Servis Fotoğrafı',
+    'Alle Kontaktdaten anzeigen' => 'Tüm İletişim Bilgilerini Gör',
+    'Status' => 'Durum',
+    'Eintragsstatus' => 'Kayıt Durumu',
 );
 

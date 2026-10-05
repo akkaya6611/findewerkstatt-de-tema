@@ -4,7 +4,7 @@ Theme URI: https://findewerkstatt.de/
 Author: FindeWerkstatt Team
 Author URI: https://findewerkstatt.de/
 Description: Modernes, ultraschnelles Portal für Kfz-Werkstätten, 24h Abschleppdienste, TÜV/AU und Autoreparatur in ganz Deutschland. 100% DSGVO-konform, mobiloptimiert und mit strukturierten Schema.org-Daten.
-Version: 3.5.3
+Version: 3.5.4
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
@@ -3792,5 +3792,386 @@ nav.navigation.pagination .page-numbers.dots {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ========================================================
+   FACEBOOK-STYLE WORKSHOP PROFILE (Cover, Avatar, Tabs & Steckbrief)
+   ======================================================== */
+.fw-fb-profile-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--fw-border);
+  border-radius: var(--fw-radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 1. Cover Photo Area */
+.fw-fb-cover {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background: #0f172a;
+  overflow: hidden;
+}
+.fw-fb-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.fw-fb-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(5, 41, 93, 0.6) 100%);
+  pointer-events: none;
+}
+.fw-fb-cover-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 750;
+  padding: 5px 11px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 2. Profile Bar */
+.fw-fb-bar {
+  padding: 0 32px;
+  position: relative;
+}
+.fw-fb-bar-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: -65px;
+  padding-bottom: 18px;
+  flex-wrap: wrap;
+}
+.fw-fb-avatar-and-info {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex: 1;
+  min-width: 290px;
+}
+.fw-fb-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.fw-fb-avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fw-fb-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.fw-fb-avatar-initials {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #05295d 0%, #1e40af 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 850;
+  font-size: 36px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.fw-fb-avatar-icon {
+  font-size: 14px;
+  margin-top: -2px;
+  opacity: 0.85;
+}
+.fw-fb-avatar-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  background: #1877f2;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  cursor: help;
+}
+.fw-fb-avatar-badge.is-partner {
+  background: #1877f2;
+}
+.fw-fb-avatar-badge.is-checked {
+  background: #10b981;
+}
+
+.fw-fb-info {
+  padding-bottom: 6px;
+  flex: 1;
+}
+.fw-fb-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.fw-fb-title {
+  font-size: 26px;
+  font-weight: 850;
+  color: var(--fw-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+.fw-fb-tagline {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fw-fb-category {
+  color: var(--fw-primary);
+  font-weight: 700;
+}
+.fw-fb-bullet {
+  color: #cbd5e1;
+}
+.fw-fb-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fw-fb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #475569;
+}
+.fw-fb-pill-google {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.fw-fb-pill-address svg {
+  color: #ea580c;
+  flex-shrink: 0;
+}
+
+.fw-fb-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 6px;
+}
+.fw-fb-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--fw-radius);
+}
+
+/* 3. Facebook Navigation Tabs */
+.fw-fb-tabs {
+  display: flex;
+  gap: 4px;
+  border-top: 1px solid #f1f5f9;
+  padding: 4px 0 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fw-fb-tabs::-webkit-scrollbar {
+  display: none;
+}
+.fw-fb-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  border-radius: var(--fw-radius) var(--fw-radius) 0 0;
+}
+.fw-fb-tab:hover {
+  color: var(--fw-primary);
+  background: #f8fafc;
+}
+.fw-fb-tab.is-active {
+  color: var(--fw-primary);
+  border-bottom-color: var(--fw-accent);
+}
+.fw-fb-tab-highlight {
+  color: #ea580c;
+  font-weight: 800;
+}
+.fw-fb-tab-highlight:hover {
+  color: #c2410c;
+  background: #fff7ed;
+}
+
+/* 4. Facebook-Style Steckbrief (Sidebar Card) */
+.fw-fb-steckbrief {
+  background: #ffffff;
+  border: 1px solid var(--fw-border);
+  border-radius: var(--fw-radius-lg);
+  padding: 22px;
+  margin-bottom: 24px;
+}
+.fw-fb-steckbrief-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.fw-fb-steckbrief-header h3 {
+  font-size: 17px;
+  font-weight: 850;
+  color: var(--fw-primary);
+  margin: 0;
+}
+.fw-fb-steckbrief-header svg {
+  color: var(--fw-accent);
+}
+.fw-fb-steckbrief-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fw-fb-steckbrief-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.fw-fb-steckbrief-icon {
+  font-size: 16px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.fw-fb-steckbrief-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+.fw-fb-steckbrief-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #94a3b8;
+}
+.fw-fb-steckbrief-val {
+  color: #1e293b;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.fw-fb-steckbrief-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* 5. Mobile Responsiveness for Facebook Profile */
+@media (max-width: 768px) {
+  .fw-fb-cover {
+    height: 160px;
+  }
+  .fw-fb-bar {
+    padding: 0 16px;
+  }
+  .fw-fb-bar-main {
+    margin-top: -45px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .fw-fb-avatar-and-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+  .fw-fb-avatar {
+    width: 90px;
+    height: 90px;
+  }
+  .fw-fb-avatar-initials {
+    font-size: 26px;
+  }
+  .fw-fb-avatar-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    bottom: 2px;
+    right: 2px;
+  }
+  .fw-fb-title {
+    font-size: 22px;
+  }
+  .fw-fb-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .fw-fb-action-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .fw-fb-tabs {
+    padding-bottom: 4px;
+  }
+  .fw-fb-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
 
 

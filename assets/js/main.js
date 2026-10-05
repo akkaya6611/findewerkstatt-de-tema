@@ -270,11 +270,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // --- Facebook Tabs Active Switcher ---
+    const fbTabs = document.querySelectorAll('.fw-fb-tab');
+    if (fbTabs.length > 0) {
+        fbTabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                fbTabs.forEach(function (t) { t.classList.remove('is-active'); });
+                tab.classList.add('is-active');
+            });
+        });
+    }
+
     // --- Recently Viewed Workshops History (localStorage) ---
     const RECENT_KEY = 'fw_recent_workshops';
     const recentBox = document.getElementById('fw-recently-viewed-box');
     const recentList = document.getElementById('fw-recently-viewed-list');
-    const heroElem = document.querySelector('.fw-single-hero');
+    const heroElem = document.querySelector('.fw-fb-profile-card, .fw-single-hero');
 
     if (recentBox && recentList && heroElem) {
         let recents = [];
