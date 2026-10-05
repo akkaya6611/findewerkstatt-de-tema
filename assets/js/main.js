@@ -253,5 +253,73 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+
+    // --- Smooth Scroll for In-Page Anchors (Viewability Optimization) ---
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+            const targetId = anchor.getAttribute('href');
+            if (!targetId || targetId === '#' || targetId.length <= 1) return;
+            const targetElem = document.querySelector(targetId);
+            if (targetElem) {
+                e.preventDefault();
+                targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (window.history && window.history.pushState) {
+                    window.history.pushState(null, '', targetId);
+                }
+            }
+        });
+    });
+
+    // --- Recently Viewed Workshops History (localStorage) ---
+    const RECENT_KEY = 'fw_recent_workshops';
+    const recentBox = document.getElementById('fw-recently-viewed-box');
+    const recentList = document.getElementById('fw-recently-viewed-list');
+    const heroElem = document.querySelector('.fw-single-hero');
+
+    if (recentBox && recentList && heroElem) {
+        let recents = [];
+        try {
+            const stored = localStorage.getItem(RECENT_KEY);
+            recents = stored ? JSON.parse(stored) : [];
+            if (!Array.isArray(recents)) recents = [];
+        } catch (e) {
+            recents = [];
+        }
+
+        const currentId = heroElem.querySelector('.fw-card-bookmark-btn') ? heroElem.querySelector('.fw-card-bookmark-btn').dataset.id : '';
+        const currentTitle = (heroElem.querySelector('h1') ? heroElem.querySelector('h1').textContent : '').trim();
+        const currentCityElem = heroElem.querySelector('.fw-card-address span');
+        const currentCity = currentCityElem ? currentCityElem.textContent.trim() : '';
+        const currentRating = heroElem.querySelector('.fw-rating-number') ? heroElem.querySelector('.fw-rating-number').textContent.trim() : '';
+
+        // Render previous workshops if available
+        const itemsToRender = recents.filter(function (item) { return item.id && item.id !== currentId; }).slice(0, 4);
+        if (itemsToRender.length > 0) {
+            recentBox.style.display = 'block';
+            recentList.innerHTML = itemsToRender.map(function (item) {
+                return '<div class="fw-recent-item" style="background:#ffffff; border:1px solid var(--fw-border); border-radius:var(--fw-radius); padding:12px; display:flex; flex-direction:column; gap:6px;">' +
+                    '<a href="' + item.url + '" style="font-weight:700; color:var(--fw-primary); font-size:14px; text-decoration:none; line-height:1.3;">' + item.title + '</a>' +
+                    (item.city ? '<span style="font-size:12px; color:var(--fw-text-muted);">📍 ' + item.city + '</span>' : '') +
+                    (item.rating ? '<span style="font-size:12px; color:#f59e0b; font-weight:700;">★ ' + item.rating + '</span>' : '') +
+                    '<a href="' + item.url + '" style="margin-top:auto; font-size:12px; font-weight:600; color:var(--fw-accent); text-decoration:none;">' + translate('Details ansehen') + ' &rarr;</a>' +
+                '</div>';
+            }).join('');
+        }
+
+        // Save current workshop to history
+        if (currentId && currentTitle) {
+            const newEntry = {
+                id: currentId,
+                title: currentTitle,
+                url: window.location.pathname,
+                city: currentCity,
+                rating: currentRating
+            };
+            const updated = [newEntry].concat(recents.filter(function (item) { return item.id !== currentId; })).slice(0, 8);
+            try {
+                localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
+            } catch (e) {}
+        }
+    }
 });
 

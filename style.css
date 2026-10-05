@@ -4,7 +4,7 @@ Theme URI: https://findewerkstatt.de/
 Author: FindeWerkstatt Team
 Author URI: https://findewerkstatt.de/
 Description: Modernes, ultraschnelles Portal für Kfz-Werkstätten, 24h Abschleppdienste, TÜV/AU und Autoreparatur in ganz Deutschland. 100% DSGVO-konform, mobiloptimiert und mit strukturierten Schema.org-Daten.
-Version: 3.5.2
+Version: 3.5.3
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
@@ -3591,6 +3591,35 @@ nav.navigation.pagination .page-numbers.dots {
   font-size: 13px;
   font-weight: 700;
   border-radius: var(--fw-radius);
+}
+.fw-btn-subtle {
+  background: #f1f5f9;
+  color: var(--fw-primary);
+  border: 1px solid #cbd5e1;
+}
+.fw-btn-subtle:hover {
+  background: #e2e8f0;
+  color: var(--fw-primary);
+}
+.fw-discovery-chip {
+  background: #f8fafc;
+  border: 1px solid var(--fw-border);
+  color: var(--fw-text);
+  border-radius: var(--fw-radius);
+  transition: all 0.2s ease;
+}
+.fw-discovery-chip:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: var(--fw-primary);
+  transform: translateY(-1px);
+}
+.fw-service-geo-badge {
+  font-size: 11px;
+  background: rgba(30, 58, 138, 0.08);
+  color: var(--fw-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* ========================================================

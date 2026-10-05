@@ -67,27 +67,17 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             </div>
             <div class="fw-profile-hero-highlights">
                 <div class="fw-profile-top-actions">
-                    <?php if ( $phone ) : ?>
-                        <a class="fw-btn fw-btn-primary fw-btn-contact-top" href="tel:<?php echo esc_attr( $phone ); ?>" data-event="phone_click">
-                            <?php echo findewerkstatt_icon( 'phone', 16 ); ?>
-                            <span><?php echo esc_html( findewerkstatt_t( 'Anrufen' ) ); ?></span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if ( $whatsapp_url ) : ?>
-                        <a class="fw-btn fw-btn-whatsapp fw-btn-contact-top" href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" data-event="whatsapp_click">
-                            <?php echo findewerkstatt_icon( 'whatsapp', 16 ); ?>
-                            <span>WhatsApp</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if ( $maps_url ) : ?>
-                        <a class="fw-btn fw-btn-outline fw-btn-contact-top" href="<?php echo esc_url( $maps_url ); ?>" target="_blank" rel="noopener noreferrer" data-event="route_click">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-                            <span><?php echo esc_html( findewerkstatt_t( 'Route' ) ); ?></span>
-                        </a>
-                    <?php endif; ?>
                     <a class="fw-btn fw-btn-accent fw-btn-contact-top" href="#fw-inquiry-box" data-event="offer_request">
                         <span>⚡</span>
                         <span><?php echo esc_html( findewerkstatt_t( 'Angebot anfragen' ) ); ?></span>
+                    </a>
+                    <a class="fw-btn fw-btn-outline fw-btn-contact-top" href="#fw-kontakt-termin" data-event="scroll_to_contact">
+                        <?php echo findewerkstatt_icon( 'phone', 15 ); ?>
+                        <span><?php echo esc_html( findewerkstatt_t( 'Kontakt & Öffnungszeiten' ) ); ?> &darr;</span>
+                    </a>
+                    <a class="fw-btn fw-btn-subtle fw-btn-contact-top" href="#fw-profile-similar" data-event="scroll_to_similar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span><?php echo esc_html( findewerkstatt_t( 'Vergleichen' ) ); ?> &darr;</span>
                     </a>
                     <button type="button" class="fw-btn fw-btn-outline fw-btn-bookmark-single fw-card-bookmark-btn" data-id="<?php echo esc_attr( $id ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Merken' ) ); ?>">
                         <span class="fw-bookmark-icon" aria-hidden="true">🔖</span>
@@ -130,15 +120,32 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             <!-- Services Section -->
             <?php if ( $services && ! is_wp_error( $services ) ) : ?>
                 <section class="fw-box fw-profile-services">
-                    <h2>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <span><?php echo esc_html( findewerkstatt_t( 'Leistungen' ) ); ?></span>
-                    </h2>
+                    <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span><?php echo esc_html( findewerkstatt_t( 'Angebotene Leistungen' ) ); ?></span>
+                        </h2>
+                        <?php if ( $city ) : ?>
+                            <a class="fw-section-sublink" href="<?php echo esc_url( get_term_link( $city ) ); ?>" style="font-size:13px; font-weight:600; color:var(--fw-accent);">
+                                <?php echo esc_html( sprintf( findewerkstatt_t( 'Alle Werkstätten in %s anzeigen' ), $city_name ) ); ?> &rarr;
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <p class="fw-muted" style="margin-top:-6px; margin-bottom:14px; font-size:13px;">
+                        <?php echo esc_html( findewerkstatt_t( 'Klicken Sie auf eine Leistung, um spezialisierte Werkstätten in dieser Region zu vergleichen.' ) ); ?>
+                    </p>
                     <div class="fw-services-list">
-                        <?php foreach ( $services as $service ) : ?>
-                            <a class="fw-service-item" href="<?php echo esc_url( get_term_link( $service ) ); ?>">
+                        <?php foreach ( $services as $service ) :
+                            $service_url = ( $city && class_exists( 'findewerkstatt_PSEO' ) )
+                                ? findewerkstatt_PSEO::get_combination_url( $service, $city )
+                                : get_term_link( $service );
+                        ?>
+                            <a class="fw-service-item" href="<?php echo esc_url( $service_url ); ?>" title="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s in %s suchen' ), $service->name, $city_name ?: 'Deutschland' ) ); ?>">
                                 <span class="fw-service-check" aria-hidden="true">✓</span>
                                 <span><?php echo esc_html( findewerkstatt_t( $service->name ) ); ?></span>
+                                <?php if ( $city_name ) : ?>
+                                    <span style="font-size:11px; opacity:0.65; margin-left:auto; padding-left:6px;"><?php echo esc_html( $city_name ); ?></span>
+                                <?php endif; ?>
                             </a>
                         <?php endforeach; ?>
                     </div>
@@ -148,13 +155,22 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
             <!-- Vehicle Brands Section -->
             <?php if ( $brands && ! is_wp_error( $brands ) ) : ?>
                 <section class="fw-box fw-profile-brands">
-                    <h2>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
-                        <span><?php echo esc_html( findewerkstatt_t( 'Fahrzeugmarken' ) ); ?></span>
-                    </h2>
+                    <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                            <span><?php echo esc_html( findewerkstatt_t( 'Fahrzeugmarken' ) ); ?></span>
+                        </h2>
+                    </div>
+                    <p class="fw-muted" style="margin-top:-6px; margin-bottom:14px; font-size:13px;">
+                        <?php echo esc_html( findewerkstatt_t( 'Betreute Automarken dieses Betriebs. Klicken Sie auf eine Marke für weitere Werkstätten.' ) ); ?>
+                    </p>
                     <div class="fw-card-services">
-                        <?php foreach ( $brands as $brand ) : ?>
-                            <a class="fw-badge fw-badge-service fw-brand-chip" href="<?php echo esc_url( get_term_link( $brand ) ); ?>">
+                        <?php foreach ( $brands as $brand ) :
+                            $brand_url = ( $city && class_exists( 'findewerkstatt_PSEO' ) )
+                                ? findewerkstatt_PSEO::get_combination_url( $brand, $city )
+                                : get_term_link( $brand );
+                        ?>
+                            <a class="fw-badge fw-badge-service fw-brand-chip" href="<?php echo esc_url( $brand_url ); ?>" title="<?php echo esc_attr( sprintf( findewerkstatt_t( '%s Werkstatt in %s finden' ), $brand->name, $city_name ?: 'Deutschland' ) ); ?>">
                                 <?php echo findewerkstatt_icon( 'car', 12 ); ?>
                                 <span><?php echo esc_html( $brand->name ); ?></span>
                             </a>
@@ -339,12 +355,38 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                 );
             }
             $similar_query = new WP_Query( $similar_args );
+
+            // Fallback to state if fewer than 2 workshops found in current city
+            if ( $similar_query->post_count < 2 && $city_context && ! empty( $city_context['state'] ) ) {
+                $state_args = array(
+                    'post_type'      => 'mechanic',
+                    'posts_per_page' => 3,
+                    'post__not_in'   => array( $id ),
+                    'orderby'        => 'rand',
+                    'tax_query'      => array(
+                        array(
+                            'taxonomy' => 'mechanic_city',
+                            'field'    => 'term_id',
+                            'terms'    => $city_context['state']->term_id,
+                        ),
+                    ),
+                );
+                $similar_query = new WP_Query( $state_args );
+            }
+
             if ( $similar_query->have_posts() ) : ?>
-                <section class="fw-box fw-profile-similar">
-                    <h2>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        <span><?php echo esc_html( sprintf( findewerkstatt_t( 'Ähnliche Werkstätten in %s' ), $city_name ?: findewerkstatt_t( 'der Region' ) ) ); ?></span>
-                    </h2>
+                <section id="fw-profile-similar" class="fw-box fw-profile-similar">
+                    <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
+                        <h2>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span><?php echo esc_html( sprintf( findewerkstatt_t( 'Ähnliche Werkstätten in %s' ), $city_name ?: findewerkstatt_t( 'der Region' ) ) ); ?></span>
+                        </h2>
+                        <?php if ( $city ) : ?>
+                            <a class="fw-section-sublink" href="<?php echo esc_url( get_term_link( $city ) ); ?>" style="font-size:13px; font-weight:600; color:var(--fw-accent);">
+                                <?php echo esc_html( sprintf( findewerkstatt_t( 'Alle Werkstätten in %s vergleichen' ), $city_name ) ); ?> &rarr;
+                            </a>
+                        <?php endif; ?>
+                    </div>
                     <div class="fw-similar-cards-grid">
                         <?php while ( $similar_query->have_posts() ) : $similar_query->the_post();
                             get_template_part( 'template-parts/workshop-card' );
@@ -352,6 +394,44 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                     </div>
                 </section>
             <?php endif; ?>
+
+            <!-- Popular Services Discovery Hub in City (Boosts Site Navigation & Pageviews) -->
+            <?php if ( $city ) :
+                $popular_service_slugs = array( 'inspektion', 'hauptuntersuchung-tuev', 'bremsenservice', 'reifenwechsel', 'oelwechsel', 'klimaservice', 'unfallinstandsetzung', 'autoglas' );
+            ?>
+                <section class="fw-box fw-profile-discovery">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span><?php echo esc_html( sprintf( findewerkstatt_t( 'Beliebte Kfz-Services in %s' ), $city_name ) ); ?></span>
+                    </h2>
+                    <p class="fw-muted" style="margin-top:-6px; margin-bottom:14px; font-size:13px;">
+                        <?php echo esc_html( findewerkstatt_t( 'Finden und vergleichen Sie geprüfte Werkstätten nach Fachbereich in Ihrer Nähe:' ) ); ?>
+                    </p>
+                    <div class="fw-discovery-chips" style="display:flex; flex-wrap:wrap; gap:8px;">
+                        <?php foreach ( $popular_service_slugs as $ps_slug ) :
+                            $sterm = get_term_by( 'slug', $ps_slug, 'service_type' );
+                            if ( ! $sterm || is_wp_error( $sterm ) ) continue;
+                            $ps_url = class_exists( 'findewerkstatt_PSEO' ) ? findewerkstatt_PSEO::get_combination_url( $sterm, $city ) : get_term_link( $sterm );
+                        ?>
+                            <a class="fw-badge fw-badge-service fw-discovery-chip" href="<?php echo esc_url( $ps_url ); ?>" style="padding:7px 12px; font-size:13px; text-decoration:none;">
+                                <span style="color:var(--fw-accent); font-weight:700;">&bull;</span>
+                                <span><?php echo esc_html( findewerkstatt_t( $sterm->name ) ); ?></span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
+            <?php endif; ?>
+
+            <!-- Recently Viewed Workshops (Loaded dynamically from localStorage) -->
+            <section id="fw-recently-viewed-box" class="fw-box fw-profile-recent" style="display:none;" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Zuletzt angesehen' ) ); ?>">
+                <div class="fw-section-header-row" style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                        <span><?php echo esc_html( findewerkstatt_t( 'Zuletzt angesehen' ) ); ?></span>
+                    </h2>
+                </div>
+                <div id="fw-recently-viewed-list" class="fw-recent-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;"></div>
+            </section>
 
             <!-- Internal Linking Section -->
             <section class="fw-box fw-internal-links-box">
@@ -403,6 +483,9 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
                     <a href="#fw-kontakt-termin" class="fw-btn fw-btn-outline fw-btn-block">
                         <span><?php echo esc_html( findewerkstatt_t( 'Zu den Kontaktdaten' ) ); ?> &darr;</span>
                     </a>
+                    <a href="#fw-profile-similar" class="fw-btn fw-btn-subtle fw-btn-block" style="text-align:center;">
+                        <span><?php echo esc_html( findewerkstatt_t( 'Ähnliche Betriebe vergleichen' ) ); ?> &darr;</span>
+                    </a>
                 </div>
             </div>
 
@@ -423,24 +506,20 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
         </aside>
     </div>
 
-    <!-- Mobile Fixed Bottom CTA Bar (Sticky on Mobile) -->
+    <!-- Mobile Fixed Bottom CTA Bar (Optimized for Scroll & Dwell Time) -->
     <nav class="fw-mobile-sticky-bar" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Schnellkontakt' ) ); ?>">
         <div class="fw-mobile-sticky-inner">
-            <?php if ( $phone ) : ?>
-                <a href="tel:<?php echo esc_attr( $phone ); ?>" class="fw-sticky-btn fw-sticky-phone" data-event="phone_click">
-                    <?php echo findewerkstatt_icon( 'phone', 18 ); ?>
-                    <span><?php echo esc_html( findewerkstatt_t( 'Anrufen' ) ); ?></span>
-                </a>
-            <?php endif; ?>
-            <?php if ( $whatsapp_url ) : ?>
-                <a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" class="fw-sticky-btn fw-sticky-whatsapp" data-event="whatsapp_click">
-                    <?php echo findewerkstatt_icon( 'whatsapp', 18 ); ?>
-                    <span>WhatsApp</span>
-                </a>
-            <?php endif; ?>
             <a href="#fw-inquiry-box" class="fw-sticky-btn fw-sticky-quote" data-event="offer_request">
-                <span class="fw-sticky-icon" aria-hidden="true">💶</span>
+                <span class="fw-sticky-icon" aria-hidden="true">⚡</span>
                 <span><?php echo esc_html( findewerkstatt_t( 'Angebot anfragen' ) ); ?></span>
+            </a>
+            <a href="#fw-kontakt-termin" class="fw-sticky-btn fw-sticky-phone" data-event="scroll_to_contact">
+                <?php echo findewerkstatt_icon( 'phone', 16 ); ?>
+                <span><?php echo esc_html( findewerkstatt_t( 'Kontakt & Zeiten' ) ); ?> &darr;</span>
+            </a>
+            <a href="#fw-profile-similar" class="fw-sticky-btn fw-sticky-compare" data-event="scroll_to_similar" style="background:#f1f5f9; color:var(--fw-text);">
+                <span aria-hidden="true">🔍</span>
+                <span><?php echo esc_html( findewerkstatt_t( 'Vergleichen' ) ); ?></span>
             </a>
         </div>
     </nav>
