@@ -73,14 +73,77 @@ function findewerkstatt_render_stars( $rating = null, $count = 0 ) {
     return '<div class="fw-card-rating" role="img" aria-label="' . esc_attr( $label ) . '"><span class="fw-stars" aria-hidden="true">' . $stars . '</span><span class="fw-rating-val">' . esc_html( $value ) . '</span>' . $reviews . '</div>';
 }
 
+/**
+ * 3-Stufiges Verifizierungssystem für Kfz-Betriebe:
+ * 1. Verzeichniseintrag (Standard / importiert)
+ * 2. Daten geprüft (Adresse & Kontaktdaten redaktionell geprüft)
+ * 3. Geprüfter Partner (Firma bestätigt vom echten Inhaber)
+ */
+function findewerkstatt_get_verification_level( $post_id ) {
+    $owner_id           = (int) get_post_meta( $post_id, '_fw_owner_user_id', true );
+    $is_verified_meta   = get_post_meta( $post_id, '_mechanic_is_verified', true );
+    $data_verified_meta = get_post_meta( $post_id, '_mechanic_data_verified', true );
+    $plan               = get_post_meta( $post_id, '_fw_plan', true );
+
+    // Stufe 3: Geprüfter Partner (Nur bei echtem Inhaber-Konto und bestätigter Zuordnung)
+    if ( $owner_id > 0 && ( 'yes' === $is_verified_meta || 'plus' === $plan || 'professional' === $plan ) ) {
+        return array(
+            'level'   => 3,
+            'slug'    => 'partner',
+            'label'   => 'Geprüfter Partner',
+            'tooltip' => 'Dieses Unternehmen hat seinen Eintrag bestätigt.',
+            'class'   => 'fw-badge-partner',
+            'icon'    => 'shield-check',
+        );
+    }
+
+    // Stufe 2: Daten geprüft (Adresse, Telefon und Basisdaten verifiziert)
+    $has_phone   = ! empty( get_post_meta( $post_id, '_mechanic_phone', true ) );
+    $has_address = ! empty( get_post_meta( $post_id, '_mechanic_address', true ) );
+    if ( 'yes' === $data_verified_meta || ( $has_phone && $has_address && 'yes' === $is_verified_meta ) ) {
+        return array(
+            'level'   => 2,
+            'slug'    => 'data_checked',
+            'label'   => 'Daten geprüft',
+            'tooltip' => 'Adresse und Kontaktdaten wurden redaktionell geprüft.',
+            'class'   => 'fw-badge-datengeprueft',
+            'icon'    => 'shield-check',
+        );
+    }
+
+    // Stufe 1: Verzeichniseintrag (Standard-Eintrag)
+    return array(
+        'level'   => 1,
+        'slug'    => 'directory',
+        'label'   => 'Verzeichniseintrag',
+        'tooltip' => 'Standard-Eintrag im Verzeichnis.',
+        'class'   => 'fw-badge-verzeichnis',
+        'icon'    => 'pin',
+    );
+}
+
+function findewerkstatt_render_verification_badge( $post_id ) {
+    $info     = findewerkstatt_get_verification_level( $post_id );
+    $icon_svg = function_exists( 'findewerkstatt_icon' ) ? findewerkstatt_icon( $info['icon'], 12 ) : '';
+    $label    = esc_html( findewerkstatt_t( $info['label'] ) );
+    $tooltip  = esc_attr( findewerkstatt_t( $info['tooltip'] ) );
+
+    return '<span class="fw-badge ' . esc_attr( $info['class'] ) . '" title="' . $tooltip . '" aria-label="' . $tooltip . '">'
+         . $icon_svg
+         . '<span>' . $label . '</span>'
+         . '</span>';
+}
+
 function findewerkstatt_render_badges( $post_id ) {
     $output = '';
     if ( function_exists( 'findewerkstatt_render_featured_badge' ) ) {
         $output .= findewerkstatt_render_featured_badge( $post_id );
     }
 
+    // 3-Stufiger Verifizierungsstatus
+    $output .= findewerkstatt_render_verification_badge( $post_id );
+
     $badges = array(
-        '_mechanic_is_verified'   => array( 'fw-badge-verified', 'shield-check', 'Geprüfter Partner' ),
         '_mechanic_is_master'     => array( 'fw-badge-meister', 'trophy', 'Meisterbetrieb' ),
         '_mechanic_emergency_24h' => array( 'fw-badge-urgent', 'notdienst', '24h Notdienst' ),
     );

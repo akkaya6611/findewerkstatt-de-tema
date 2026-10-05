@@ -159,5 +159,99 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
     });
+
+    // --- Bookmarks ("Merken" / "Gemerkt") Feature (Section 34) ---
+    const BOOKMARK_KEY = 'fw_saved_workshops';
+    const getBookmarks = function () {
+        try {
+            const data = localStorage.getItem(BOOKMARK_KEY);
+            return data ? JSON.parse(data) : [];
+        } catch (e) {
+            return [];
+        }
+    };
+    const saveBookmarks = function (list) {
+        try {
+            localStorage.setItem(BOOKMARK_KEY, JSON.stringify(list));
+        } catch (e) {}
+    };
+    const updateBookmarkBtn = function (btn, isBookmarked) {
+        const icon = btn.querySelector('.fw-bookmark-icon');
+        const text = btn.querySelector('span:not(.fw-bookmark-icon)');
+        if (isBookmarked) {
+            btn.classList.add('is-bookmarked');
+            btn.setAttribute('aria-pressed', 'true');
+            if (icon) icon.textContent = '📌';
+            if (text) text.textContent = translate('Gemerkt');
+            btn.title = translate('Aus Merkliste entfernen');
+        } else {
+            btn.classList.remove('is-bookmarked');
+            btn.setAttribute('aria-pressed', 'false');
+            if (icon) icon.textContent = '🔖';
+            if (text) text.textContent = translate('Merken');
+            btn.title = translate('Merken');
+        }
+    };
+
+    const initialBookmarks = getBookmarks();
+    document.querySelectorAll('.fw-card-bookmark-btn').forEach(function (btn) {
+        const id = btn.dataset.id;
+        if (!id) return;
+        updateBookmarkBtn(btn, initialBookmarks.includes(id));
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let bookmarks = getBookmarks();
+            const exists = bookmarks.includes(id);
+            if (exists) {
+                bookmarks = bookmarks.filter(function (item) { return item !== id; });
+            } else {
+                bookmarks.push(id);
+            }
+            saveBookmarks(bookmarks);
+
+            // Update all buttons with this ID on page
+            document.querySelectorAll('.fw-card-bookmark-btn[data-id="' + id + '"]').forEach(function (b) {
+                updateBookmarkBtn(b, !exists);
+            });
+        });
+    });
+
+    // --- Event Tracking Dispatcher (Section 32) ---
+    const trackEvent = function (eventName, eventParams) {
+        eventParams = eventParams || {};
+        try {
+            // 1. Dispatch DOM CustomEvent
+            window.dispatchEvent(new CustomEvent('findewerkstatt:event', {
+                detail: Object.assign({ event: eventName }, eventParams)
+            }));
+
+            // 2. Google Analytics 4 (gtag)
+            if (typeof window.gtag === 'function') {
+                window.gtag('event', eventName, eventParams);
+            }
+
+            // 3. Google Tag Manager dataLayer
+            if (Array.isArray(window.dataLayer)) {
+                window.dataLayer.push(Object.assign({ event: eventName }, eventParams));
+            }
+        } catch (err) {}
+    };
+
+    // Global listener for elements with data-event attribute
+    document.addEventListener('click', function (e) {
+        const target = e.target.closest('[data-event]');
+        if (!target) return;
+        const eventName = target.getAttribute('data-event');
+        const plan = target.getAttribute('data-plan') || '';
+        if (eventName) {
+            trackEvent(eventName, {
+                element_text: target.textContent ? target.textContent.trim().substring(0, 50) : '',
+                element_href: target.getAttribute('href') || '',
+                plan: plan
+            });
+        }
+    });
 });
 

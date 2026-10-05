@@ -125,8 +125,11 @@ function findewerkstatt_recalculate_workshop_rating( $workshop_id ) {
 
     if ( $count > 0 ) {
         $avg = round( $total_rating / $count, 1 );
-        update_post_meta( $workshop_id, '_mechanic_rating_avg', $avg );
-        update_post_meta( $workshop_id, '_mechanic_rating_count', $count );
+        update_post_meta( $workshop_id, '_fw_site_rating_avg', $avg );
+        update_post_meta( $workshop_id, '_fw_site_rating_count', $count );
+    } else {
+        delete_post_meta( $workshop_id, '_fw_site_rating_avg' );
+        delete_post_meta( $workshop_id, '_fw_site_rating_count' );
     }
 }
 
@@ -166,27 +169,28 @@ function findewerkstatt_render_workshop_reviews( $workshop_id ) {
         'order'   => 'DESC',
     ) );
 
-    $current_rating = findewerkstatt_get_rating( $workshop_id );
+    $site_rating_avg   = get_post_meta( $workshop_id, '_fw_site_rating_avg', true );
+    $site_rating_count = (int) get_post_meta( $workshop_id, '_fw_site_rating_count', true );
     ?>
-    <section id="fw-reviews" class="fw-box fw-reviews-section" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Kundenbewertungen' ) ); ?>">
+    <section id="fw-reviews" class="fw-box fw-reviews-section" aria-label="<?php echo esc_attr( findewerkstatt_t( 'FindeWerkstatt Bewertungen' ) ); ?>">
         <div class="fw-reviews-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
             <div>
                 <h2 style="margin:0 0 6px; font-size:20px; color:#0f172a; display:flex; align-items:center; gap:8px;">
                     <span aria-hidden="true">⭐</span>
-                    <span><?php echo esc_html( findewerkstatt_t( 'Kundenbewertungen & Erfahrungen' ) ); ?></span>
+                    <span><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt Bewertungen' ) ); ?></span>
                 </h2>
                 <p class="fw-muted" style="margin:0; font-size:13.5px;">
-                    <?php echo esc_html( sprintf( findewerkstatt_t( 'Echte Kundenbewertungen für %s.' ), get_the_title( $workshop_id ) ) ); ?>
+                    <?php echo esc_html( sprintf( findewerkstatt_t( 'Verifizierte Bewertungen von Autofahrern auf FindeWerkstatt für %s.' ), get_the_title( $workshop_id ) ) ); ?>
                 </p>
             </div>
             
-            <?php if ( ! empty( $current_rating['rating'] ) ) : ?>
+            <?php if ( ! empty( $site_rating_avg ) && $site_rating_count > 0 ) : ?>
                 <div class="fw-reviews-summary" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px 18px; text-align:right;">
                     <div style="font-size:22px; font-weight:800; color:#0f172a; line-height:1;">
-                        <?php echo esc_html( $current_rating['rating'] ); ?> <span style="font-size:14px; font-weight:500; color:#64748b;">/ 5</span>
+                        <?php echo esc_html( number_format( (float) $site_rating_avg, 1, ',', '.' ) ); ?> <span style="font-size:14px; font-weight:500; color:#64748b;">/ 5</span>
                     </div>
                     <div style="margin-top:4px;">
-                        <?php echo findewerkstatt_render_stars( $current_rating['rating'], $current_rating['count'] ); ?>
+                        <?php echo findewerkstatt_render_stars( $site_rating_avg, $site_rating_count ); ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -254,8 +258,8 @@ function findewerkstatt_render_workshop_reviews( $workshop_id ) {
                 <?php endforeach; ?>
             </div>
         <?php else : ?>
-            <p style="color:#64748b; font-size:14px; margin-bottom:28px;">
-                <?php echo esc_html( findewerkstatt_t( 'Bislang liegen noch keine Bewertungen für diese Werkstatt vor. Seien Sie der Erste, der seine Erfahrungen teilt!' ) ); ?>
+            <p class="fw-reviews-empty" style="color:#64748b; font-size:14px; margin-bottom:28px; background:#f8fafc; padding:16px 20px; border-radius:10px; border:1px dashed #cbd5e1;">
+                <?php echo esc_html( findewerkstatt_t( 'Noch keine Bewertungen auf FindeWerkstatt.' ) ); ?>
             </p>
         <?php endif; ?>
 

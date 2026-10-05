@@ -65,15 +65,19 @@ $card_rating_val = ! empty( $card_rating['rating'] ) ? (float) $card_rating['rat
                     <span aria-hidden="true">👑</span>
                     <span><?php echo esc_html( findewerkstatt_t( 'Geprüfter Meisterbetrieb' ) ); ?></span>
                 </span>
-            <?php elseif ( $card_badges ) : ?>
-                <?php echo $card_badges; ?>
             <?php else : ?>
-                <span class="fw-badge fw-badge-partner">
-                    <?php echo findewerkstatt_icon( 'shield-check', 11 ); ?>
-                    <span><?php echo esc_html( findewerkstatt_t( 'Geprüfter Partner' ) ); ?></span>
+                <?php echo findewerkstatt_render_verification_badge( $card_id ); ?>
+            <?php endif; ?>
+            <?php if ( 'yes' === get_post_meta( $card_id, '_mechanic_is_master', true ) && ! $card_is_featured ) : ?>
+                <span class="fw-badge fw-badge-meister">
+                    <?php echo findewerkstatt_icon( 'trophy', 11 ); ?>
+                    <span><?php echo esc_html( findewerkstatt_t( 'Meisterbetrieb' ) ); ?></span>
                 </span>
             <?php endif; ?>
         </div>
+        <button type="button" class="fw-card-bookmark-btn" data-id="<?php echo esc_attr( $card_id ); ?>" title="<?php echo esc_attr( findewerkstatt_t( 'Merken' ) ); ?>" aria-label="<?php echo esc_attr( findewerkstatt_t( 'Merken' ) ); ?>">
+            <span class="fw-bookmark-icon" aria-hidden="true">🔖</span>
+        </button>
         <?php if ( $card_status_html ) : ?>
             <div class="fw-card-status-wrap">
                 <?php echo $card_status_html; ?>
@@ -82,15 +86,11 @@ $card_rating_val = ! empty( $card_rating['rating'] ) ? (float) $card_rating['rat
     </div>
 
     <div class="fw-card-body">
+        <h3 class="fw-card-title">
+            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+        </h3>
+
         <div class="fw-card-meta-top">
-            <?php if ( ! empty( $card_rating['rating'] ) ) : ?>
-                <?php echo findewerkstatt_render_stars( $card_rating['rating'], $card_rating['count'] ); ?>
-            <?php else : ?>
-                <div class="fw-card-trust-pill">
-                    <span class="fw-trust-star" aria-hidden="true"><?php echo findewerkstatt_icon( 'star', 11, 'fw-trust-star-svg' ); ?></span>
-                    <span class="fw-trust-label"><?php echo esc_html( findewerkstatt_t( 'Profil verifiziert' ) ); ?></span>
-                </div>
-            <?php endif; ?>
             <?php if ( $card_city_name ) : ?>
                 <div class="fw-card-city-tag">
                     <?php echo findewerkstatt_icon( 'pin', 11, 'fw-card-city-pin' ); ?>
@@ -98,16 +98,23 @@ $card_rating_val = ! empty( $card_rating['rating'] ) ? (float) $card_rating['rat
                 </div>
             <?php endif; ?>
             <?php if ( null !== $card_distance ) : ?>
-                <div class="fw-card-city-tag" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; font-weight:700;">
+                <div class="fw-card-city-tag fw-card-distance-tag" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; font-weight:700;">
                     <span>📍</span>
                     <span><?php echo esc_html( $card_distance ); ?> km</span>
                 </div>
             <?php endif; ?>
+            <?php if ( ! empty( $card_rating['rating'] ) ) : ?>
+                <div class="fw-card-google-rating" title="<?php echo esc_attr( sprintf( findewerkstatt_t( 'Google-Bewertung: %s von 5 Sternen (%d Bewertungen)' ), $card_rating['rating'], $card_rating['count'] ) ); ?>">
+                    <span style="font-weight:700; color:#ea4335; font-size:11px;">G</span>
+                    <?php echo findewerkstatt_render_stars( $card_rating['rating'], $card_rating['count'] ); ?>
+                </div>
+            <?php else : ?>
+                <div class="fw-card-trust-pill">
+                    <span class="fw-trust-star" aria-hidden="true"><?php echo findewerkstatt_icon( 'star', 11, 'fw-trust-star-svg' ); ?></span>
+                    <span class="fw-trust-label"><?php echo esc_html( findewerkstatt_t( 'Verzeichniseintrag' ) ); ?></span>
+                </div>
+            <?php endif; ?>
         </div>
-
-        <h3 class="fw-card-title">
-            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-        </h3>
 
         <div class="fw-card-address-block">
             <p class="fw-card-address" title="<?php echo esc_attr( $card_display_address ?: findewerkstatt_t( 'Standort nicht angegeben' ) ); ?>">

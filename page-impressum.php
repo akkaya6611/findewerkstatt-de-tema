@@ -1,5 +1,8 @@
 <?php
-/** Template Name: Impressum */
+/** 
+ * Template Name: Impressum 
+ * German Legal Impressum (§ 5 DDG)
+ */
 $details = findewerkstatt_get_site_details();
 get_header();
 ?>
@@ -7,12 +10,70 @@ get_header();
 <article class="fw-box fw-form-wrap-wide">
     <h1><?php echo esc_html( findewerkstatt_t( 'Impressum' ) ); ?></h1>
     <?php get_template_part( 'template-parts/legal-navigation' ); ?>
-    <div class="fw-prose">
-        <h2><?php echo esc_html( findewerkstatt_t( 'Betreiber und Kontakt' ) ); ?></h2>
-        <p><strong><?php echo esc_html( $details['name'] ); ?></strong><br><?php echo nl2br( esc_html( $details['address'] ) ); ?></p>
-        <p>E-Mail: <a href="mailto:<?php echo esc_attr( $details['email'] ); ?>"><?php echo esc_html( $details['email'] ); ?></a><?php if ( $details['phone'] ) : ?><br><?php echo esc_html( findewerkstatt_t( 'Telefon:' ) ); ?> <?php echo esc_html( $details['phone'] ); ?><?php endif; ?><br><a href="<?php echo esc_url( findewerkstatt_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kontaktformular für Anfragen und Hinweise' ) ); ?></a></p>
-        <?php if ( $details['register'] ) : ?><h2><?php echo esc_html( findewerkstatt_t( 'Registerangaben' ) ); ?></h2><p><?php echo esc_html( $details['register'] ); ?></p><?php endif; ?>
-        <?php if ( $details['vat'] ) : ?><h2><?php echo esc_html( findewerkstatt_t( 'Steuerliche Identifikationsnummer' ) ); ?></h2><p><?php echo esc_html( $details['vat'] ); ?></p><?php endif; ?>
+    
+    <div class="fw-prose fw-impressum-content" style="margin-top:24px;">
+        <h2><?php echo esc_html( findewerkstatt_t( 'Angaben gemäß § 5 DDG' ) ); ?></h2>
+
+        <div class="fw-impressum-block" style="background:#f8fafc; border:1px solid var(--fw-border); border-radius:var(--fw-radius); padding:20px; margin-bottom:24px;">
+            <?php if ( ! empty( $details['company_name'] ) ) : ?>
+                <p style="margin:0 0 4px 0; font-size:16px;"><strong><?php echo esc_html( $details['company_name'] ); ?></strong></p>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $details['operator'] ) && $details['operator'] !== $details['company_name'] ) : ?>
+                <p style="margin:0 0 4px 0;"><strong><?php echo esc_html( findewerkstatt_t( 'Inhaber / Betreiber:' ) ); ?></strong> <?php echo esc_html( $details['operator'] ); ?></p>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $details['legal_form'] ) ) : ?>
+                <p style="margin:0 0 4px 0;"><strong><?php echo esc_html( findewerkstatt_t( 'Rechtsform:' ) ); ?></strong> <?php echo esc_html( $details['legal_form'] ); ?></p>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $details['representative'] ) ) : ?>
+                <p style="margin:0 0 4px 0;"><strong><?php echo esc_html( findewerkstatt_t( 'Vertretungsberechtigte Person:' ) ); ?></strong> <?php echo esc_html( $details['representative'] ); ?></p>
+            <?php endif; ?>
+
+            <div style="margin-top:12px; margin-bottom:12px;">
+                <strong><?php echo esc_html( findewerkstatt_t( 'Anschrift:' ) ); ?></strong><br>
+                <?php if ( ! empty( $details['street'] ) ) : ?>
+                    <?php echo esc_html( trim( $details['street'] . ' ' . $details['house_number'] ) ); ?><br>
+                <?php endif; ?>
+                <?php if ( ! empty( $details['plz'] ) || ! empty( $details['city'] ) ) : ?>
+                    <?php echo esc_html( trim( $details['plz'] . ' ' . $details['city'] ) ); ?><br>
+                <?php endif; ?>
+                <?php if ( ! empty( $details['country'] ) ) : ?>
+                    <?php echo esc_html( $details['country'] ); ?>
+                <?php elseif ( empty( $details['street'] ) && ! empty( $details['address'] ) ) : ?>
+                    <?php echo nl2br( esc_html( $details['address'] ) ); ?>
+                <?php endif; ?>
+            </div>
+
+            <div style="margin-top:12px;">
+                <strong><?php echo esc_html( findewerkstatt_t( 'Kontakt:' ) ); ?></strong><br>
+                <?php if ( ! empty( $details['email'] ) ) : ?>
+                    <span>E-Mail: <a href="mailto:<?php echo esc_attr( $details['email'] ); ?>"><?php echo esc_html( $details['email'] ); ?></a></span><br>
+                <?php endif; ?>
+                <?php if ( ! empty( $details['phone'] ) ) : ?>
+                    <span><?php echo esc_html( findewerkstatt_t( 'Telefon:' ) ); ?> <a href="tel:<?php echo esc_attr( $details['phone'] ); ?>"><?php echo esc_html( $details['phone'] ); ?></a></span><br>
+                <?php endif; ?>
+                <a href="<?php echo esc_url( findewerkstatt_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( findewerkstatt_t( 'Kontaktformular' ) ); ?> &rarr;</a>
+            </div>
+        </div>
+
+        <?php if ( ! empty( $details['commercial_register'] ) || ! empty( $details['register_number'] ) ) : ?>
+            <h2><?php echo esc_html( findewerkstatt_t( 'Registereintrag' ) ); ?></h2>
+            <p>
+                <?php if ( ! empty( $details['commercial_register'] ) ) : ?>
+                    <strong><?php echo esc_html( findewerkstatt_t( 'Registergericht:' ) ); ?></strong> <?php echo esc_html( $details['commercial_register'] ); ?><br>
+                <?php endif; ?>
+                <?php if ( ! empty( $details['register_number'] ) ) : ?>
+                    <strong><?php echo esc_html( findewerkstatt_t( 'Registernummer:' ) ); ?></strong> <?php echo esc_html( $details['register_number'] ); ?>
+                <?php endif; ?>
+            </p>
+        <?php endif; ?>
+
+        <?php if ( ! empty( $details['vat_id'] ) ) : ?>
+            <h2><?php echo esc_html( findewerkstatt_t( 'Umsatzsteuer-Identifikationsnummer' ) ); ?></h2>
+            <p><strong><?php echo esc_html( findewerkstatt_t( 'Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:' ) ); ?></strong><br><?php echo esc_html( $details['vat_id'] ); ?></p>
+        <?php endif; ?>
 
         <h2><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt.de als Werkstattverzeichnis' ) ); ?></h2>
         <p><?php echo esc_html( findewerkstatt_t( 'FindeWerkstatt.de listet Kfz-Werkstätten, Autoservices und Pannendienste in Deutschland. Die Suche nach Bundesland, Stadt und Ortsteil hilft Ihnen, einen Betrieb in Ihrer Nähe zu finden und direkt zu kontaktieren.' ) ); ?></p>

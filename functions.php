@@ -5,7 +5,7 @@
  * Modulare Funktionen für das deutsche Kfz-Werkstattverzeichnis.
  * 
  * @package FindeWerkstatt
- * @version 3.2.0
+ * @version 3.5.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -51,6 +51,8 @@ require_once get_template_directory() . '/inc/security-hardening.php';
 require_once get_template_directory() . '/inc/theme-updater.php';
 require_once get_template_directory() . '/inc/faq-manager.php';
 require_once get_template_directory() . '/inc/live-filter.php';
+require_once get_template_directory() . '/inc/domain-guard.php';
+require_once get_template_directory() . '/inc/admin-workshops.php';
 
 // 2. Theme-Setup
 function findewerkstatt_setup() {
