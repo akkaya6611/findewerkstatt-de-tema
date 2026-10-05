@@ -490,7 +490,7 @@ $clean_full_address = findewerkstatt_clean_address( $address, $title, $plz, $add
 
             <!-- Popular Services Discovery Hub in City (Boosts Site Navigation & Pageviews) -->
             <?php if ( $city ) :
-                $popular_service_slugs = array( 'inspektion', 'hauptuntersuchung-tuev', 'bremsenservice', 'reifenwechsel', 'oelwechsel', 'klimaservice', 'unfallinstandsetzung', 'autoglas' );
+                $popular_service_slugs = array( 'freie-werkstatt', 'tuev-hu-au', 'bremsenservice-fahrwerk', 'reifenservice-raederwechsel', 'klimaservice-standheizung', 'autoglas-scheibenreparatur', 'karosserie-lackiererei', 'kfz-elektrik-elektronik' );
             ?>
                 <section class="fw-box fw-profile-discovery">
                     <h2>

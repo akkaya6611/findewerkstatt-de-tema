@@ -436,5 +436,8 @@ return array(
     'Alle Werkstätten in %s anzeigen' => '%s bölgesindeki tüm oto servislerini gör',
     'PLZ, Stadt oder Werkstatt...' => 'Posta kodu, şehir veya servis adı...',
     'Ort oder PLZ eingeben...' => 'Şehir veya posta kodu girin...',
+    'Empfohlene Fachbetriebe in Ihrer Region:' => 'Bölgenizdeki tavsiye edilen uzman işletmeler:',
+    'Für den Filter „%s“ werden qualifizierte Kfz-Meisterbetriebe angezeigt, die umfassende Wartungs-, Inspektions- und Reparaturleistungen anbieten.' => '„%s“ filtresi için kapsamlı periyodik bakım, kontrol ve tamir hizmeti sunan onaylı oto usta servisleri listelenmektedir.',
+    '%s empfohlene Werkstätten gefunden' => '%s tavsiye edilen servis bulundu',
 );
 

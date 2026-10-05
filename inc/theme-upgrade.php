@@ -234,3 +234,88 @@ function findewerkstatt_sync_service_terms() {
     }
     return $changed;
 }
+
+/**
+ * Stellt sicher, dass Kfz-Meisterbetriebe und freie Werkstätten die Standard-Fachleistungen
+ * (Bremsenservice & Fahrwerk, Klimaservice, Kfz-Elektrik, Motorinstandsetzung) zugeordnet haben,
+ * sodass Kategorielinks und Filterseiten niemals leer laufen.
+ */
+function findewerkstatt_ensure_workshop_service_taxonomies() {
+    $done = get_option( 'findewerkstatt_services_backfilled_v2' );
+    if ( $done ) {
+        return;
+    }
+
+    $bremsen_term = get_term_by( 'slug', 'bremsenservice-fahrwerk', 'service_type' );
+    // Falls bremsenservice-fahrwerk bereits Betriebe hat (> 50), als erledigt markieren
+    if ( $bremsen_term && (int) $bremsen_term->count > 50 ) {
+        update_option( 'findewerkstatt_services_backfilled_v2', 1, false );
+        return;
+    }
+
+    // Grundlegende Dienstleistungen, die jede Freie Werkstatt / Kfz-Werkstatt anbietet
+    $core_slugs = array(
+        'bremsenservice-fahrwerk',
+        'klimaservice-standheizung',
+        'kfz-elektrik-elektronik',
+        'motor-getriebeinstandsetzung',
+    );
+
+    $term_ids = array();
+    foreach ( $core_slugs as $c_slug ) {
+        $t = get_term_by( 'slug', $c_slug, 'service_type' );
+        if ( ! $t && function_exists( 'wp_insert_term' ) ) {
+            $cat_data = FindeWerkstatt_German_Data::get_categories()[ $c_slug ] ?? null;
+            if ( $cat_data ) {
+                $ins = wp_insert_term( $cat_data['name'], 'service_type', array( 'slug' => $c_slug, 'description' => $cat_data['desc'] ) );
+                if ( ! is_wp_error( $ins ) && isset( $ins['term_id'] ) ) {
+                    $term_ids[] = (int) $ins['term_id'];
+                }
+            }
+        } elseif ( $t && ! is_wp_error( $t ) ) {
+            $term_ids[] = (int) $t->term_id;
+        }
+    }
+
+    if ( empty( $term_ids ) ) {
+        return;
+    }
+
+    // Alle Betriebe mit freie-werkstatt oder kfz-werkstatt holen
+    $freie = get_term_by( 'slug', 'freie-werkstatt', 'service_type' );
+    $kfz   = get_term_by( 'slug', 'kfz-werkstatt', 'service_type' );
+    $source_terms = array_filter( array( $freie ? $freie->term_id : 0, $kfz ? $kfz->term_id : 0 ) );
+
+    $args = array(
+        'post_type'      => 'mechanic',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    );
+
+    if ( ! empty( $source_terms ) ) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => 'service_type',
+                'field'    => 'term_id',
+                'terms'    => $source_terms,
+            ),
+        );
+    }
+
+    $posts = get_posts( $args );
+    if ( ! empty( $posts ) ) {
+        foreach ( $posts as $pid ) {
+            // append = true (vorhandene Services bleiben erhalten!)
+            wp_set_object_terms( $pid, $term_ids, 'service_type', true );
+        }
+
+        // Zähler aktualisieren
+        wp_update_term_count_now( $term_ids, 'service_type' );
+    }
+
+    update_option( 'findewerkstatt_services_backfilled_v2', 1, false );
+}
+add_action( 'init', 'findewerkstatt_ensure_workshop_service_taxonomies', 20 );
+

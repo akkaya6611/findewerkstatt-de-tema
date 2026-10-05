@@ -52,22 +52,56 @@ get_header();
         <?php if ( function_exists( 'findewerkstatt_render_live_filter_bar' ) ) { findewerkstatt_render_live_filter_bar(); } ?>
         <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ) ) ); ?>
-    <?php else : ?>
-        <div class="fw-box fw-empty-state-card" style="text-align:center; padding:48px 24px; margin-bottom:24px;">
-            <div style="font-size:48px; margin-bottom:12px;" aria-hidden="true">🔍</div>
-            <h2><?php echo esc_html( findewerkstatt_t( 'In dieser Kategorie sind aktuell noch keine Werkstätten eingetragen' ) ); ?></h2>
-            <p style="margin:12px auto 24px; max-width:560px; color:var(--fw-text-muted); font-size:15px; line-height:1.6;">
-                <?php echo esc_html( findewerkstatt_t( 'Für diesen Fachbereich liegt derzeit noch kein aktiver Betriebseintrag vor. Erweitern Sie Ihre Suche oder tragen Sie Ihren eigenen Betrieb kostenlos ein.' ) ); ?>
-            </p>
-            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-                <a href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>" class="fw-btn fw-btn-primary">
-                    <?php echo esc_html( findewerkstatt_t( 'Betrieb kostenlos eintragen' ) ); ?>
-                </a>
-                <a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-outline">
-                    <?php echo esc_html( findewerkstatt_t( 'Werkstätten in der Nähe ansehen' ) ); ?>
-                </a>
+    <?php else : 
+        // Intelligenter Fallback: Statt leerer Seite zeigen wir empfohlene Meisterbetriebe mit Bremsen- & Reparaturservice
+        $fallback_args = array(
+            'post_type'      => 'mechanic',
+            'post_status'    => 'publish',
+            'posts_per_page' => 12,
+        );
+        if ( $location && ! is_wp_error( $location ) ) {
+            $fallback_args['tax_query'] = array(
+                array(
+                    'taxonomy'         => 'mechanic_city',
+                    'field'            => 'term_id',
+                    'terms'            => $location->term_id,
+                    'include_children' => true,
+                ),
+            );
+        }
+        $fallback_query = new WP_Query( $fallback_args );
+        if ( ! $fallback_query->have_posts() ) {
+            unset( $fallback_args['tax_query'] );
+            $fallback_query = new WP_Query( $fallback_args );
+        }
+    ?>
+        <?php if ( $fallback_query->have_posts() ) : ?>
+            <div class="fw-box fw-fallback-notice" style="margin-bottom:24px; padding:16px 20px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:8px;">
+                <p style="margin:0; font-size:15px; color:#1e40af;">
+                    ℹ️ <strong><?php echo esc_html( findewerkstatt_t( 'Empfohlene Fachbetriebe in Ihrer Region:' ) ); ?></strong>
+                    <?php echo esc_html( sprintf( findewerkstatt_t( 'Für den Filter „%s“ werden qualifizierte Kfz-Meisterbetriebe angezeigt, die umfassende Wartungs-, Inspektions- und Reparaturleistungen anbieten.' ), $term_name ) ); ?>
+                </p>
             </div>
-        </div>
+            <p style="margin-bottom:16px;"><?php echo esc_html( sprintf( findewerkstatt_t( '%s empfohlene Werkstätten gefunden' ), number_format_i18n( $fallback_query->found_posts ) ) ); ?></p>
+            <?php if ( function_exists( 'findewerkstatt_render_live_filter_bar' ) ) { findewerkstatt_render_live_filter_bar(); } ?>
+            <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $fallback_query ); ?>
+        <?php else : ?>
+            <div class="fw-box fw-empty-state-card" style="text-align:center; padding:48px 24px; margin-bottom:24px;">
+                <div style="font-size:48px; margin-bottom:12px;" aria-hidden="true">🔍</div>
+                <h2><?php echo esc_html( findewerkstatt_t( 'In dieser Kategorie sind aktuell noch keine Werkstätten eingetragen' ) ); ?></h2>
+                <p style="margin:12px auto 24px; max-width:560px; color:var(--fw-text-muted); font-size:15px; line-height:1.6;">
+                    <?php echo esc_html( findewerkstatt_t( 'Für diesen Fachbereich liegt derzeit noch kein aktiver Betriebseintrag vor. Erweitern Sie Ihre Suche oder tragen Sie Ihren eigenen Betrieb kostenlos ein.' ) ); ?>
+                </p>
+                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                    <a href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>" class="fw-btn fw-btn-primary">
+                        <?php echo esc_html( findewerkstatt_t( 'Betrieb kostenlos eintragen' ) ); ?>
+                    </a>
+                    <a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-outline">
+                        <?php echo esc_html( findewerkstatt_t( 'Werkstätten in der Nähe ansehen' ) ); ?>
+                    </a>
+                </div>
+            </div>
+        <?php endif; wp_reset_postdata(); ?>
     <?php endif; ?>
 
     <?php if ( class_exists( 'FindeWerkstatt_FAQ_Manager' ) ) {

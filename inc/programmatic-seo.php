@@ -66,6 +66,69 @@ class FindeWerkstatt_Programmatic_SEO {
             return;
         }
         $path = trim( $wp->request, '/' );
+
+        // Service-Alias-Weiterleitungen (z.B. /service/bremsenservice/ -> /service/bremsenservice-fahrwerk/)
+        $service_aliases = array(
+            'bremsenservice'       => 'bremsenservice-fahrwerk',
+            'bremsen'              => 'bremsenservice-fahrwerk',
+            'fahrwerk'             => 'bremsenservice-fahrwerk',
+            'tuev'                 => 'tuev-hu-au',
+            'hu-au'                => 'tuev-hu-au',
+            'hauptuntersuchung'    => 'tuev-hu-au',
+            'reifenwechsel'        => 'reifenservice-raederwechsel',
+            'reifen'               => 'reifenservice-raederwechsel',
+            'raederwechsel'        => 'reifenservice-raederwechsel',
+            'autoglas'             => 'autoglas-scheibenreparatur',
+            'scheibenreparatur'    => 'autoglas-scheibenreparatur',
+            'klimaservice'         => 'klimaservice-standheizung',
+            'standheizung'         => 'klimaservice-standheizung',
+            'karosserie'           => 'karosserie-lackiererei',
+            'lackiererei'          => 'karosserie-lackiererei',
+            'unfallinstandsetzung' => 'karosserie-lackiererei',
+            'abschleppdienst'      => 'abschleppdienst-pannenhilfe',
+            'pannenhilfe'          => 'abschleppdienst-pannenhilfe',
+            'abschleppen'          => 'abschleppdienst-pannenhilfe',
+            'kfz-elektrik'         => 'kfz-elektrik-elektronik',
+            'diagnose'             => 'kfz-elektrik-elektronik',
+            'motor'                => 'motor-getriebeinstandsetzung',
+            'getriebe'             => 'motor-getriebeinstandsetzung',
+            'e-auto'               => 'e-auto-ladestationen',
+            'elektroauto'          => 'e-auto-ladestationen',
+            'inspektion'           => 'freie-werkstatt',
+            'oelwechsel'           => 'freie-werkstatt',
+        );
+
+        // Einzelne Service-Kategorie mit Alias (nur wenn kein eigener Begriff existiert)
+        if ( preg_match( '#^service/([^/]+)(?:/page/([1-9][0-9]*))?/?$#', $path, $alias_match ) ) {
+            $raw_slug = sanitize_title( $alias_match[1] );
+            if ( isset( $service_aliases[ $raw_slug ] ) && ! get_term_by( 'slug', $raw_slug, 'service_type' ) ) {
+                $canonical_slug = $service_aliases[ $raw_slug ];
+                $paged_suffix = ! empty( $alias_match[2] ) ? 'page/' . (int) $alias_match[2] . '/' : '';
+                if ( function_exists( 'wp_safe_redirect' ) ) {
+                    wp_safe_redirect( home_url( '/service/' . $canonical_slug . '/' . $paged_suffix ), 301 );
+                    exit;
+                } else {
+                    $wp->query_vars['service_type'] = $canonical_slug;
+                    return;
+                }
+            }
+        }
+
+        // Service + Standort Kombination mit Alias (nur wenn kein eigener Begriff existiert)
+        if ( preg_match( '#^service/([^/]+)/in/([^/]+)(?:/page/([1-9][0-9]*))?/?$#', $path, $alias_combo ) ) {
+            $raw_slug = sanitize_title( $alias_combo[1] );
+            if ( isset( $service_aliases[ $raw_slug ] ) && ! get_term_by( 'slug', $raw_slug, 'service_type' ) ) {
+                $canonical_slug = $service_aliases[ $raw_slug ];
+                $paged_suffix = ! empty( $alias_combo[3] ) ? 'page/' . (int) $alias_combo[3] . '/' : '';
+                if ( function_exists( 'wp_safe_redirect' ) ) {
+                    wp_safe_redirect( home_url( '/service/' . $canonical_slug . '/in/' . $alias_combo[2] . '/' . $paged_suffix ), 301 );
+                    exit;
+                } else {
+                    $path = 'service/' . $canonical_slug . '/in/' . $alias_combo[2] . ( ! empty( $paged_suffix ) ? '/' . $paged_suffix : '' );
+                }
+            }
+        }
+
         if ( preg_match( '#^(service|marke)/([^/]+)/in/([^/]+)(?:/page/([1-9][0-9]*))?/?$#', $path, $matches ) ) {
             $taxonomy = 'service' === $matches[1] ? 'service_type' : 'car_brand';
             $term = get_term_by( 'slug', sanitize_title( $matches[2] ), $taxonomy );
@@ -322,5 +385,9 @@ class FindeWerkstatt_Programmatic_SEO {
 }
 
 FindeWerkstatt_Programmatic_SEO::init();
+
+if ( ! class_exists( 'findewerkstatt_PSEO' ) ) {
+    class_alias( 'FindeWerkstatt_Programmatic_SEO', 'findewerkstatt_PSEO' );
+}
 
 
