@@ -53,10 +53,20 @@ get_header();
         <?php FindeWerkstatt_Programmatic_SEO::render_workshop_cards( $wp_query ); ?>
         <?php findewerkstatt_pagination( array( 'mid_size' => 2, 'prev_text' => findewerkstatt_t( '← Zurück' ), 'next_text' => findewerkstatt_t( 'Weiter →' ) ) ); ?>
     <?php else : ?>
-        <div class="fw-box" style="text-align:center;">
-            <h2><?php echo esc_html( findewerkstatt_t( 'Für diese Auswahl sind noch keine Werkstätten eingetragen' ) ); ?></h2>
-            <p style="margin:12px 0 20px;"><?php echo esc_html( findewerkstatt_t( 'Erweitern Sie Ihre Suche oder tragen Sie Ihren Betrieb mit seinen Leistungen ein.' ) ); ?></p>
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-outline"><?php echo esc_html( findewerkstatt_t( 'Alle Werkstätten durchsuchen' ) ); ?></a>
+        <div class="fw-box fw-empty-state-card" style="text-align:center; padding:48px 24px; margin-bottom:24px;">
+            <div style="font-size:48px; margin-bottom:12px;" aria-hidden="true">🔍</div>
+            <h2><?php echo esc_html( findewerkstatt_t( 'In dieser Kategorie sind aktuell noch keine Werkstätten eingetragen' ) ); ?></h2>
+            <p style="margin:12px auto 24px; max-width:560px; color:var(--fw-text-muted); font-size:15px; line-height:1.6;">
+                <?php echo esc_html( findewerkstatt_t( 'Für diesen Fachbereich liegt derzeit noch kein aktiver Betriebseintrag vor. Erweitern Sie Ihre Suche oder tragen Sie Ihren eigenen Betrieb kostenlos ein.' ) ); ?>
+            </p>
+            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                <a href="<?php echo esc_url( findewerkstatt_page_url( 'werkstatt-anmelden' ) ); ?>" class="fw-btn fw-btn-primary">
+                    <?php echo esc_html( findewerkstatt_t( 'Betrieb kostenlos eintragen' ) ); ?>
+                </a>
+                <a href="<?php echo esc_url( get_post_type_archive_link( 'mechanic' ) ); ?>" class="fw-btn fw-btn-outline">
+                    <?php echo esc_html( findewerkstatt_t( 'Werkstätten in der Nähe ansehen' ) ); ?>
+                </a>
+            </div>
         </div>
     <?php endif; ?>
 

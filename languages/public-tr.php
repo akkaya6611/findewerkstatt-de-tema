@@ -373,5 +373,10 @@ return array(
     'Werkstätten in %s durchsuchen' => '%s bölgesindeki servisleri ara',
     'Beliebte Leistungen in %s' => '%s bölgesindeki popüler hizmetler',
     'Zu diesem Unternehmen liegt derzeit noch keine ausführliche Beschreibung vor.' => 'Bu işletme için şu anda ayrıntılı bir açıklama bulunmamaktadır.',
+    'In dieser Kategorie sind aktuell noch keine Werkstätten eingetragen' => 'Bu kategoride henüz oto servisi kayıtlı değil',
+    'Für diesen Fachbereich liegt derzeit noch kein aktiver Betriebseintrag vor. Erweitern Sie Ihre Suche oder tragen Sie Ihren eigenen Betrieb kostenlos ein.' => 'Bu uzmanlık alanında henüz aktif bir firma kaydı bulunmamaktadır. Aramanızı genişletebilir veya kendi firmanızı ücretsiz ekleyebilirsiniz.',
+    'Betrieb kostenlos eintragen' => 'İşletmeyi ücretsiz ekle',
+    'Werkstätten in der Nähe ansehen' => 'Yakındaki oto servislerini incele',
+    'In dieser Region sind aktuell noch keine Werkstätten eingetragen' => 'Bu bölgede henüz oto servisi kayıtlı değil',
 );
 

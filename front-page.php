@@ -43,7 +43,7 @@ $brands = FindeWerkstatt_German_Data::get_car_brands();
             <h2><?php echo esc_html( findewerkstatt_t( 'Warum FindeWerkstatt?' ) ); ?></h2>
             <p><?php echo esc_html( findewerkstatt_t( 'Das transparente Portal für Werkstattsuche, Reparaturvergleich und direkte Angebote.' ) ); ?></p>
         </div>
-        <div class="fw-benefits-grid">
+        <div class="fw-benefits-grid fw-benefits-grid-4">
             <div class="fw-box fw-trust-item">
                 <div class="fw-trust-icon">🎉</div>
                 <h3><?php echo esc_html( findewerkstatt_t( 'Für Autofahrer 100% kostenlos' ) ); ?></h3>

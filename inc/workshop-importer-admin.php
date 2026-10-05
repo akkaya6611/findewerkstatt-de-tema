@@ -636,26 +636,32 @@ class FindeWerkstatt_Workshop_Importer {
         // Store into temporary server cache directory
         $token = 'fw_' . md5( uniqid( 'fw_import_', true ) );
         $json_data = wp_json_encode( $workshops );
-
         $upload_dir = wp_upload_dir();
-        $cache_dir = trailingslashit( $upload_dir['basedir'] ) . 'fw-imports';
-        if ( ! file_exists( $cache_dir ) ) {
-            wp_mkdir_p( $cache_dir );
-            @file_put_contents( $cache_dir . '/index.php', '<?php // Silence' );
-        }
 
-        $cache_file = $cache_dir . '/' . $token . '.json';
-        $written = @file_put_contents( $cache_file, $json_data );
+        $cache_dirs = array(
+            defined( 'WP_CONTENT_DIR' ) ? trailingslashit( WP_CONTENT_DIR ) . 'fw-imports' : '',
+            trailingslashit( $upload_dir['basedir'] ) . 'fw-imports',
+            trailingslashit( get_template_directory() ) . 'cache/fw-imports',
+            trailingslashit( get_temp_dir() ) . 'fw-imports',
+        );
 
-        // If upload dir was not writable, try temp directory
-        if ( false === $written ) {
-            $temp_dir = trailingslashit( get_temp_dir() ) . 'fw-imports';
-            if ( ! file_exists( $temp_dir ) ) {
-                wp_mkdir_p( $temp_dir );
+        $written = false;
+        foreach ( array_filter( $cache_dirs ) as $dir ) {
+            if ( ! file_exists( $dir ) ) {
+                @wp_mkdir_p( $dir );
+                @file_put_contents( $dir . '/index.php', '<?php // Silence' );
             }
-            $cache_file = $temp_dir . '/' . $token . '.json';
-            $written = @file_put_contents( $cache_file, $json_data );
+            $target_file = trailingslashit( $dir ) . $token . '.json';
+            $w = @file_put_contents( $target_file, $json_data );
+            if ( false !== $w ) {
+                $written = true;
+                break;
+            }
         }
+
+        // Store compressed fallback in database (max compatibility across all hosts)
+        $compressed = function_exists( 'gzcompress' ) ? base64_encode( gzcompress( $json_data, 6 ) ) : $json_data;
+        update_option( 'fw_imp_data_' . $token, $compressed, false );
 
         // Always also store a safety transient fallback (valid for 4 hours)
         set_transient( 'fw_imp_' . $token, $workshops, 4 * HOUR_IN_SECONDS );
@@ -686,12 +692,14 @@ class FindeWerkstatt_Workshop_Importer {
 
         $upload_dir = wp_upload_dir();
         $possible_paths = array(
+            defined( 'WP_CONTENT_DIR' ) ? trailingslashit( WP_CONTENT_DIR ) . 'fw-imports/' . $token . '.json' : '',
             trailingslashit( $upload_dir['basedir'] ) . 'fw-imports/' . $token . '.json',
+            trailingslashit( get_template_directory() ) . 'cache/fw-imports/' . $token . '.json',
             trailingslashit( get_temp_dir() ) . 'fw-imports/' . $token . '.json',
         );
 
         $cache_file = '';
-        foreach ( $possible_paths as $path ) {
+        foreach ( array_filter( $possible_paths ) as $path ) {
             if ( file_exists( $path ) ) {
                 $cache_file = $path;
                 break;
@@ -701,10 +709,12 @@ class FindeWerkstatt_Workshop_Importer {
         // Case-insensitive fallback if filename had mixed casing
         if ( empty( $cache_file ) ) {
             $dirs = array(
+                defined( 'WP_CONTENT_DIR' ) ? trailingslashit( WP_CONTENT_DIR ) . 'fw-imports' : '',
                 trailingslashit( $upload_dir['basedir'] ) . 'fw-imports',
+                trailingslashit( get_template_directory() ) . 'cache/fw-imports',
                 trailingslashit( get_temp_dir() ) . 'fw-imports',
             );
-            foreach ( $dirs as $d ) {
+            foreach ( array_filter( $dirs ) as $d ) {
                 if ( is_dir( $d ) ) {
                     $pattern = $d . '/*.json';
                     $files = glob( $pattern );
@@ -728,7 +738,23 @@ class FindeWerkstatt_Workshop_Importer {
             }
         }
 
-        // Fallback to transient if file was missing or unreadable
+        // Fallback 1: Database compressed option
+        if ( ! is_array( $workshops ) ) {
+            $opt = get_option( 'fw_imp_data_' . $token );
+            if ( ! empty( $opt ) && is_string( $opt ) ) {
+                if ( function_exists( 'gzuncompress' ) ) {
+                    $decomp = @gzuncompress( base64_decode( $opt ) );
+                    if ( false !== $decomp ) {
+                        $workshops = json_decode( $decomp, true );
+                    }
+                }
+                if ( ! is_array( $workshops ) ) {
+                    $workshops = json_decode( $opt, true );
+                }
+            }
+        }
+
+        // Fallback 2: Transient
         if ( ! is_array( $workshops ) ) {
             $workshops = get_transient( 'fw_imp_' . $token );
         }
@@ -791,6 +817,7 @@ class FindeWerkstatt_Workshop_Importer {
                 @unlink( $cache_file );
             }
             delete_transient( 'fw_imp_' . $token );
+            delete_option( 'fw_imp_data_' . $token );
 
             // Recalculate taxonomy counts once at completion
             wp_update_term_count_now( get_terms( array( 'taxonomy' => 'service_type', 'fields' => 'ids', 'hide_empty' => false ) ), 'service_type' );
