@@ -16,7 +16,11 @@ function findewerkstatt_site_asset_contents( $file ) {
         $links[ 'https://findewerkstatt.de/' . $slug . '/' ] = findewerkstatt_page_url( $slug );
     }
     $contents = strtr( $contents, $links );
-    return str_replace( 'https://findewerkstatt.de', untrailingslashit( home_url() ), $contents );
+    $contents = str_replace( 'https://findewerkstatt.de', untrailingslashit( home_url() ), $contents );
+    if ( 'ads.txt' === $file && function_exists( 'apply_filters' ) ) {
+        return apply_filters( 'findewerkstatt_ads_txt_content', $contents );
+    }
+    return $contents;
 }
 
 add_action( 'template_redirect', function () {

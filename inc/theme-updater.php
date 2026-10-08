@@ -19,7 +19,14 @@ class FindeWerkstatt_Theme_Updater {
     const GITHUB_BRANCH   = 'main';
     const THEME_SLUG      = 'findewerkstatt-de-tema';
     const TRANSIENT_KEY   = 'fw_theme_github_update_info';
-    const CACHE_LIFETIME  = 21600; // 6 Stunden Cache
+    const CACHE_LIFETIME  = 1800; // 30 Minuten Standard-Cache statt 6 Stunden
+
+    /**
+     * Ermittelt den tatsächlichen Theme-Slug
+     */
+    public static function get_theme_slug() {
+        return function_exists( 'get_template' ) ? get_template() : self::THEME_SLUG;
+    }
 
     /**
      * Initialisierung aller Hooks
@@ -29,27 +36,50 @@ class FindeWerkstatt_Theme_Updater {
             return;
         }
 
-        // 1. WordPress Theme-Update-Transiente manipulieren
+        // 1. Plugin Update Checker (PUC) initialisieren, falls vorhanden
+        self::init_puc();
+
+        // 2. WordPress Theme-Update-Transiente manipulieren
         add_filter( 'pre_set_site_transient_update_themes', array( __CLASS__, 'check_for_theme_update' ) );
 
-        // 2. Extrahierter Ordnername beim Entpacken korrigieren (GitHub hängt Branch-Name an)
+        // 3. Extrahierter Ordnername beim Entpacken korrigieren (GitHub hängt Branch-Name an)
         add_filter( 'upgrader_source_selection', array( __CLASS__, 'fix_github_unzip_directory' ), 10, 4 );
 
-        // 3. Admin-Benachrichtigung anzeigen, wenn Update verfügbar ist
+        // 4. Admin-Benachrichtigung anzeigen, wenn Update verfügbar ist
         add_action( 'admin_notices', array( __CLASS__, 'render_update_admin_notice' ) );
 
-        // 4. Manuelle Update-Prüfung per URL (?fw_check_update=1)
+        // 5. Manuelle Update-Prüfung per URL (?fw_check_update=1)
         add_action( 'admin_init', array( __CLASS__, 'handle_manual_check' ) );
 
-        // 5. Nach erfolgreichem Update Cache leeren
+        // 6. Nach erfolgreichem Update Cache leeren
         add_action( 'upgrader_process_complete', array( __CLASS__, 'clear_cache_after_update' ), 10, 2 );
+    }
+
+    /**
+     * Plugin Update Checker v5 initialisieren
+     */
+    public static function init_puc() {
+        $puc_file = get_template_directory() . '/inc/plugin-update-checker/plugin-update-checker.php';
+        if ( file_exists( $puc_file ) ) {
+            require_once $puc_file;
+            if ( class_exists( 'YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
+                $checker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+                    'https://github.com/' . self::GITHUB_REPO . '/',
+                    get_template_directory() . '/style.css',
+                    self::get_theme_slug()
+                );
+                if ( method_exists( $checker, 'setBranch' ) ) {
+                    $checker->setBranch( self::GITHUB_BRANCH );
+                }
+            }
+        }
     }
 
     /**
      * Ermittelt die aktuelle installierte Theme-Version
      */
     public static function get_installed_version() {
-        $theme = wp_get_theme( self::THEME_SLUG );
+        $theme = wp_get_theme( self::get_theme_slug() );
         return $theme->exists() ? $theme->get( 'Version' ) : '0.0.0';
     }
 
@@ -65,9 +95,10 @@ class FindeWerkstatt_Theme_Updater {
         }
 
         $raw_style_url = sprintf(
-            'https://raw.githubusercontent.com/%s/%s/style.css',
+            'https://raw.githubusercontent.com/%s/%s/style.css?t=%d',
             self::GITHUB_REPO,
-            self::GITHUB_BRANCH
+            self::GITHUB_BRANCH,
+            time()
         );
 
         $response = wp_remote_get( $raw_style_url, array(
@@ -124,11 +155,12 @@ class FindeWerkstatt_Theme_Updater {
         }
 
         $current_version = self::get_installed_version();
+        $slug            = self::get_theme_slug();
 
         // Wenn GitHub eine neuere Versionsnummer hat als lokal
         if ( version_compare( $current_version, $remote_info['version'], '<' ) ) {
-            $transient->response[ self::THEME_SLUG ] = array(
-                'theme'       => self::THEME_SLUG,
+            $transient->response[ $slug ] = array(
+                'theme'       => $slug,
                 'new_version' => $remote_info['version'],
                 'url'         => $remote_info['url'],
                 'package'     => $remote_info['package'],
@@ -137,7 +169,7 @@ class FindeWerkstatt_Theme_Updater {
             );
         } else {
             // Aktuelle Version ist auf dem neuesten Stand
-            unset( $transient->response[ self::THEME_SLUG ] );
+            unset( $transient->response[ $slug ] );
         }
 
         return $transient;
@@ -145,16 +177,17 @@ class FindeWerkstatt_Theme_Updater {
 
     /**
      * Korrigiert den Ordnernamen beim Entpacken des ZIP-Archivs
-     * GitHub entpackt 'findewerkstatt-de-tema-main/', WordPress benötigt aber 'findewerkstatt-de-tema/'
+     * GitHub entpackt 'findewerkstatt-de-tema-main/', WordPress benötigt aber den aktuellen Theme-Ordner
      */
     public static function fix_github_unzip_directory( $source, $remote_source, $upgrader, $hook_extra = array() ) {
         global $wp_filesystem;
 
-        if ( ! isset( $hook_extra['theme'] ) || self::THEME_SLUG !== $hook_extra['theme'] ) {
+        $slug = self::get_theme_slug();
+        if ( ! isset( $hook_extra['theme'] ) || $slug !== $hook_extra['theme'] ) {
             return $source;
         }
 
-        $proper_destination = trailingslashit( $remote_source ) . self::THEME_SLUG . '/';
+        $proper_destination = trailingslashit( $remote_source ) . $slug . '/';
 
         // Wenn der entpackte Quellordner nicht dem Theme-Slug entspricht, umbenennen
         if ( trailingslashit( $source ) !== $proper_destination ) {
@@ -184,9 +217,10 @@ class FindeWerkstatt_Theme_Updater {
             return;
         }
 
+        $slug       = self::get_theme_slug();
         $update_url = wp_nonce_url(
-            admin_url( 'update.php?action=upgrade-theme&theme=' . urlencode( self::THEME_SLUG ) ),
-            'upgrade-theme_' . self::THEME_SLUG
+            admin_url( 'update.php?action=upgrade-theme&theme=' . urlencode( $slug ) ),
+            'upgrade-theme_' . $slug
         );
         ?>
         <div class="notice notice-warning is-dismissible" style="border-left-color: #fb6006; padding: 14px 18px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-top: 15px;">
@@ -215,15 +249,14 @@ class FindeWerkstatt_Theme_Updater {
     }
 
     /**
-     * Manuelle Prüfung per URL-Parameter: wp-admin/?fw_check_update=1
+     * Manuelle Prüfung per URL-Parameter: wp-admin/?fw_check_update=1 oder wp-admin/themes.php?fw_check_update=1
      */
     public static function handle_manual_check() {
         if ( isset( $_GET['fw_check_update'] ) && current_user_can( 'update_themes' ) ) {
-            check_admin_referer( 'fw_manual_update_check' );
             delete_transient( self::TRANSIENT_KEY );
             delete_site_transient( 'update_themes' );
             self::get_remote_theme_info( true );
-            wp_safe_redirect( remove_query_arg( array( 'fw_check_update', '_wpnonce' ) ) );
+            wp_safe_redirect( admin_url( 'themes.php' ) );
             exit;
         }
     }
